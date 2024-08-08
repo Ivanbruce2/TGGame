@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import scissorsImg from './scissors.png';
-import paperImg from './paper.png';
-import stoneImg from './stone.png';
 
-const choices = [
-  { name: "Scissors", img: scissorsImg },
-  { name: "Paper", img: paperImg },
-  { name: "Stone", img: stoneImg }
-];
+const choices = ["Scissors", "Paper", "Stone"];
 
 function App() {
   const [username, setUsername] = useState('');
@@ -41,15 +34,15 @@ function App() {
 
   const handleChoice = async (choice) => {
     const chatId = new URLSearchParams(window.location.search).get('chat_id');
-    setUserChoice(choice.name); // Set the user choice immediately
+    setUserChoice(choice); // Set the user choice immediately
     const computerChoice = choices[Math.floor(Math.random() * choices.length)];
-    setComputerChoice(computerChoice.name); // Set the computer choice
+    setComputerChoice(computerChoice); // Set the computer choice
 
-    const result = getResult(choice.name, computerChoice.name);
+    const result = getResult(choice, computerChoice);
     setResult(result);
 
     // Send result to Telegram
-    const message = `@${username} chose ${choice.name}. Computer chose ${computerChoice.name}. ${result}`;
+    const message = `@${username} chose ${choice}. Computer chose ${computerChoice}. ${result}`;
     window.Telegram.WebApp.sendData(message);
 
     const response = await fetch('/webhook', {
@@ -59,7 +52,7 @@ function App() {
       },
       body: new URLSearchParams({
         username: username,
-        choice: choice.name,
+        choice: choice,
         chat_id: chatId,
       }),
     });
@@ -74,8 +67,8 @@ function App() {
       <h2>Let's play Scissors, Paper, Stone</h2>
       <div className="choices">
         {choices.map(choice => (
-          <button key={choice.name} className="choice-button" onClick={() => handleChoice(choice)}>
-            <img src={choice.img} alt={choice.name} />
+          <button key={choice} className="choice-button" onClick={() => handleChoice(choice)}>
+            {choice}
           </button>
         ))}
       </div>

@@ -1,17 +1,68 @@
-.App {
+body {
+  font-family: 'Press Start 2P', cursive;
+  background-color: #282c34;
+  color: white;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
   text-align: center;
 }
 
-.choices button {
-  margin: 5px;
-  padding: 10px 20px;
-  font-size: 16px;
+.App {
+  text-align: center;
+  max-width: 600px;
+  background-color: #000;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-button {
+h1, h2 {
+  color: #ffcc00;
+}
+
+.choices {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.choice-button {
+  background: #61dafb;
+  border: none;
+  margin: 0 15px;
   cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  font-size: 18px;
+  color: #000;
+  padding: 15px 30px;
+  border-radius: 5px;
 }
 
-button:hover {
-  background-color: #ddd;
+.choice-button:hover {
+  transform: scale(1.2);
+  background-color: #21a1f1;
+  color: #fff;
+}
+
+.result {
+  font-size: 24px;
+  margin: 20px 0;
+  color: #ff6666;
+}
+
+.try-again-button {
+  background-color: #ff5e5e;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.try-again-button:hover {
+  background-color: #e94e4e;
 }
