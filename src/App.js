@@ -63,7 +63,8 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Hi {username}! Please select your choice:</h1>
+      <h1>Welcome {username}!</h1>
+      <h2>Let's play Scissors, Paper, Stone</h2>
       <div className="choices">
         {choices.map(choice => (
           <button key={choice} onClick={() => handleChoice(choice)}>
@@ -73,8 +74,8 @@ function App() {
       </div>
       {userChoice && <p>You chose: {userChoice}</p>}
       {computerChoice && <p>Computer chose: {computerChoice}</p>}
-      {result && <p>Result: {result}</p>}
-      {result && <button onClick={() => { setUserChoice(''); setComputerChoice(''); setResult(''); }}>Try Again</button>}
+      {result && <p className="result">{result}</p>}
+      {result && <button className="try-again-button" onClick={() => { setUserChoice(''); setComputerChoice(''); setResult(''); }}>Try Again</button>}
     </div>
   );
 }
