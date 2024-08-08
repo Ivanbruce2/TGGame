@@ -6,43 +6,38 @@ const choices = ["Scissors", "Paper", "Stone"];
 function App() {
   const [username, setUsername] = useState('');
   const [userChoice, setUserChoice] = useState('');
-  const [computerChoice, setComputerChoice] = useState('');
   const [result, setResult] = useState('');
 
   useEffect(() => {
-    if (window.Telegram.WebApp.initDataUnsafe.user) {
-      setUsername(window.Telegram.WebApp.initDataUnsafe.user.username);
-    }
+    const urlParams = new URLSearchParams(window.location.search);
+    const usernameFromParams = urlParams.get('username');
+    console.log("Username from URL params:", usernameFromParams); // Log the username to verify
+    setUsername(usernameFromParams);
   }, []);
 
-  const getResult = (user, computer) => {
-    if (user === computer) return "It's a draw!";
-    if (
-      (user === 'Scissors' && computer === 'Paper') ||
-      (user === 'Paper' && computer === 'Stone') ||
-      (user === 'Stone' && computer === 'Scissors')
-    ) {
-      return 'You win!';
-    }
-    return 'You lose!';
-  };
+  const handleChoice = async (choice) => {
+    const chatId = new URLSearchParams(window.location.search).get('chat_id');
 
-  const handleChoice = (choice) => {
-    setUserChoice(choice);
-    const computerChoice = choices[Math.floor(Math.random() * choices.length)];
-    setComputerChoice(computerChoice);
-    const result = getResult(choice, computerChoice);
-    setResult(result);
+    const response = await fetch('/webhook', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        username: username,
+        choice: choice,
+        chat_id: chatId,
+      }),
+    });
 
-    // Send result to Telegram
-    const message = `@${username} chose ${choice}. Computer chose ${computerChoice}. ${result}`;
-    window.Telegram.WebApp.sendData(message);
+    const resultText = await response.text();
+    setResult(`You chose ${choice}. ${resultText}`);
+    window.Telegram.WebApp.sendData(resultText);
   };
 
   return (
     <div className="App">
-      <h1>Scissors, Paper, Stone Game</h1>
-      <p>Hi {username}! Please select your choice:</p>
+      <h1>Hi {username}! Please select your choice:</h1>
       <div className="choices">
         {choices.map(choice => (
           <button key={choice} onClick={() => handleChoice(choice)}>
@@ -50,9 +45,7 @@ function App() {
           </button>
         ))}
       </div>
-      {userChoice && <p>You chose: {userChoice}</p>}
-      {computerChoice && <p>Computer chose: {computerChoice}</p>}
-      {result && <p>Result: {result}</p>}
+      {result && <p>{result}</p>}
       {result && <button onClick={() => setResult('')}>Try Again</button>}
     </div>
   );
