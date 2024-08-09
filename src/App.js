@@ -76,23 +76,27 @@ function App() {
   }, [gameId]);
 
   const handleChoice = async (choice) => {
-    setUserChoice(choice);
-
     const chatId = new URLSearchParams(window.location.search).get('chat_id');
-
-    // Send choice to backend
-    await fetch('https://aa53-119-74-213-151.ngrok-free.app/webhook', {
+    const username = new URLSearchParams(window.location.search).get('username');
+    setUserChoice(choice);
+  
+    const response = await fetch('https://aa53-119-74-213-151.ngrok-free.app/webhook', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: new URLSearchParams({
-        username: username,
+        username: username,  // Ensure this is correctly passed
         choice: choice,
         chat_id: chatId,
       }),
     });
+  
+    const gameId = await response.text();  // Parse the plain text response
+    console.log("Received game ID:", gameId);
+    setGameId(gameId);  // Store the game ID for polling
   };
+  
 
   // Render based on gameStatus
   if (!gameStatus) {
