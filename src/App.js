@@ -35,19 +35,19 @@ function App() {
         });
     
         if (!response.ok) {
-          // Log the entire response for debugging
           const errorText = await response.text();
           console.error("HTTP error! status:", response.status, "response:", errorText);
           throw new Error(`HTTP error! status: ${response.status}`);
         }
     
-        const data = await response.json();  // Parse the JSON response
-        console.log("Received data:", data);
-        setGameId(data.game_id);  // Access the game ID from the JSON response
+        const gameId = await response.json();  // Parse the JSON response
+        console.log("Received data:", gameId);
+        setGameId(gameId);  // Store the game ID for polling
       } catch (error) {
         console.error("Error creating game:", error);
       }
     };
+    
 
 
     createGame();
