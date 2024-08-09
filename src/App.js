@@ -73,9 +73,11 @@ function App() {
     };
   }, [gameId]);
 
-  const handleChoice = async (choice) => {
-    setUserChoice(choice);
 
+  const handleChoice = async (choice) => {
+    const chatId = new URLSearchParams(window.location.search).get('chat_id');
+    setUserChoice(choice);
+  
     const response = await fetch('https://aa53-119-74-213-151.ngrok-free.app/webhook', {
       method: 'POST',
       headers: {
@@ -84,21 +86,16 @@ function App() {
       body: new URLSearchParams({
         username: username,  // Ensure this is correctly passed
         choice: choice,
-        chat_id: new URLSearchParams(window.location.search).get('chat_id'),
+        chat_id: chatId,     // Pass the chatID to the backend
       }),
     });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("HTTP error! status:", response.status, "response:", errorText);
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();  // Parse the JSON response
-    const gameId = data.game_id;
-    console.log("Received game ID:", gameId);
+  
+    const gameId = await response.json();
     setGameId(gameId);  // Store the game ID for polling
   };
+
+  
+
 
   // Render based on gameStatus
   if (!gameStatus) {
