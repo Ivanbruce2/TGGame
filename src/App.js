@@ -97,23 +97,31 @@ function App() {
 
   useEffect(() => {
     if (!gameId) return;
-
     const pollGameStatus = async () => {
       console.log("Polling game status for game ID:", gameId);
       try {
         const response = await fetch(`https://aa53-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`);
         const contentType = response.headers.get("Content-Type");
-        console.log("Content-Type:", contentType);  // Check content type of response
+        console.log("Content-Type:", contentType);
+    
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const gameData = await response.json();
-        console.log("Received game status:", gameData);
-        setGameStatus(gameData);
+    
+        if (contentType && contentType.includes("application/json")) {
+          const gameData = await response.json();
+          console.log("Received game status:", gameData);
+          setGameStatus(gameData);
+        } else {
+          const textResponse = await response.text();
+          console.error("Received non-JSON response:", textResponse);
+          throw new Error("Expected JSON, but received non-JSON response");
+        }
       } catch (error) {
         console.error("Error fetching game status:", error);
       }
     };
+    
     
 
     pollingRef.current = setInterval(pollGameStatus, POLLING_INTERVAL);
