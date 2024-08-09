@@ -26,7 +26,7 @@ function App() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'ngrok-skip-browser-warning': 'true'  // Add this header to bypass the warning page
+            'User-Agent': 'MyCustomUserAgent',  // Set a custom User-Agent string
           },
           body: new URLSearchParams({
             username: usernameFromParams,
@@ -40,13 +40,14 @@ function App() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
     
-        const gameId = await response.json();  // Parse the JSON response
-        console.log("Received data:", gameId);
+        const gameId = await response.text();  // Parse the plain text response
+        console.log("Received game ID:", gameId);
         setGameId(gameId);  // Store the game ID for polling
       } catch (error) {
         console.error("Error creating game:", error);
       }
     };
+    
     
 
 
