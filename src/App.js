@@ -115,9 +115,9 @@ function App() {
     };
   }, [gameId]);
 
-  // if (!gameStatus) {
-  //   return <div>Loading game status...</div>;
-  // }
+  if (!gameStatus) {
+    return <div>Loading game status...</div>;
+  }
 
   return (
     <div className="App">
