@@ -54,8 +54,10 @@ function App() {
         username: username,
         choice: choice,
         chat_id: chatId,
+        result: result // Include the result in the webhook call
       }),
     });
+    
 
     const resultText = await response.text();
     console.log("Response from webhook:", resultText); // Log the response to verify
