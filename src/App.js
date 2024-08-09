@@ -33,9 +33,9 @@ function App() {
       }),
     });
   
-    const gameId = await response.text();
+    const gameId = await response.text(); // Receive the generated game ID from the backend
     console.log("Received game ID:", gameId); // Log the game ID
-    setGameId(gameId);
+    setGameId(gameId); // Store the game ID for polling
   };
   
   useEffect(() => {
@@ -64,22 +64,26 @@ function App() {
     return <div>Loading game status...</div>;
   }
 
-  switch (gameStatus.Status) {
-    case 'waiting':
-      return <div>Waiting for an opponent to join...</div>;
-    case 'in_progress':
-      return <div>Opponent found! Waiting for their move...</div>;
-    case 'completed':
-      return (
+  return (
+    <div className="App">
+      <h1>Welcome {username}! Please select your choice:</h1>
+      <div className="choices">
+        {choices.map(choice => (
+          <button key={choice} onClick={() => handleChoice(choice)}>
+            {choice}
+          </button>
+        ))}
+      </div>
+      {userChoice && <p>You chose: {userChoice}</p>}
+      {gameStatus.Status === 'completed' && (
         <div>
           <p>Your Choice: {gameStatus.Player1Choice}</p>
           <p>Opponent's Choice: {gameStatus.Player2Choice}</p>
           <h3>{gameStatus.Result}</h3>
         </div>
-      );
-    default:
-      return <div>Unknown game status.</div>;
-  }
+      )}
+    </div>
+  );
 }
 
 export default App;
