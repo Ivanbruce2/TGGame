@@ -100,13 +100,21 @@ function App() {
 
     const pollGameStatus = async () => {
       console.log("Polling game status for game ID:", gameId);
-      const response = await fetch(`https://aa53-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`);
-      if (response.ok) {
+      try {
+        const response = await fetch(`https://aa53-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`);
+        const contentType = response.headers.get("Content-Type");
+        console.log("Content-Type:", contentType);  // Check content type of response
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const gameData = await response.json();
         console.log("Received game status:", gameData);
         setGameStatus(gameData);
+      } catch (error) {
+        console.error("Error fetching game status:", error);
       }
     };
+    
 
     pollingRef.current = setInterval(pollGameStatus, POLLING_INTERVAL);
 
