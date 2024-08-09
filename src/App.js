@@ -17,41 +17,32 @@ function App() {
     const chatId = urlParams.get('chat_id');
 
     setUsername(usernameFromParams);
+
     const createGame = async () => {
-      try {
-        const response = await fetch('https://aa53-119-74-213-151.ngrok-free.app/webhook', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: new URLSearchParams({
-            username: usernameFromParams,
-            chat_id: chatId,
-          }),
-        });
-    
-        if (response.status === 409) {
-          const errorMessage = await response.json();
-          console.log("Message from server:", errorMessage.message);
-          setGameId(null);  // Do not proceed with game creation
-          setGameStatus({ Status: "waiting" });  // Show waiting status
-          return;
+        try {
+            const response = await fetch('https://aa53-119-74-213-151.ngrok-free.app/webhook', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    username: usernameFromParams,
+                    chat_id: chatId,
+                }),
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error("HTTP error! status:", response.status, "response:", errorText);
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            setGameId(data.game_id);  // Store the game ID for polling
+        } catch (error) {
+            console.error("Error creating game:", error);
         }
-    
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error("HTTP error! status:", response.status, "response:", errorText);
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-    
-        const gameId = await response.text();  // Parse the plain text response
-        console.log("Received game ID:", gameId);
-        setGameId(gameId);  // Store the game ID for polling
-      } catch (error) {
-        console.error("Error creating game:", error);
-      }
     };
-    
 
     if (usernameFromParams) {
         createGame();
