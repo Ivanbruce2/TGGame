@@ -78,40 +78,38 @@ function App() {
   const handleChoice = async (choice) => {
     const chatId = new URLSearchParams(window.location.search).get('chat_id');
     const username = new URLSearchParams(window.location.search).get('username');
+    
+    if (!choice) {
+        console.error("Choice is empty");
+        return;
+    }
+
+    console.log("Sending data - Username:", username, "Choice:", choice, "Chat ID:", chatId);
+
     setUserChoice(choice);
   
     try {
-      const response = await fetch('https://aa53-119-74-213-151.ngrok-free.app/webhook', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          username: username,
-          choice: choice,
-          chat_id: chatId,
-        }),
-      });
-  
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("HTTP error! status:", response.status, "response:", errorText);
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-  
-      const data = await response.json();  // Parse the JSON response
-  
-      if (data.game_id) {
-        console.log("Received game ID:", data.game_id);
-        setGameId(data.game_id);  // Store the game ID for polling
-      } else {
-        console.error("Unexpected response:", data);  // Handle unexpected responses
-      }
-  
+        const response = await fetch('https://your-ngrok-url/webhook', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                username: username,
+                choice: choice,
+                chat_id: chatId,
+            }),
+        });
+
+        const gameId = await response.json();
+        console.log("Received game ID:", gameId);
+        setGameId(gameId);
     } catch (error) {
-      console.error("Error creating game:", error);
+        console.error("Error sending choice:", error);
     }
-  };
+};
+
+  
   
 
   // Render based on gameStatus
