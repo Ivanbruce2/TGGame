@@ -35,16 +35,22 @@ function App() {
   const handleChoice = async (choice) => {
     const chatId = new URLSearchParams(window.location.search).get('chat_id');
     const username = new URLSearchParams(window.location.search).get('username');
+    
     setUserChoice(choice);
+    
+    // Generate computer's choice
     const computerChoice = choices[Math.floor(Math.random() * choices.length)];
     setComputerChoice(computerChoice);
+    
+    // Determine the result
     const result = getResult(choice, computerChoice);
     setResult(result);
   
     // Send result to Telegram Web App and your webhook
     window.Telegram.WebApp.sendData(`@${username} chose ${choice}. Computer chose ${computerChoice}. ${result}`);
   
-    const response = await fetch('https://aa53-119-74-213-151.ngrok-free.app/webhook', { // Use ngrok URL
+    // Send data including computerChoice to the webhook
+    const response = await fetch('https://randomstring.ngrok.io/webhook', { // Use ngrok URL
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -52,6 +58,7 @@ function App() {
       body: new URLSearchParams({
         username: username,
         choice: choice,
+        computer_choice: computerChoice, // Include the computer's choice
         chat_id: chatId,
         result: result,
       }),
@@ -60,6 +67,7 @@ function App() {
     const resultText = await response.text();
     console.log("Response from webhook:", resultText);
   };
+  
   
 
 
