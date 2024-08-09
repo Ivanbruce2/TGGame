@@ -20,7 +20,7 @@ function App() {
   const handleChoice = async (choice) => {
     const chatId = new URLSearchParams(window.location.search).get('chat_id');
     setUserChoice(choice);
-
+  
     const response = await fetch('https://aa53-119-74-213-151.ngrok-free.app/webhook', {
       method: 'POST',
       headers: {
@@ -32,11 +32,12 @@ function App() {
         chat_id: chatId,
       }),
     });
-
+  
     const gameId = await response.text();
+    console.log("Received game ID:", gameId); // Log the game ID
     setGameId(gameId);
   };
-
+  
   useEffect(() => {
     if (!gameId) return;
 
