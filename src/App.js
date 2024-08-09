@@ -32,34 +32,35 @@ function App() {
     }
   };
 
-const handleChoice = async (choice) => {
-  const chatId = new URLSearchParams(window.location.search).get('chat_id');
-  const username = new URLSearchParams(window.location.search).get('username');
-  setUserChoice(choice);
-  const computerChoice = choices[Math.floor(Math.random() * choices.length)];
-  setComputerChoice(computerChoice);
-  const result = getResult(choice, computerChoice);
-  setResult(result);
-
-  // Send result to Telegram Web App and your webhook
-  window.Telegram.WebApp.sendData(`@${username} chose ${choice}. Computer chose ${computerChoice}. ${result}`);
-
-  const response = await fetch('/webhook', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams({
-      username: username,
-      choice: choice,
-      chat_id: chatId,
-      result: result,
-    }),
-  });
-
-  const resultText = await response.text();
-  console.log("Response from webhook:", resultText);
-};
+  const handleChoice = async (choice) => {
+    const chatId = new URLSearchParams(window.location.search).get('chat_id');
+    const username = new URLSearchParams(window.location.search).get('username');
+    setUserChoice(choice);
+    const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+    setComputerChoice(computerChoice);
+    const result = getResult(choice, computerChoice);
+    setResult(result);
+  
+    // Send result to Telegram Web App and your webhook
+    window.Telegram.WebApp.sendData(`@${username} chose ${choice}. Computer chose ${computerChoice}. ${result}`);
+  
+    const response = await fetch('https://aa53-119-74-213-151.ngrok-free.app/webhook', { // Use ngrok URL
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        username: username,
+        choice: choice,
+        chat_id: chatId,
+        result: result,
+      }),
+    });
+  
+    const resultText = await response.text();
+    console.log("Response from webhook:", resultText);
+  };
+  
 
 
   return (
