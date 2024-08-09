@@ -49,7 +49,7 @@ function App() {
 
     // Define the polling function
     const pollGameStatus = async () => {
-      const response = await fetch(`https://your-backend-url/game_status?game_id=${gameId}`);
+      const response = await fetch(`https://aa53-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`);
       if (response.ok) {
         const gameData = await response.json();
         setGameStatus(gameData);
@@ -71,7 +71,7 @@ function App() {
     const chatId = new URLSearchParams(window.location.search).get('chat_id');
 
     // Send choice to backend
-    await fetch('https://your-backend-url/webhook', {
+    await fetch('https://aa53-119-74-213-151.ngrok-free.app/webhook', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
