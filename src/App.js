@@ -50,7 +50,7 @@ function App() {
     window.Telegram.WebApp.sendData(`@${username} chose ${choice}. Computer chose ${computerChoice}. ${result}`);
   
     // Send data including computerChoice to the webhook
-    const response = await fetch('https://randomstring.ngrok.io/webhook', { // Use ngrok URL
+    const response = await fetch('https://aa53-119-74-213-151.ngrok-free.app/webhook', { // Use ngrok URL
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
