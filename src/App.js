@@ -14,40 +14,43 @@ function App() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const usernameFromParams = urlParams.get('username');
-    setUsername(usernameFromParams);
-
     const chatId = urlParams.get('chat_id');
 
+    setUsername(usernameFromParams);
+
     const createGame = async () => {
-      try {
-        const response = await fetch('https://aa53-119-74-213-151.ngrok-free.app/webhook', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'User-Agent': 'MyCustomUserAgent',
-          },
-          body: new URLSearchParams({
-            username: usernameFromParams,
-            chat_id: chatId,
-          }),
-        });
+        try {
+            const response = await fetch('https://aa53-119-74-213-151.ngrok-free.app/webhook', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    username: usernameFromParams,
+                    chat_id: chatId,
+                }),
+            });
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error("HTTP error! status:", response.status, "response:", errorText);
-          throw new Error(`HTTP error! status: ${response.status}`);
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error("HTTP error! status:", response.status, "response:", errorText);
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            setGameId(data.game_id);  // Store the game ID for polling
+        } catch (error) {
+            console.error("Error creating game:", error);
         }
-
-        const gameData = await response.json();
-        console.log("Received game ID:", gameData.game_id);
-        setGameId(gameData.game_id);
-      } catch (error) {
-        console.error("Error creating game:", error);
-      }
     };
 
-    createGame();
-  }, []);
+    if (usernameFromParams) {
+        createGame();
+    } else {
+        console.error("Username is missing in the URL parameters");
+    }
+}, []);
+
 
   const handleChoice = async (choice) => {
     const chatId = new URLSearchParams(window.location.search).get('chat_id');
