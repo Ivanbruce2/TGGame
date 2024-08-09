@@ -100,7 +100,11 @@ function App() {
     const pollGameStatus = async () => {
       console.log("Polling game status for game ID:", gameId);
       try {
-        const response = await fetch(`https://aa53-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`);
+        const response = await fetch(`https://aa53-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
+          headers: {
+            'ngrok-skip-browser-warning': 'true'  // Add this header to skip ngrok's warning page
+          }
+        });
         const contentType = response.headers.get("Content-Type");
         console.log("Content-Type:", contentType);
     
