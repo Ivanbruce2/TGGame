@@ -1,42 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 
 const choices = ["Scissors", "Paper", "Stone"];
+const POLLING_INTERVAL = 3000; // Poll every 3 seconds
 
 function App() {
   const [username, setUsername] = useState('');
   const [userChoice, setUserChoice] = useState('');
-  const [computerChoice, setComputerChoice] = useState('');
-  const [result, setResult] = useState('');
+  const [gameId, setGameId] = useState(null);
+  const [gameStatus, setGameStatus] = useState(null);
+  const pollingRef = useRef(null);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const usernameFromParams = urlParams.get('username');
-    console.log("Username from URL params:", usernameFromParams); // Log the username to verify
     setUsername(usernameFromParams);
   }, []);
 
-  const getResult = (userChoice, computerChoice) => {
-    if (userChoice === computerChoice) {
-      return "It's a draw!";
-    }
-    switch (userChoice) {
-      case "Scissors":
-        return (computerChoice === "Paper") ? "You win!" : "You lose!";
-      case "Paper":
-        return (computerChoice === "Stone") ? "You win!" : "You lose!";
-      case "Stone":
-        return (computerChoice === "Scissors") ? "You win!" : "You lose!";
-      default:
-        return "Invalid choice!";
-    }
-  };
-
   const handleChoice = async (choice) => {
     const chatId = new URLSearchParams(window.location.search).get('chat_id');
-    const username = new URLSearchParams(window.location.search).get('username');
     setUserChoice(choice);
-    
+
     const response = await fetch('https://aa53-119-74-213-151.ngrok-free.app/webhook', {
       method: 'POST',
       headers: {
@@ -48,34 +32,53 @@ function App() {
         chat_id: chatId,
       }),
     });
-  
-    const resultText = await response.text();
-    console.log("Response from webhook:", resultText);
-    setResult(resultText);
+
+    const gameId = await response.text();
+    setGameId(gameId);
   };
-  
 
- 
-  
+  useEffect(() => {
+    if (!gameId) return;
 
+    // Define the polling function
+    const pollGameStatus = async () => {
+      const response = await fetch(`https://aa53-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`);
+      if (response.ok) {
+        const gameData = await response.json();
+        setGameStatus(gameData);
+      }
+    };
 
-  return (
-    <div className="App">
-      <h1>Welcome {username}!</h1>
-      <h2>Let's play Scissors, Paper, Stone</h2>
-      <div className="choices">
-        {choices.map(choice => (
-          <button key={choice} className="choice-button" onClick={() => handleChoice(choice)}>
-            {choice}
-          </button>
-        ))}
-      </div>
-      {userChoice && <p>You chose: {userChoice}</p>}
-      {computerChoice && <p>Computer chose: {computerChoice}</p>}
-      {result && <p className="result">{result}</p>}
-      {result && <button className="try-again-button" onClick={() => { setUserChoice(''); setComputerChoice(''); setResult(''); }}>Try Again</button>}
-    </div>
-  );
+    // Start polling
+    pollingRef.current = setInterval(pollGameStatus, POLLING_INTERVAL);
+
+    // Clean up on component unmount
+    return () => {
+      clearInterval(pollingRef.current);
+    };
+  }, [gameId]);
+
+  // Render based on gameStatus
+  if (!gameStatus) {
+    return <div>Loading game status...</div>;
+  }
+
+  switch (gameStatus.Status) {
+    case 'waiting':
+      return <div>Waiting for an opponent to join...</div>;
+    case 'in_progress':
+      return <div>Opponent found! Waiting for their move...</div>;
+    case 'completed':
+      return (
+        <div>
+          <p>Your Choice: {gameStatus.Player1Choice}</p>
+          <p>Opponent's Choice: {gameStatus.Player2Choice}</p>
+          <h3>{gameStatus.Result}</h3>
+        </div>
+      );
+    default:
+      return <div>Unknown game status.</div>;
+  }
 }
 
 export default App;
