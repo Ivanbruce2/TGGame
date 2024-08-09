@@ -24,6 +24,7 @@ function App() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
+            'Ngrok-Skip-Browser-Warning': 'true',
             'User-Agent': 'MyCustomUserAgent',  // Set a custom User-Agent string
           },
           body: new URLSearchParams({
