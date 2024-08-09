@@ -14,12 +14,10 @@ function App() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const usernameFromParams = urlParams.get('username');
+    const chatId = urlParams.get('chat_id');
     setUsername(usernameFromParams);
 
-    const chatId = urlParams.get('chat_id');
-    
     // Trigger game creation immediately when the page loads
-
     const createGame = async () => {
       try {
         const response = await fetch('https://aa53-119-74-213-151.ngrok-free.app/webhook', {
@@ -33,23 +31,21 @@ function App() {
             chat_id: chatId,
           }),
         });
-    
+
         if (!response.ok) {
           const errorText = await response.text();
           console.error("HTTP error! status:", response.status, "response:", errorText);
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-    
-        const gameId = await response.text();  // Parse the plain text response
+
+        const data = await response.json();  // Parse the JSON response
+        const gameId = data.game_id;
         console.log("Received game ID:", gameId);
         setGameId(gameId);  // Store the game ID for polling
       } catch (error) {
         console.error("Error creating game:", error);
       }
     };
-    
-    
-
 
     createGame();
   }, []);
@@ -63,6 +59,8 @@ function App() {
       if (response.ok) {
         const gameData = await response.json();
         setGameStatus(gameData);
+      } else {
+        console.error("Failed to fetch game status.");
       }
     };
 
@@ -76,10 +74,8 @@ function App() {
   }, [gameId]);
 
   const handleChoice = async (choice) => {
-    const chatId = new URLSearchParams(window.location.search).get('chat_id');
-    const username = new URLSearchParams(window.location.search).get('username');
     setUserChoice(choice);
-  
+
     const response = await fetch('https://aa53-119-74-213-151.ngrok-free.app/webhook', {
       method: 'POST',
       headers: {
@@ -88,15 +84,21 @@ function App() {
       body: new URLSearchParams({
         username: username,  // Ensure this is correctly passed
         choice: choice,
-        chat_id: chatId,
+        chat_id: new URLSearchParams(window.location.search).get('chat_id'),
       }),
     });
-  
-    const gameId = await response.text();  // Parse the plain text response
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("HTTP error! status:", response.status, "response:", errorText);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();  // Parse the JSON response
+    const gameId = data.game_id;
     console.log("Received game ID:", gameId);
     setGameId(gameId);  // Store the game ID for polling
   };
-  
 
   // Render based on gameStatus
   if (!gameStatus) {
