@@ -16,10 +16,20 @@ function App() {
     const usernameFromParams = urlParams.get('username');
     const chatId = urlParams.get('chat_id');
 
+    console.log("URL Parameters:", {
+      username: usernameFromParams,
+      chat_id: chatId,
+    });
+
     setUsername(usernameFromParams);
 
     const createGame = async () => {
         try {
+            console.log("Attempting to create a game with:", {
+              username: usernameFromParams,
+              chat_id: chatId,
+            });
+
             const response = await fetch('https://aa53-119-74-213-151.ngrok-free.app/webhook', {
                 method: 'POST',
                 headers: {
@@ -38,6 +48,7 @@ function App() {
             }
 
             const data = await response.json();
+            console.log("Game created successfully. Game ID:", data.game_id);
             setGameId(data.game_id);  // Store the game ID for polling
         } catch (error) {
             console.error("Error creating game:", error);
@@ -57,6 +68,12 @@ function App() {
     const username = new URLSearchParams(window.location.search).get('username');
     setUserChoice(choice);
 
+    console.log("User choice:", {
+      username: username,
+      choice: choice,
+      chat_id: chatId,
+    });
+
     try {
       const response = await fetch('https://aa53-119-74-213-151.ngrok-free.app/webhook', {
         method: 'POST',
@@ -71,7 +88,7 @@ function App() {
       });
 
       const gameId = await response.json();  // Parse the JSON response
-      console.log("Received game ID:", gameId);
+      console.log("Received game ID after choice submission:", gameId);
       setGameId(gameId);  // Store the game ID for polling
     } catch (error) {
       console.error("Error sending choice:", error);
@@ -82,9 +99,11 @@ function App() {
     if (!gameId) return;
 
     const pollGameStatus = async () => {
+      console.log("Polling game status for game ID:", gameId);
       const response = await fetch(`https://aa53-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`);
       if (response.ok) {
         const gameData = await response.json();
+        console.log("Received game status:", gameData);
         setGameStatus(gameData);
       }
     };
