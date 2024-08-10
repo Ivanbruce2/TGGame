@@ -96,6 +96,7 @@ function App() {
         clearInterval(pollingRef.current); // Stop polling for opponent once joined
         setGameStatus({ ...gameStatus, player1: room.player1, player2: room.player2, status: 'in_progress' });
         console.log(`Player 1: ${room.player1}, Player 2: ${room.player2}`); // Log Player 1 and Player 2
+        startPollingChoices(room.room_id); // Start polling choices after both players have joined
       }
     };
     pollingRef.current = setInterval(pollOpponentStatus, 3000);
@@ -113,6 +114,7 @@ function App() {
       const data = await response.json();
       setGameStatus(data);
 
+      // Update readiness status in real-time
       let player1Status = data.player1 === username ? 'You' : data.player1;
       let player2Status = data.player2 === username ? 'You' : data.player2;
 
@@ -149,7 +151,10 @@ function App() {
             )}
             {gameStatus.status === 'completed' && (
               <h3>
-                {gameStatus.result.replace(gameStatus.player1, gameStatus.player1 === username ? 'You' : gameStatus.player1).replace(gameStatus.player2, gameStatus.player2 === username ? 'You' : gameStatus.player2)}
+                {gameStatus.result
+                  .replace(gameStatus.player1, gameStatus.player1 === username ? 'You' : gameStatus.player1)
+                  .replace(gameStatus.player2, gameStatus.player2 === username ? 'You' : gameStatus.player2)
+                  .replace("wins!", gameStatus.player1 === username ? (gameStatus.result.includes("wins!") ? "win!" : "lose!") : (gameStatus.result.includes("wins!") ? "win!" : "lose!"))}
               </h3>
             )}
           </>
