@@ -136,8 +136,10 @@ function App() {
         {gameStatus ? (
           <>
             <h2>{gameStatus.player1} vs {gameStatus.player2 || 'Waiting for opponent'}</h2>
-            <p>{gameStatus.player1}: {gameStatus.player1_choice || 'Waiting for choice'}</p>
-            {gameStatus.player2 && <p>{gameStatus.player2}: {gameStatus.player2_choice || 'Waiting for choice'}</p>}
+            <p>
+              {gameStatus.player1}: {gameStatus.player1_choice ? 'Ready' : 'Not ready'} | 
+              {gameStatus.player2}: {gameStatus.player2_choice ? 'Ready' : 'Not ready'}
+            </p>
             <p>{opponentChoiceStatus}</p>
             {gameStatus.status !== 'completed' && (
               <div className="choices">
