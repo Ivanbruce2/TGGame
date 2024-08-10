@@ -1,24 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 .App {
   text-align: center;
   font-family: 'Press Start 2P', cursive;
-  background: radial-gradient(circle, #ff9966, #ff5e62);
+  background: linear-gradient(145deg, #ff9966, #ff5e62);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   color: #fff;
+  padding: 20px;
 }
 
 h1 {
-  font-size: 2.5em;
-  margin-bottom: 20px;
-  animation: flicker 1.5s infinite alternate;
+  font-size: 1.8em;
+  margin-bottom: 10px;
+  color: #ffd700;
 }
 
 p {
   font-size: 1.2em;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  color: #ffd700;
 }
 
 .choices {
@@ -29,38 +33,45 @@ p {
 
 button {
   background-color: #222;
-  border: 2px solid #fff;
+  border: 2px solid #ffd700;
   color: white;
-  padding: 15px 32px;
+  padding: 10px 20px;
   text-align: center;
-  font-size: 1.5em;
-  margin: 15px 0;
-  border-radius: 12px;
+  font-size: 1.2em;
+  margin: 10px 0;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  width: 80%; /* Make buttons full width */
 }
 
 button:hover {
-  background-color: #555;
+  background-color: #444;
   transform: scale(1.05);
   box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 h3 {
-  margin-top: 20px;
-  font-size: 1.8em;
+  margin-top: 15px;
+  font-size: 1.5em;
   color: #FFD700;
 }
 
-@keyframes flicker {
-  0% {
-    opacity: 1;
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.5em;
   }
-  50% {
-    opacity: 0.5;
+
+  p {
+    font-size: 1em;
   }
-  100% {
-    opacity: 1;
+
+  button {
+    font-size: 1em;
+  }
+
+  h3 {
+    font-size: 1.2em;
   }
 }
