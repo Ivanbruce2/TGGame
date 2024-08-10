@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 
 function App() {
@@ -8,7 +8,8 @@ function App() {
   const [gameStatus, setGameStatus] = useState(null);
   const [userChoice, setUserChoice] = useState('');
   const [opponentChoiceStatus, setOpponentChoiceStatus] = useState('');
-  const [opponentJoined, setOpponentJoined] = useState(false); // Track if opponent has joined
+  const [opponentJoined, setOpponentJoined] = useState(false);
+  const pollingRef = useRef(null);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -20,7 +21,7 @@ function App() {
   const fetchRooms = async () => {
     const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
       headers: {
-        'ngrok-skip-browser-warning': 'true'  // Add this header to skip ngrok's warning page
+        'ngrok-skip-browser-warning': 'true'
       }
     });
     const data = await response.json();
@@ -83,46 +84,33 @@ function App() {
 
   // First poll: Check for opponent presence
   const startPollingOpponent = (roomId) => {
-    const pollOpponentStatus = async () => {
+    const pollRoomStatus = async () => {
+      console.log("Polling room status...");
       const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
         headers: {
-          'ngrok-skip-browser-warning': 'true'
-        }
+          'ngrok-skip-browser-warning': 'true',
+        },
       });
+    
       const data = await response.json();
-      const room = data[roomId];
-      if (room && room.player2) {
-        setOpponentJoined(true);
-        console.log(`${room.player2} has joined the room.`);
-        setOpponentChoiceStatus(`${room.player2} has joined. Waiting for them to make a choice.`);
-        clearInterval(opponentPollingInterval); // Stop polling for opponent once joined
+      const room = data[selectedRoom];
+    
+      if (room) {
+        console.log(`Room data: `, room);
+        // Update the opponent status based on player2's presence
+        if (room.player2) {
+          setOpponentJoined(true);
+          setOpponentChoiceStatus(`${room.player2} has joined the room.`);
+          console.log(`${room.player2} has joined the room.`);
+        } else {
+          setOpponentChoiceStatus('Waiting for an opponent to join...');
+        }
       }
     };
     
-    const opponentPollingInterval = setInterval(pollOpponentStatus, 3000);
+    
+    pollingRef.current = setInterval(pollOpponentStatus, 3000);
   };
-
-  useEffect(() => {
-    const pollRoomStatus = async () => {
-        const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
-            headers: {
-                'ngrok-skip-browser-warning': 'true'
-            }
-        });
-        const data = await response.json();
-        const room = data[selectedRoom];
-        if (room && room.player2) {
-            setOpponentStatus(`${room.player2} has joined the room.`);
-            clearInterval(pollingRef.current); // Stop polling once opponent joins
-        } else {
-            setOpponentStatus('Waiting for an opponent to join...');
-        }
-        console.log('Room status:', room);
-    };
-    pollingRef.current = setInterval(pollRoomStatus, 3000);
-    return () => clearInterval(pollingRef.current); // Clean up interval on unmount
-}, [selectedRoom]);
-
 
   // Second poll: Check for choices once opponent has joined
   const startPollingChoices = (gameId) => {
