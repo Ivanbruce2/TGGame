@@ -102,28 +102,36 @@ function App() {
   };
 
   // Second poll: Check for choices once opponent has joined
-  const startPollingChoices = (gameId) => {
-    const pollGameStatus = async () => {
-      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
-        headers: {
-          'ngrok-skip-browser-warning': 'true'
-        }
-      });
-
-      const data = await response.json();
-      setGameStatus(data);
-
-      if (data.player2_choice) {
-        setOpponentChoiceStatus(`${data.player2} has provided their choice.`);
-        console.log(`${data.player2} has made their move:`, data.player2_choice);
-      } else {
-        setOpponentChoiceStatus(`Waiting for ${data.player2 || 'opponent'} to provide their choice.`);
+// Second poll: Check for choices once opponent has joined
+const startPollingChoices = (gameId) => {
+  const pollGameStatus = async () => {
+    const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true'
       }
+    });
 
-      console.log('Game status updated:', data);
-    };
-    pollingRef.current = setInterval(pollGameStatus, 3000);
+    const data = await response.json();
+    setGameStatus(data);
+
+    if (data.status === 'completed') {
+      clearInterval(pollingRef.current); // Stop polling when the game is completed
+      console.log('Game completed:', data.result);
+    }
+
+    if (data.player2_choice) {
+      setOpponentChoiceStatus(`${data.player2} has provided their choice.`);
+      console.log(`${data.player2} has made their move:`, data.player2_choice);
+    } else {
+      setOpponentChoiceStatus(`Waiting for ${data.player2 || 'opponent'} to provide their choice.`);
+    }
+
+    console.log('Game status updated:', data);
   };
+
+  pollingRef.current = setInterval(pollGameStatus, 3000);
+};
+
 
   useEffect(() => {
     return () => clearInterval(pollingRef.current); // Cleanup on component unmount
