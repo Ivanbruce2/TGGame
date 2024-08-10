@@ -66,8 +66,8 @@ function App() {
   const handleChoice = async (choice) => {
     setUserChoice(choice);
     console.log(`${username} selected:`, choice);
-
-    // Update gameStatus to reflect that the current user has made their choice
+    
+    // Update gameStatus immediately to reflect that the current user has made their choice
     setGameStatus(prevStatus => ({
         ...prevStatus,
         [`${username === prevStatus.player1 ? 'player1_choice' : 'player2_choice'}`]: 'made_choice'
