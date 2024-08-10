@@ -139,6 +139,15 @@ function App() {
             <p>{gameStatus.player1}: {gameStatus.player1_choice || 'Waiting for choice'}</p>
             {gameStatus.player2 && <p>{gameStatus.player2}: {gameStatus.player2_choice || 'Waiting for choice'}</p>}
             <p>{opponentChoiceStatus}</p>
+            {gameStatus.status !== 'completed' && (
+              <div className="choices">
+                {["Scissors", "Paper", "Stone"].map(choice => (
+                  <button key={choice} onClick={() => handleChoice(choice)} disabled={!!userChoice}>
+                    {choice}
+                  </button>
+                ))}
+              </div>
+            )}
             {gameStatus.status === 'completed' && <h3>{gameStatus.result}</h3>}
           </>
         ) : (
