@@ -137,7 +137,8 @@ function App() {
           <>
             <h2>{gameStatus.player1} vs {gameStatus.player2 || 'Waiting for opponent'}</h2>
             <p>{gameStatus.player1}: {gameStatus.player1_choice || 'Waiting for choice'}</p>
-            {gameStatus.player2 && <p>{gameStatus.player2}: {gameStatus.player2_choice || 'Waiting for choice'}</p>}
+            {gameStatus.player2 && <p>{gameStatus.player2}:
+            {gameStatus.player2_choice || 'Waiting for choice'}</p>}
             <p>{opponentChoiceStatus}</p>
             {gameStatus.status === 'completed' && <h3>{gameStatus.result}</h3>}
           </>
@@ -151,7 +152,7 @@ function App() {
                 </button>
               ))}
             </div>
-            {userChoice && !gameStatus?.player2 && <p>Waiting for opponent to join...</p>}
+            {userChoice && !gameStatus?.player2 && <p>{opponentChoiceStatus || 'Waiting for opponent to join...'}</p>}
           </>
         )}
       </div>
