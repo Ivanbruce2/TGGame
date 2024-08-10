@@ -102,27 +102,7 @@ function App() {
     const opponentPollingInterval = setInterval(pollOpponentStatus, 3000);
   };
 
-  useEffect(() => {
-    
-    const pollRoomStatus = async () => {
-        const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
-            headers: {
-                'ngrok-skip-browser-warning': 'true'
-            }
-        });
-        const data = await response.json();
-        const room = data[selectedRoom];
-        if (room && room.player2) {
-            setOpponentStatus(`${room.player2} has joined the room.`);
-            clearInterval(pollingRef.current); // Stop polling once opponent joins
-        } else {
-            setOpponentStatus('Waiting for an opponent to join...');
-        }
-        console.log('Room status:', room);
-    };
-    pollingRef.current = setInterval(pollRoomStatus, 3000);
-    return () => clearInterval(pollingRef.current); // Clean up interval on unmount
-}, [selectedRoom]);
+
 
 
   // Second poll: Check for choices once opponent has joined
