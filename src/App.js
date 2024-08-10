@@ -94,7 +94,7 @@ function App() {
       const room = data[roomId];
       if (room && room.player2) {
         clearInterval(pollingRef.current); // Stop polling for opponent once joined
-        setGameStatus({ ...gameStatus, player2: room.player2 });
+        setGameStatus({ ...gameStatus, player2: room.player2, status: 'in_progress' });
         console.log(`${room.player2} has joined the room.`);
       }
     };
@@ -136,8 +136,8 @@ function App() {
         {gameStatus ? (
           <>
             <h2>{gameStatus.player1} vs {gameStatus.player2 || 'Waiting for opponent'}</h2>
-            <p>{gameStatus.player1}: {gameStatus.player1_choice}</p>
-            {gameStatus.player2 && <p>{gameStatus.player2}: {gameStatus.player2_choice}</p>}
+            <p>{gameStatus.player1}: {gameStatus.player1_choice || 'Waiting for choice'}</p>
+            {gameStatus.player2 && <p>{gameStatus.player2}: {gameStatus.player2_choice || 'Waiting for choice'}</p>}
             <p>{opponentChoiceStatus}</p>
             {gameStatus.status === 'completed' && <h3>{gameStatus.result}</h3>}
           </>
