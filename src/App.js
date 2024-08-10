@@ -82,7 +82,6 @@ function App() {
     startPollingChoices(data.game_id);
   };
 
-  // First poll: Check for opponent presence
   const startPollingOpponent = (roomId) => {
     const pollOpponentStatus = async () => {
       const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
@@ -93,15 +92,14 @@ function App() {
       const data = await response.json();
       const room = data[roomId];
       if (room && room.player2) {
-        clearInterval(pollingRef.current); // Stop polling for opponent once joined
+        clearInterval(pollingRef.current); 
         setGameStatus({ ...gameStatus, player1: room.player1, player2: room.player2, status: 'in_progress' });
-        console.log(`Player 1: ${room.player1}, Player 2: ${room.player2}`); // Log Player 1 and Player 2
+        console.log(`Player 1: ${room.player1}, Player 2: ${room.player2}`);
       }
     };
     pollingRef.current = setInterval(pollOpponentStatus, 3000);
   };
 
-  // Second poll: Check for choices once opponent has joined
   const startPollingChoices = (gameId) => {
     const pollGameStatus = async () => {
       const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
@@ -114,10 +112,10 @@ function App() {
       setGameStatus(data);
 
       if (data.player2_choice) {
-        setOpponentChoiceStatus(`${data.player2} has provided their choice.`);
+        setOpponentChoiceStatus(`${data.player2} has made their move.`);
         console.log(`${data.player2} has made their move:`, data.player2_choice);
       } else {
-        setOpponentChoiceStatus(`Waiting for ${data.player2 || 'opponent'} to provide their choice.`);
+        setOpponentChoiceStatus(`Waiting for ${data.player2 || 'opponent'} to make their move.`);
       }
 
       console.log('Game status updated:', data);
@@ -126,8 +124,25 @@ function App() {
   };
 
   useEffect(() => {
-    return () => clearInterval(pollingRef.current); // Cleanup on component unmount
+    return () => clearInterval(pollingRef.current);
   }, []);
+
+  const renderResult = () => {
+    const isPlayer1 = gameStatus.player1 === username;
+    const yourChoice = isPlayer1 ? gameStatus.player1_choice : gameStatus.player2_choice;
+    const opponentChoice = isPlayer1 ? gameStatus.player2_choice : gameStatus.player1_choice;
+    const resultMessage = isPlayer1
+      ? gameStatus.result.replace(gameStatus.player1, "You").replace(gameStatus.player2, "Opponent")
+      : gameStatus.result.replace(gameStatus.player2, "You").replace(gameStatus.player1, "Opponent");
+
+    return (
+      <div className="result">
+        <h3>{resultMessage}</h3>
+        <p>Your choice: {yourChoice}</p>
+        <p>Opponent's choice: {opponentChoice}</p>
+      </div>
+    );
+  };
 
   if (selectedRoom) {
     return (
@@ -135,33 +150,24 @@ function App() {
         <h1>Room: {selectedRoom}</h1>
         {gameStatus ? (
           <>
-            <h2>{gameStatus.player1} vs {gameStatus.player2 || 'Waiting for opponent'}</h2>
-            <p>{gameStatus.player1}: {gameStatus.player1_choice || 'Waiting for choice'}</p>
-            {gameStatus.player2 && <p>{gameStatus.player2}: {gameStatus.player2_choice || 'Waiting for choice'}</p>}
-            <p>{opponentChoiceStatus}</p>
-            {gameStatus.status !== 'completed' && (
-              <div className="choices">
-                {["Scissors", "Paper", "Stone"].map(choice => (
-                  <button key={choice} onClick={() => handleChoice(choice)} disabled={!!userChoice}>
-                    {choice}
-                  </button>
-                ))}
-              </div>
+            <h2>{gameStatus.player1 === username ? "You" : gameStatus.player1} vs {gameStatus.player2 === username ? "You" : gameStatus.player2}</h2>
+            {gameStatus.status === 'completed' ? (
+              renderResult()
+            ) : (
+              <>
+                <div className="choices">
+                  {["Scissors", "Paper", "Stone"].map(choice => (
+                    <button key={choice} onClick={() => handleChoice(choice)} disabled={!!userChoice}>
+                      {choice}
+                    </button>
+                  ))}
+                </div>
+                <p>{opponentChoiceStatus}</p>
+              </>
             )}
-            {gameStatus.status === 'completed' && <h3>{gameStatus.result}</h3>}
           </>
         ) : (
-          <>
-            <p>Select your choice below:</p>
-            <div className="choices">
-              {["Scissors", "Paper", "Stone"].map(choice => (
-                <button key={choice} onClick={() => handleChoice(choice)}>
-                  {choice}
-                </button>
-              ))}
-            </div>
-            {userChoice && !gameStatus?.player2 && <p>{opponentChoiceStatus || 'Waiting for opponent to join...'}</p>}
-          </>
+          <p>Waiting for opponent...</p>
         )}
       </div>
     );
@@ -171,20 +177,15 @@ function App() {
     <div className="App">
       <h1>Welcome, {username}</h1>
       <button onClick={createRoom}>Create Room</button>
-      <h2>Available Rooms:</h2>
       <div className="room-list">
-        {Object.values(rooms).map((room) => (
-          <div key={room.room_id} className="room-card">
+        {rooms.map((room) => (
+          <div className="room-card" key={room.room_id}>
             <div className="room-details">
               <p>Game ID: {room.room_id}</p>
-              <p>{room.player1} vs {room.player2 || 'Waiting for opponent'}</p>
+              <p>{room.player1} vs {room.player2 || "Waiting for opponent"}</p>
               <p>Status: {room.status}</p>
             </div>
-            <button
-              className="join-button"
-              onClick={() => joinRoom(room.room_id)}
-              disabled={room.status !== 'waiting'}
-            >
+            <button className="join-button" onClick={() => joinRoom(room.room_id)} disabled={room.status !== 'waiting'}>
               Join Room
             </button>
           </div>
