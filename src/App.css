@@ -11,7 +11,7 @@ body, html {
 
 .App {
   text-align: center;
-  font-family: 'VT323', monospace; /* Updated font */
+  font-family: 'VT323', monospace; 
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -25,7 +25,7 @@ h1 {
   font-size: 2.5em;
   margin-bottom: 20px;
   color: #ffd700;
-  text-shadow: 2px 2px 4px #000; /* Add a shadow to make the text pop */
+  text-shadow: 2px 2px 4px #000; 
 }
 
 p {
@@ -42,7 +42,7 @@ p {
 }
 
 button {
-  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); /* Multicolor gradient */
+  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); 
   border: none;
   color: white;
   padding: 15px 20px;
@@ -53,17 +53,17 @@ button {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-  width: 90%; /* Increased button width */
-  max-width: 400px; /* Optional max-width for larger screens */
+  width: 90%; 
+  max-width: 400px; 
   display: flex;
   justify-content: center;
   align-items: center;
-  background-size: 200% 200%; /* For animation */
-  animation: gradientShift 2s infinite; /* Animation for background */
+  background-size: 200% 200%; 
+  animation: gradientShift 2s infinite;
   position: relative;
   z-index: 0;
   overflow: hidden;
-  font-family: 'Press Start 2P', cursive; /* Changed font */
+  font-family: 'Press Start 2P', cursive; 
 }
 
 button:before {
@@ -89,25 +89,28 @@ button:active {
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
+h3 {
+  margin-top: 20px;
+  font-size: 1.8em;
+  color: #FFD700;
+  text-shadow: 2px 2px 4px #000;
+}
+
 .room-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  width: 100%;
+  max-width: 800px;
+  margin-top: 20px;
 }
 
 .room-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #1f3b73;
+  background-color: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
-  padding: 20px;
-  color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.room-details {
-  flex-grow: 1;
+  padding: 15px;
+  margin-bottom: 10px;
+  text-align: left;
 }
 
 .room-details p {
@@ -115,24 +118,22 @@ button:active {
 }
 
 .join-button {
-  background-color: #007bff;
-  color: white;
+  background-color: #4CAF50;
   border: none;
+  color: white;
   padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
 }
 
-.join-button:hover {
-  background-color: #0056b3;
-}
-
-h3 {
-  margin-top: 20px;
-  font-size: 1.8em;
-  color: #FFD700;
-  text-shadow: 2px 2px 4px #000;
+.join-button:disabled {
+  background-color: #888888;
+  cursor: not-allowed;
 }
 
 @media (max-width: 480px) {
@@ -151,6 +152,16 @@ h3 {
 
   h3 {
     font-size: 1.5em;
+  }
+
+  .room-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .join-button {
+    margin-top: 10px;
+    width: 100%;
   }
 }
 

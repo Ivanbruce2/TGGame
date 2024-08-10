@@ -172,30 +172,24 @@ function App() {
       <h1>Welcome, {username}</h1>
       <button onClick={createRoom}>Create Room</button>
       <h2>Available Rooms:</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Room ID</th>
-            <th>Player 1</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.values(rooms).map((room) => (
-            <tr key={room.room_id}>
-              <td>{room.room_id}</td>
-              <td>{room.player1}</td>
-              <td>{room.status}</td>
-              <td>
-                {room.status === 'waiting' && (
-                  <button onClick={() => joinRoom(room.room_id)}>Join Room</button>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="room-list">
+        {Object.values(rooms).map((room) => (
+          <div key={room.room_id} className="room-card">
+            <div className="room-details">
+              <p>Game ID: {room.room_id}</p>
+              <p>{room.player1} vs {room.player2 || 'Waiting for opponent'}</p>
+              <p>Status: {room.status}</p>
+            </div>
+            <button
+              className="join-button"
+              onClick={() => joinRoom(room.room_id)}
+              disabled={room.status !== 'waiting'}
+            >
+              Join Room
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
