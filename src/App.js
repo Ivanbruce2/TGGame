@@ -84,31 +84,28 @@ function App() {
 
   // First poll: Check for opponent presence
   const startPollingOpponent = (roomId) => {
-    const pollRoomStatus = async () => {
-      console.log("Polling room status...");
-      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
-        headers: {
-          'ngrok-skip-browser-warning': 'true',
-        },
-      });
-    
-      const data = await response.json();
-      const room = data[selectedRoom];
-    
-      if (room) {
-        console.log(`Room data: `, room);
-        // Update the opponent status based on player2's presence
-        if (room.player2) {
+    console.log("Starting to poll for opponent status...");
+    const pollOpponentStatus = async () => {
+      try {
+        const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
+          headers: {
+            'ngrok-skip-browser-warning': 'true'
+          }
+        });
+        const data = await response.json();
+        const room = data[roomId];
+        console.log(`Polling room status:`, room);
+        if (room && room.player2) {
           setOpponentJoined(true);
-          setOpponentChoiceStatus(`${room.player2} has joined the room.`);
           console.log(`${room.player2} has joined the room.`);
-        } else {
-          setOpponentChoiceStatus('Waiting for an opponent to join...');
+          setOpponentChoiceStatus(`${room.player2} has joined. Waiting for them to make a choice.`);
+          clearInterval(pollingRef.current); // Stop polling for opponent once joined
         }
+      } catch (error) {
+        console.error('Error polling opponent status:', error);
       }
     };
-    
-    
+
     pollingRef.current = setInterval(pollOpponentStatus, 3000);
   };
 
