@@ -60,7 +60,7 @@ function App() {
     } else {
         console.error("Username is missing in the URL parameters");
     }
-}, []);
+  }, []);
 
 
 
@@ -121,7 +121,7 @@ function App() {
           const gameData = await response.json();
           console.log("Received game status:", gameData);
   
-          if (gameData.Status === 'completed') {
+          if (gameData.status === 'completed') { // Ensure lowercase `status`
             clearInterval(pollingRef.current); // Stop polling once the game is completed
           }
   
@@ -159,17 +159,17 @@ useEffect(() => {
       <h1>Welcome {username}! Please select your choice:</h1>
       <div className="choices">
         {choices.map(choice => (
-          <button key={choice} onClick={() => handleChoice(choice)} disabled={gameStatus?.Status === 'completed'}>
+          <button key={choice} onClick={() => handleChoice(choice)} disabled={gameStatus?.status === 'completed'}>
             {choice}
           </button>
         ))}
       </div>
       {userChoice && <p>You chose: {userChoice}</p>}
-      {gameStatus && gameStatus.Status === 'completed' && (
+      {gameStatus && gameStatus.status === 'completed' && (
         <div>
-          <p>Your Choice: {gameStatus.Player1Choice}</p>
-          <p>Opponent's Choice: {gameStatus.Player2Choice}</p>
-          <h3>{gameStatus.Result}</h3>
+          <p>Your Choice: {gameStatus.player1 === username ? gameStatus.player1_choice : gameStatus.player2_choice}</p>
+          <p>Opponent's Choice: {gameStatus.player1 === username ? gameStatus.player2_choice : gameStatus.player1_choice}</p>
+          <h3>{gameStatus.result}</h3>
         </div>
       )}
     </div>
