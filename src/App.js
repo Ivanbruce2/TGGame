@@ -98,6 +98,7 @@ function App() {
         clearInterval(opponentPollingInterval); // Stop polling for opponent once joined
       }
     };
+    
     const opponentPollingInterval = setInterval(pollOpponentStatus, 3000);
   };
 
