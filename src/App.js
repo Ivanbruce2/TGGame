@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 
 function App() {
@@ -8,7 +8,7 @@ function App() {
   const [gameStatus, setGameStatus] = useState(null);
   const [userChoice, setUserChoice] = useState('');
   const [opponentChoiceStatus, setOpponentChoiceStatus] = useState('');
-  const [opponentJoined, setOpponentJoined] = useState(false);
+  const pollingRef = useRef(null);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -20,7 +20,7 @@ function App() {
   const fetchRooms = async () => {
     const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
       headers: {
-        'ngrok-skip-browser-warning': 'true'
+        'ngrok-skip-browser-warning': 'true'  // Add this header to skip ngrok's warning page
       }
     });
     const data = await response.json();
@@ -60,6 +60,7 @@ function App() {
     const data = await response.json();
     setSelectedRoom(data.room_id);
     console.log(`${username} joined room:`, data.room_id);
+    startPollingOpponent(data.room_id);
   };
 
   const handleChoice = async (choice) => {
@@ -81,6 +82,7 @@ function App() {
     startPollingChoices(data.game_id);
   };
 
+  // First poll: Check for opponent presence
   const startPollingOpponent = (roomId) => {
     const pollOpponentStatus = async () => {
       const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
@@ -90,17 +92,16 @@ function App() {
       });
       const data = await response.json();
       const room = data[roomId];
-      console.log(room.player2)
       if (room && room.player2) {
-        setOpponentJoined(true);
-        setOpponentChoiceStatus(`${room.player2} has joined. Waiting for them to make a choice.`);
-        clearInterval(opponentPollingInterval);
+        clearInterval(pollingRef.current); // Stop polling for opponent once joined
+        setGameStatus({ ...gameStatus, player2: room.player2 });
+        console.log(`${room.player2} has joined the room.`);
       }
     };
-
-    const opponentPollingInterval = setInterval(pollOpponentStatus, 3000);
+    pollingRef.current = setInterval(pollOpponentStatus, 3000);
   };
 
+  // Second poll: Check for choices once opponent has joined
   const startPollingChoices = (gameId) => {
     const pollGameStatus = async () => {
       const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
@@ -121,16 +122,20 @@ function App() {
 
       console.log('Game status updated:', data);
     };
-    setInterval(pollGameStatus, 3000);
+    pollingRef.current = setInterval(pollGameStatus, 3000);
   };
+
+  useEffect(() => {
+    return () => clearInterval(pollingRef.current); // Cleanup on component unmount
+  }, []);
 
   if (selectedRoom) {
     return (
       <div className="App">
         <h1>Room: {selectedRoom}</h1>
-        <h2>{gameStatus?.player1} vs {gameStatus?.player2 || 'Waiting for opponent'}</h2>
         {gameStatus ? (
           <>
+            <h2>{gameStatus.player1} vs {gameStatus.player2 || 'Waiting for opponent'}</h2>
             <p>{gameStatus.player1}: {gameStatus.player1_choice}</p>
             {gameStatus.player2 && <p>{gameStatus.player2}: {gameStatus.player2_choice}</p>}
             <p>{opponentChoiceStatus}</p>
@@ -146,7 +151,7 @@ function App() {
                 </button>
               ))}
             </div>
-            {userChoice && <p>{opponentJoined ? opponentChoiceStatus : 'Waiting for opponent to join...'}</p>}
+            {userChoice && !gameStatus?.player2 && <p>Waiting for opponent to join...</p>}
           </>
         )}
       </div>
