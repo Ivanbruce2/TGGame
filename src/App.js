@@ -7,6 +7,7 @@ function App() {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [gameStatus, setGameStatus] = useState(null);
   const [userChoice, setUserChoice] = useState('');
+  const [opponentChoiceStatus, setOpponentChoiceStatus] = useState('');
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -84,6 +85,14 @@ function App() {
 
       const data = await response.json();
       setGameStatus(data);
+
+      if (data.player2) {
+        setOpponentChoiceStatus(
+          data.player2_choice
+            ? `${data.player2} has provided their choice.`
+            : `Waiting for ${data.player2} to provide their choice.`
+        );
+      }
     };
     setInterval(pollGameStatus, 3000);
   };
@@ -93,9 +102,7 @@ function App() {
       <div className="App">
         <h1>Room: {selectedRoom}</h1>
         {gameStatus && gameStatus.player1 && gameStatus.player2 ? (
-          <>
-            <h2>{gameStatus.player1} vs {gameStatus.player2}</h2>
-          </>
+          <h2>{gameStatus.player1} vs {gameStatus.player2}</h2>
         ) : (
           <p>Waiting for opponent to join...</p>
         )}
@@ -107,7 +114,22 @@ function App() {
             ) : (
               <p>Waiting for opponent to join...</p>
             )}
-            {gameStatus.status === 'completed' && <h3>{gameStatus.result}</h3>}
+            {gameStatus.status === 'completed' ? (
+              <h3>{gameStatus.result}</h3>
+            ) : (
+              <>
+                {userChoice && opponentChoiceStatus && <p>{opponentChoiceStatus}</p>}
+                {!userChoice && (
+                  <div className="choices">
+                    {["Scissors", "Paper", "Stone"].map(choice => (
+                      <button key={choice} onClick={() => handleChoice(choice)}>
+                        {choice}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
           </>
         ) : (
           <>
@@ -119,7 +141,6 @@ function App() {
                 </button>
               ))}
             </div>
-            {userChoice && !gameStatus?.player2 && <p>Waiting for opponent to join...</p>}
           </>
         )}
       </div>
