@@ -143,10 +143,14 @@ const startPollingChoices = (gameId) => {
         <h1>Room: {selectedRoom}</h1>
         {gameStatus ? (
           <>
-            <h2>{gameStatus.player1} vs {gameStatus.player2 || 'Waiting for opponent'}</h2>
+            <h2>{gameStatus.player1 === username ? `${gameStatus.player1} vs ${gameStatus.player2 || 'Waiting for opponent'}` : `${gameStatus.player2} vs ${gameStatus.player1 || 'Waiting for opponent'}`}</h2>
             <p>{gameStatus.player1}: {gameStatus.player1_choice || 'Waiting for choice'}</p>
             {gameStatus.player2 && <p>{gameStatus.player2}: {gameStatus.player2_choice || 'Waiting for choice'}</p>}
-            <p>{opponentChoiceStatus}</p>
+            
+            {gameStatus.status !== 'completed' && (
+              <p>{opponentChoiceStatus}</p>
+            )}
+    
             {gameStatus.status !== 'completed' && (
               <div className="choices">
                 {["Scissors", "Paper", "Stone"].map(choice => (
@@ -156,7 +160,14 @@ const startPollingChoices = (gameId) => {
                 ))}
               </div>
             )}
-            {gameStatus.status === 'completed' && <h3>{gameStatus.result}</h3>}
+    
+            {gameStatus.status === 'completed' && (
+              <h3>
+                {gameStatus.player1 === username 
+                  ? gameStatus.result.includes('wins') ? 'You Win!' : 'You Lose!'
+                  : gameStatus.result.includes('wins') ? 'You Lose!' : 'You Win!'}
+              </h3>
+            )}
           </>
         ) : (
           <>
@@ -173,6 +184,7 @@ const startPollingChoices = (gameId) => {
         )}
       </div>
     );
+    
   }
 
   return (
