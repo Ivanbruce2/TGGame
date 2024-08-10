@@ -60,7 +60,7 @@ function App() {
     } else {
         console.error("Username is missing in the URL parameters");
     }
-}, []);
+  }, []);
 
 
   const handleChoice = async (choice) => {
@@ -87,9 +87,9 @@ function App() {
         }),
       });
 
-      const gameId = await response.json();  // Parse the JSON response
-      console.log("Received game ID after choice submission:", gameId);
-      setGameId(gameId);  // Store the game ID for polling
+      const data = await response.json();  // Parse the JSON response
+      console.log("Received game ID after choice submission:", data.game_id);
+      setGameId(data.game_id);  // Store the game ID for polling
     } catch (error) {
       console.error("Error sending choice:", error);
     }
