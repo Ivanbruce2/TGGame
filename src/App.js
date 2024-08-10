@@ -18,9 +18,9 @@ function App() {
   }, []);
 
   const fetchRooms = async () => {
-    const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
+    const response = await fetch(`https://<YOUR_NGROK_URL>/list_rooms`, {
       headers: {
-        'ngrok-skip-browser-warning': 'true'  // Add this header to skip ngrok's warning page
+        'ngrok-skip-browser-warning': 'true'
       }
     });
     const data = await response.json();
@@ -29,7 +29,7 @@ function App() {
   };
 
   const createRoom = async () => {
-    const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/create_room', {
+    const response = await fetch('https://<YOUR_NGROK_URL>/create_room', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -46,7 +46,7 @@ function App() {
   };
 
   const joinRoom = async (room_id) => {
-    const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/join_room', {
+    const response = await fetch('https://<YOUR_NGROK_URL>/join_room', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -66,7 +66,7 @@ function App() {
   const handleChoice = async (choice) => {
     setUserChoice(choice);
     console.log(`${username} selected:`, choice);
-    const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/webhook', {
+    const response = await fetch('https://<YOUR_NGROK_URL>/webhook', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -85,7 +85,7 @@ function App() {
   // First poll: Check for opponent presence
   const startPollingOpponent = (roomId) => {
     const pollOpponentStatus = async () => {
-      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
+      const response = await fetch(`https://<YOUR_NGROK_URL>/list_rooms`, {
         headers: {
           'ngrok-skip-browser-warning': 'true'
         }
@@ -104,7 +104,7 @@ function App() {
   // Second poll: Check for choices once opponent has joined
   const startPollingChoices = (gameId) => {
     const pollGameStatus = async () => {
-      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
+      const response = await fetch(`https://<YOUR_NGROK_URL>/game_status?game_id=${gameId}`, {
         headers: {
           'ngrok-skip-browser-warning': 'true'
         }
