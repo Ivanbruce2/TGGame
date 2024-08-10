@@ -5,7 +5,7 @@ body, html {
   padding: 0;
   height: 100%;
   width: 100%;
-  background: radial-gradient(circle at 50% 50%, #ff007f, #330067, #000000);
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
   color: #ffd700;
 }
 
@@ -24,14 +24,14 @@ body, html {
 h1 {
   font-size: 2.5em;
   margin-bottom: 20px;
-  color: #ff007f; /* Neon pink color */
+  color: #ffd700;
   text-shadow: 2px 2px 4px #000; /* Add a shadow to make the text pop */
 }
 
 p {
   font-size: 1.5em;
   margin-bottom: 15px;
-  color: #ff007f;
+  color: #ffd700;
   text-shadow: 1px 1px 3px #000;
 }
 
@@ -43,7 +43,7 @@ p {
 
 button {
   background-color: #222;
-  border: 2px solid #ff007f; /* Neon pink border */
+  border: 2px solid #ffd700;
   color: white;
   padding: 15px 20px;
   text-align: center;
@@ -68,7 +68,7 @@ button:hover {
 h3 {
   margin-top: 20px;
   font-size: 1.8em;
-  color: #ff007f;
+  color: #FFD700;
   text-shadow: 2px 2px 4px #000;
 }
 
