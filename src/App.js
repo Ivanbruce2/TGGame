@@ -115,13 +115,17 @@ function App() {
       setGameStatus(data);
 
       // Update readiness status in real-time
-      let player1Status = data.player1 === username ? 'You' : data.player1;
-      let player2Status = data.player2 === username ? 'You' : data.player2;
+      if (data.status === 'in_progress') {
+        let player1Status = data.player1 === username ? 'You' : data.player1;
+        let player2Status = data.player2 === username ? 'You' : data.player2;
 
-      player1Status += data.player1_choice ? ' (Ready)' : ' (Not Ready)';
-      player2Status += data.player2_choice ? ' (Ready)' : ' (Not Ready)';
+        player1Status += data.player1_choice ? ' (Ready)' : ' (Not Ready)';
+        player2Status += data.player2_choice ? ' (Ready)' : ' (Not Ready)';
 
-      setOpponentChoiceStatus(`${player1Status} vs ${player2Status}`);
+        setOpponentChoiceStatus(`${player1Status} vs ${player2Status}`);
+      } else {
+        setOpponentChoiceStatus(''); // Clear readiness status when game completes
+      }
 
       console.log('Game status updated:', data);
     };
@@ -139,7 +143,8 @@ function App() {
         {gameStatus ? (
           <>
             <h2>{gameStatus.player1 === username ? 'You' : gameStatus.player1} vs {gameStatus.player2 || 'Waiting for opponent'}</h2>
-            <p>{opponentChoiceStatus}</p>
+            {opponentChoiceStatus && <p>{opponentChoiceStatus}</p>}
+            <p>Select your choice below:</p>
             {gameStatus.status !== 'completed' && (
               <div className="choices">
                 {["Scissors", "Paper", "Stone"].map(choice => (
