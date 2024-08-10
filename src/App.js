@@ -43,6 +43,8 @@ function App() {
     const data = await response.json();
     setSelectedRoom(data.room_id);
     console.log(`${username} created room:`, data.room_id);
+    console.log("Here??")
+    console.log(data.game_id)
     startPollingOpponent(data.room_id);
   };
 
@@ -79,8 +81,7 @@ function App() {
       }),
     });
     const data = await response.json();
-    console.log("Here??")
-    console.log(data.game_id)
+
     startPollingChoices(data.game_id);
   };
 
