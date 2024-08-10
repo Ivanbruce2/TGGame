@@ -103,46 +103,50 @@ function App() {
 
   const startPolling = (currentGameId) => {
     const pollGameStatus = async () => {
-        console.log("Polling game status for game ID:", currentGameId);
-        try {
-            const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${currentGameId}`, {
-                headers: {
-                    'ngrok-skip-browser-warning': 'true'  // Add this header to skip ngrok's warning page
-                }
-            });
-            const contentType = response.headers.get("Content-Type");
-            console.log("Content-Type:", contentType);
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            if (contentType && contentType.includes("application/json")) {
-                const gameData = await response.json();
-                console.log("Received game status:", gameData);
-
-                setGameStatus(gameData);
-            } else {
-                const textResponse = await response.text();
-                console.error("Received non-JSON response:", textResponse);
-                throw new Error("Expected JSON, but received non-JSON response");
-            }
-        } catch (error) {
-            console.error("Error fetching game status:", error);
+      console.log("Polling game status for game ID:", currentGameId);
+      try {
+        const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${currentGameId}`, {
+          headers: {
+            'ngrok-skip-browser-warning': 'true'  // Add this header to skip ngrok's warning page
+          }
+        });
+        const contentType = response.headers.get("Content-Type");
+        console.log("Content-Type:", contentType);
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
+  
+        if (contentType && contentType.includes("application/json")) {
+          const gameData = await response.json();
+          console.log("Received game status:", gameData);
+  
+          if (gameData.Status === 'completed') {
+            clearInterval(pollingRef.current); // Stop polling once the game is completed
+          }
+  
+          setGameStatus(gameData);
+        } else {
+          const textResponse = await response.text();
+          console.error("Received non-JSON response:", textResponse);
+          throw new Error("Expected JSON, but received non-JSON response");
+        }
+      } catch (error) {
+        console.error("Error fetching game status:", error);
+      }
     };
-
+  
     pollingRef.current = setInterval(pollGameStatus, POLLING_INTERVAL);
-};
+  };
 
 useEffect(() => {
-    if (gameId) {
-        startPolling(gameId);
-    }
+  if (gameId) {
+    startPolling(gameId);
+  }
 
-    return () => {
-        clearInterval(pollingRef.current); // Cleanup polling on component unmount or game ID change
-    };
+  return () => {
+    clearInterval(pollingRef.current); // Cleanup polling on component unmount or game ID change
+  };
 }, [gameId]);
 
 
@@ -155,22 +159,22 @@ useEffect(() => {
       <h1>Welcome {username}! Please select your choice:</h1>
       <div className="choices">
         {choices.map(choice => (
-          <button key={choice} onClick={() => handleChoice(choice)}>
+          <button key={choice} onClick={() => handleChoice(choice)} disabled={gameStatus?.Status === 'completed'}>
             {choice}
           </button>
         ))}
       </div>
       {userChoice && <p>You chose: {userChoice}</p>}
-      {gameStatus.Status === 'completed' && (
-    <div>
-        <p>Your Choice: {gameStatus.Player1Choice}</p>
-        <p>Opponent's Choice: {gameStatus.Player2Choice}</p>
-        <h3>{gameStatus.Result}</h3>
-    </div>
-)}
-
+      {gameStatus && gameStatus.Status === 'completed' && (
+        <div>
+          <p>Your Choice: {gameStatus.Player1Choice}</p>
+          <p>Opponent's Choice: {gameStatus.Player2Choice}</p>
+          <h3>{gameStatus.Result}</h3>
+        </div>
+      )}
     </div>
   );
+  
 }
 
 export default App;
