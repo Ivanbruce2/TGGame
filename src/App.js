@@ -97,24 +97,27 @@ function App() {
 
   useEffect(() => {
     if (!gameId) return;
+  
     const pollGameStatus = async () => {
       console.log("Polling game status for game ID:", gameId);
       try {
-        const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
-          headers: {
-            'ngrok-skip-browser-warning': 'true'  // Add this header to skip ngrok's warning page
-          }
-        });
+        const response = await fetch(`https://your-ngrok-url/game_status?game_id=${gameId}`);
         const contentType = response.headers.get("Content-Type");
         console.log("Content-Type:", contentType);
-    
+  
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-    
+  
         if (contentType && contentType.includes("application/json")) {
           const gameData = await response.json();
           console.log("Received game status:", gameData);
+  
+          // Check if the game ID has changed
+          if (gameData.game_id !== gameId) {
+            setGameId(gameData.game_id); // Update to the new game ID
+          }
+  
           setGameStatus(gameData);
         } else {
           const textResponse = await response.text();
@@ -125,15 +128,14 @@ function App() {
         console.error("Error fetching game status:", error);
       }
     };
-    
-    
-
+  
     pollingRef.current = setInterval(pollGameStatus, POLLING_INTERVAL);
-
+  
     return () => {
       clearInterval(pollingRef.current);
     };
   }, [gameId]);
+  
 
   if (!gameStatus) {
     return <div>Loading game status...</div>;
