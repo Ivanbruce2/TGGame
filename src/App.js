@@ -41,7 +41,6 @@ function App() {
     const data = await response.json();
     setSelectedRoom(data.room_id);
     console.log(`${username} created room:`, data.room_id);
-    startPolling(data.room_id); // Start polling immediately after room creation
   };
 
   const joinRoom = async (room_id) => {
@@ -59,7 +58,6 @@ function App() {
     const data = await response.json();
     setSelectedRoom(data.room_id);
     console.log(`${username} joined room:`, data.room_id);
-    startPolling(data.room_id); // Start polling immediately after joining room
   };
 
   const handleChoice = async (choice) => {
@@ -81,9 +79,9 @@ function App() {
     startPolling(data.game_id);
   };
 
-  const startPolling = (gameIdOrRoomId) => {
+  const startPolling = (gameId) => {
     const pollGameStatus = async () => {
-      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameIdOrRoomId}`, {
+      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
         headers: {
           'ngrok-skip-browser-warning': 'true'  // Add this header to skip ngrok's warning page
         }
@@ -104,7 +102,7 @@ function App() {
 
       console.log('Game status updated:', data);
     };
-    setInterval(pollGameStatus, 3000); // Adjust the polling interval as needed
+    setInterval(pollGameStatus, 3000);
   };
 
   if (selectedRoom) {
@@ -129,7 +127,7 @@ function App() {
                 </button>
               ))}
             </div>
-            {userChoice && <p>Waiting for opponent to provide their choice...</p>}
+            {userChoice && !gameStatus?.player2 && <p>Waiting for opponent to join...</p>}
           </>
         )}
       </div>
