@@ -63,6 +63,7 @@ function App() {
   }, []);
 
 
+
   const handleChoice = async (choice) => {
     const chatId = new URLSearchParams(window.location.search).get('chat_id');
     const username = new URLSearchParams(window.location.search).get('username');
