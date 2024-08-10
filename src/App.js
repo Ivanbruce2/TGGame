@@ -91,26 +91,30 @@ function App() {
 
 
 
-  // First poll: Check for opponent presence
-  const startPollingOpponent = (roomId) => {
-    const pollOpponentStatus = async () => {
-      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
-        headers: {
-          'ngrok-skip-browser-warning': 'true'
-        }
-      });
-      const data = await response.json();
-      const room = data[roomId];
-      if (room && room.player2) {
-        clearInterval(pollingRef.current); // Stop polling for opponent once joined
-        setGameStatus({ ...gameStatus, player1: room.player1, player2: room.player2, status: 'in_progress' });
-        console.log(`Player 1: ${room.player1}, Player 2: ${room.player2}`); // Log Player 1 and Player 2
+// First poll: Check for opponent presence and then start polling game status
+const startPollingOpponent = (roomId) => {
+  const pollOpponentStatus = async () => {
+    const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true'
       }
-    };
-    pollingRef.current = setInterval(pollOpponentStatus, 3000);
+    });
+    const data = await response.json();
+    const room = data[roomId];
+    if (room && room.player2) {
+      clearInterval(pollingRef.current); // Stop polling for opponent once joined
+      setGameStatus({ ...gameStatus, player1: room.player1, player2: room.player2, status: 'in_progress' });
+      console.log(`Player 1: ${room.player1}, Player 2: ${room.player2}`); // Log Player 1 and Player 2
+      startPollingChoices(roomId);  // Start polling game status
+    }
   };
+  pollingRef.current = setInterval(pollOpponentStatus, 3000);
+};
+
+
 
   // Second poll: Check for choices once opponent has joined
+// Second poll: Check for choices once opponent has joined
 // Second poll: Check for choices once opponent has joined
 const startPollingChoices = (gameId) => {
   const pollGameStatus = async () => {
@@ -128,9 +132,12 @@ const startPollingChoices = (gameId) => {
       console.log('Game completed:', data.result);
     }
 
-    if (data.player2_choice) {
-      setOpponentChoiceStatus(`${data.player2} has provided their choice.`);
-      console.log(`${data.player2} has made their move:`, data.player2_choice);
+    if (data.player1_choice && data.player2_choice) {
+      setOpponentChoiceStatus('Both players have made their move.');
+    } else if (data.player1_choice) {
+      setOpponentChoiceStatus(`${data.player1} has made their move.`);
+    } else if (data.player2_choice) {
+      setOpponentChoiceStatus(`${data.player2} has made their move.`);
     } else {
       setOpponentChoiceStatus(`Waiting for ${data.player2 || 'opponent'} to provide their choice.`);
     }
@@ -140,6 +147,7 @@ const startPollingChoices = (gameId) => {
 
   pollingRef.current = setInterval(pollGameStatus, 3000);
 };
+
 
 
   useEffect(() => {
@@ -196,6 +204,7 @@ const startPollingChoices = (gameId) => {
         )}
       </div>
     );
+    
     
     
     
