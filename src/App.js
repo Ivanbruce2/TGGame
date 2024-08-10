@@ -16,7 +16,11 @@ function App() {
   }, []);
 
   const fetchRooms = async () => {
-    const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/list_rooms');
+    const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true'  // Add this header to skip ngrok's warning page
+      }
+    });
     const data = await response.json();
     setRooms(data);
   };
@@ -26,6 +30,7 @@ function App() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        'ngrok-skip-browser-warning': 'true',
       },
       body: new URLSearchParams({
         username: username,
@@ -40,6 +45,7 @@ function App() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        'ngrok-skip-browser-warning': 'true',
       },
       body: new URLSearchParams({
         username: username,
@@ -56,6 +62,7 @@ function App() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        'ngrok-skip-browser-warning': 'true',
       },
       body: new URLSearchParams({
         username: username,
@@ -69,7 +76,12 @@ function App() {
 
   const startPolling = (gameId) => {
     const pollGameStatus = async () => {
-      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`);
+      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true'  // Add this header to skip ngrok's warning page
+        }
+      });
+   
       const data = await response.json();
       setGameStatus(data);
     };
