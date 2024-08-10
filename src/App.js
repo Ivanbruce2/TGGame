@@ -128,7 +128,6 @@ function App() {
   };
 
   
-  
   // Second poll: Check for choices once opponent has joined
   const startPollingChoices = (gameId) => {
     console.log("Starting to poll for game choices...");
