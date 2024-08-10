@@ -17,52 +17,50 @@ function App() {
     const chatId = urlParams.get('chat_id');
 
     console.log("URL Parameters:", {
-        username: usernameFromParams,
-        chat_id: chatId,
+      username: usernameFromParams,
+      chat_id: chatId,
     });
 
     setUsername(usernameFromParams);
 
     const createGame = async () => {
-        try {
-            console.log("Attempting to create a game with:", {
-                username: usernameFromParams,
-                chat_id: chatId,
-            });
+      try {
+        console.log("Attempting to create a game with:", {
+          username: usernameFromParams,
+          chat_id: chatId,
+        });
 
-            const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/webhook', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    username: usernameFromParams,
-                    chat_id: chatId,
-                }),
-            });
+        const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/webhook', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+            username: usernameFromParams,
+            chat_id: chatId,
+          }),
+        });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error("HTTP error! status:", response.status, "response:", errorText);
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            console.log("Game created successfully. Game ID:", data.game_id);
-            setGameId(data.game_id);  // Store the game ID for polling
-        } catch (error) {
-            console.error("Error creating game:", error);
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("HTTP error! status:", response.status, "response:", errorText);
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
+
+        const data = await response.json();
+        console.log("Game created successfully. Game ID:", data.game_id);
+        setGameId(data.game_id);  // Store the game ID for polling
+      } catch (error) {
+        console.error("Error creating game:", error);
+      }
     };
 
     if (usernameFromParams) {
-        createGame();
+      createGame();
     } else {
-        console.error("Username is missing in the URL parameters");
+      console.error("Username is missing in the URL parameters");
     }
   }, []);
-
-
 
   const handleChoice = async (choice) => {
     const chatId = new URLSearchParams(window.location.search).get('chat_id');
@@ -112,19 +110,19 @@ function App() {
         });
         const contentType = response.headers.get("Content-Type");
         console.log("Content-Type:", contentType);
-  
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-  
+
         if (contentType && contentType.includes("application/json")) {
           const gameData = await response.json();
           console.log("Received game status:", gameData);
-  
+
           if (gameData.status === 'completed') { // Ensure lowercase `status`
             clearInterval(pollingRef.current); // Stop polling once the game is completed
           }
-  
+
           setGameStatus(gameData);
         } else {
           const textResponse = await response.text();
@@ -135,20 +133,19 @@ function App() {
         console.error("Error fetching game status:", error);
       }
     };
-  
+
     pollingRef.current = setInterval(pollGameStatus, POLLING_INTERVAL);
   };
 
-useEffect(() => {
-  if (gameId) {
-    startPolling(gameId);
-  }
+  useEffect(() => {
+    if (gameId) {
+      startPolling(gameId);
+    }
 
-  return () => {
-    clearInterval(pollingRef.current); // Cleanup polling on component unmount or game ID change
-  };
-}, [gameId]);
-
+    return () => {
+      clearInterval(pollingRef.current); // Cleanup polling on component unmount or game ID change
+    };
+  }, [gameId]);
 
   if (!gameStatus) {
     return <div>Loading game status...</div>;
@@ -169,7 +166,12 @@ useEffect(() => {
           </button>
         ))}
       </div>
-      {userChoice && <p>{username}: {userChoice}</p>}
+      {userChoice && !gameStatus.player2 && (
+        <p>Waiting for opponent to join...</p>
+      )}
+      {userChoice && gameStatus.player2 && (
+        <p>{username}: {userChoice}</p>
+      )}
       {gameStatus && gameStatus.status === 'completed' && (
         <div>
           <p>{gameStatus.player1}: {gameStatus.player1_choice}</p>
