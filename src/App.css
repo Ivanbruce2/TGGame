@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
 body, html {
   margin: 0;
   padding: 0;
@@ -9,7 +11,7 @@ body, html {
 
 .App {
   text-align: center;
-  font-family: 'VT323', monospace; 
+  font-family: 'VT323', monospace; /* Updated font */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -23,14 +25,7 @@ h1 {
   font-size: 2.5em;
   margin-bottom: 20px;
   color: #ffd700;
-  text-shadow: 2px 2px 4px #000; 
-}
-
-h2 {
-  font-size: 2em;
-  margin-bottom: 20px;
-  color: #ffd700;
-  text-shadow: 2px 2px 4px #000;
+  text-shadow: 2px 2px 4px #000; /* Add a shadow to make the text pop */
 }
 
 p {
@@ -40,65 +35,14 @@ p {
   text-shadow: 1px 1px 3px #000;
 }
 
-.result {
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 20px;
-  border-radius: 10px;
-  margin-top: 20px;
-  color: #ffd700;
-  font-size: 1.8em;
-}
-
-.room-list {
+.choices {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
 }
 
-.room-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 20px;
-  border-radius: 10px;
-  margin: 10px 0;
-  width: 100%;
-  max-width: 600px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-}
-
-.room-details {
-  text-align: left;
-  color: #ffd700;
-}
-
-.join-button {
-  background-color: #ffd700;
-  color: #000;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 10px;
-  font-size: 1.2em;
-  transition: all 0.3s ease;
-}
-
-.join-button:hover {
-  background-color: #ff4500;
-  color: #fff;
-}
-
-.join-button:disabled {
-  background-color: #777;
-  color: #ddd;
-  cursor: not-allowed;
-}
-
-.choices button {
-  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); 
+button {
+  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); /* Multicolor gradient */
   border: none;
   color: white;
   padding: 15px 20px;
@@ -109,21 +53,114 @@ p {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-  width: 90%;
-  max-width: 400px; 
+  width: 90%; /* Increased button width */
+  max-width: 400px; /* Optional max-width for larger screens */
   display: flex;
   justify-content: center;
   align-items: center;
-  background-size: 200% 200%;
-  animation: gradientShift 2s infinite; 
+  background-size: 200% 200%; /* For animation */
+  animation: gradientShift 2s infinite; /* Animation for background */
   position: relative;
   z-index: 0;
   overflow: hidden;
-  font-family: 'Press Start 2P', cursive; 
+  font-family: 'Press Start 2P', cursive; /* Changed font */
+}
+
+button:before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, transparent, rgba(255, 255, 255, 0.2));
+  transform: rotate(45deg);
+  animation: shine 4s infinite linear;
+  z-index: 1;
+}
+
+button:hover {
+  transform: scale(1.1) rotate(2deg);
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+button:active {
+  transform: scale(0.9) rotate(-2deg);
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.room-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.room-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1f3b73;
+  border-radius: 10px;
+  padding: 20px;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.room-details {
+  flex-grow: 1;
+}
+
+.room-details p {
+  margin: 5px 0;
+}
+
+.join-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.join-button:hover {
+  background-color: #0056b3;
+}
+
+h3 {
+  margin-top: 20px;
+  font-size: 1.8em;
+  color: #FFD700;
+  text-shadow: 2px 2px 4px #000;
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 2em;
+  }
+
+  p {
+    font-size: 1.2em;
+  }
+
+  button {
+    font-size: 1.2em;
+    padding: 12px 20px;
+  }
+
+  h3 {
+    font-size: 1.5em;
+  }
 }
 
 @keyframes gradientShift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
+}
+
+@keyframes shine {
+  0% { transform: translate(-100%, -100%) rotate(45deg); }
+  100% { transform: translate(100%, 100%) rotate(45deg); }
 }
