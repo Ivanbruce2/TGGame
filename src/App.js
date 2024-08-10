@@ -160,6 +160,7 @@ useEffect(() => {
           ? `${gameStatus.player1} vs ${gameStatus.player2}!`
           : `Welcome ${username}!`}
       </h1>
+      <p>Select your choice below:</p>
       <div className="choices">
         {choices.map(choice => (
           <button key={choice} onClick={() => handleChoice(choice)} disabled={gameStatus?.status === 'completed'}>
