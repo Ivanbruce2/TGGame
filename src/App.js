@@ -94,8 +94,8 @@ function App() {
       const room = data[roomId];
       if (room && room.player2) {
         clearInterval(pollingRef.current); // Stop polling for opponent once joined
-        setGameStatus({ ...gameStatus, player2: room.player2, status: 'in_progress' });
-        console.log(`${room.player2} has joined the room.`);
+        setGameStatus({ ...gameStatus, player1: room.player1, player2: room.player2, status: 'in_progress' });
+        console.log(`Player 1: ${room.player1}, Player 2: ${room.player2}`); // Log Player 1 and Player 2
       }
     };
     pollingRef.current = setInterval(pollOpponentStatus, 3000);
@@ -137,9 +137,17 @@ function App() {
           <>
             <h2>{gameStatus.player1} vs {gameStatus.player2 || 'Waiting for opponent'}</h2>
             <p>{gameStatus.player1}: {gameStatus.player1_choice || 'Waiting for choice'}</p>
-            {gameStatus.player2 && <p>{gameStatus.player2}:
-{gameStatus.player2_choice || 'Waiting for choice'}</p>}
+            {gameStatus.player2 && <p>{gameStatus.player2}: {gameStatus.player2_choice || 'Waiting for choice'}</p>}
             <p>{opponentChoiceStatus}</p>
+            {gameStatus.status !== 'completed' && (
+              <div className="choices">
+                {["Scissors", "Paper", "Stone"].map(choice => (
+                  <button key={choice} onClick={() => handleChoice(choice)} disabled={!!userChoice}>
+                    {choice}
+                  </button>
+                ))}
+              </div>
+            )}
             {gameStatus.status === 'completed' && <h3>{gameStatus.result}</h3>}
           </>
         ) : (
@@ -164,30 +172,24 @@ function App() {
       <h1>Welcome, {username}</h1>
       <button onClick={createRoom}>Create Room</button>
       <h2>Available Rooms:</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Room ID</th>
-            <th>Player 1</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.values(rooms).map((room) => (
-            <tr key={room.room_id}>
-              <td>{room.room_id}</td>
-              <td>{room.player1}</td>
-              <td>{room.status}</td>
-              <td>
-                {room.status === 'waiting' && (
-                  <button onClick={() => joinRoom(room.room_id)}>Join Room</button>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="room-list">
+        {Object.values(rooms).map((room) => (
+          <div key={room.room_id} className="room-card">
+            <div className="room-details">
+              <p>Game ID: {room.room_id}</p>
+              <p>{room.player1} vs {room.player2 || 'Waiting for opponent'}</p>
+              <p>Status: {room.status}</p>
+            </div>
+            <button
+              className="join-button"
+              onClick={() => joinRoom(room.room_id)}
+              disabled={room.status !== 'waiting'}
+            >
+              Join Room
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
