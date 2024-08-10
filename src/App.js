@@ -164,11 +164,10 @@ useEffect(() => {
           </button>
         ))}
       </div>
-      {userChoice && <p>You chose: {userChoice}</p>}
       {gameStatus && gameStatus.status === 'completed' && (
         <div>
-          <p>Your Choice: {gameStatus.player1 === username ? gameStatus.player1_choice : gameStatus.player2_choice}</p>
-          <p>Opponent's Choice: {gameStatus.player1 === username ? gameStatus.player2_choice : gameStatus.player1_choice}</p>
+          <p>{gameStatus.player1}: {gameStatus.player1_choice}</p>
+          <p>{gameStatus.player2}: {gameStatus.player2_choice}</p>
           <h3>{gameStatus.result}</h3>
         </div>
       )}
