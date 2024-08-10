@@ -92,11 +92,21 @@ function App() {
     return (
       <div className="App">
         <h1>Room: {selectedRoom}</h1>
-        {gameStatus ? (
+        {gameStatus && gameStatus.player1 && gameStatus.player2 ? (
           <>
             <h2>{gameStatus.player1} vs {gameStatus.player2}</h2>
-            <p>{gameStatus.player1}: {gameStatus.player1_choice}</p>
-            {gameStatus.player2 && <p>{gameStatus.player2}: {gameStatus.player2_choice}</p>}
+          </>
+        ) : (
+          <p>Waiting for opponent to join...</p>
+        )}
+        {gameStatus ? (
+          <>
+            <p>{gameStatus.player1}: {gameStatus.player1_choice || 'Pending move'}</p>
+            {gameStatus.player2 ? (
+              <p>{gameStatus.player2}: {gameStatus.player2_choice || 'Pending move'}</p>
+            ) : (
+              <p>Waiting for opponent to join...</p>
+            )}
             {gameStatus.status === 'completed' && <h3>{gameStatus.result}</h3>}
           </>
         ) : (
