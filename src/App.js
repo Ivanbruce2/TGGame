@@ -104,7 +104,7 @@ function App() {
 
   useEffect(() => {
     const pollRoomStatus = async () => {
-        const response = await fetch(`https://your-ngrok-url.ngrok-free.app/list_rooms`, {
+        const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
             headers: {
                 'ngrok-skip-browser-warning': 'true'
             }
