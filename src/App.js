@@ -83,8 +83,10 @@ function App() {
   };
 
   // First poll: Check for opponent presence
-  const startPollingOpponent = (roomId) => {
-    const pollOpponentStatus = async () => {
+// First poll: Check for opponent presence
+const startPollingOpponent = (roomId) => {
+  const pollOpponentStatus = async () => {
+    try {
       const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
         headers: {
           'ngrok-skip-browser-warning': 'true'
@@ -94,13 +96,21 @@ function App() {
       const room = data[roomId];
       if (room && room.player2) {
         clearInterval(pollingRef.current); // Stop polling for opponent once joined
-        setGameStatus({ ...gameStatus, player1: room.player1, player2: room.player2, status: 'in_progress' });
-        console.log(`Player 1: ${room.player1}, Player 2: ${room.player2}`); // Log Player 1 and Player 2
-        startPollingChoices(room.room_id); // Start polling choices after both players have joined
+        setGameStatus(prevStatus => ({
+          ...prevStatus,
+          player1: room.player1,
+          player2: room.player2,
+          status: 'in_progress'
+        }));
+        console.log(`Player 1: ${room.player1}, Player 2: ${room.player2}`);
       }
-    };
-    pollingRef.current = setInterval(pollOpponentStatus, 3000);
+    } catch (error) {
+      console.error("Error fetching opponent status:", error);
+    }
   };
+  pollingRef.current = setInterval(pollOpponentStatus, 3000);
+};
+
 
   // Second poll: Check for choices once opponent has joined
   const startPollingChoices = (gameId) => {
@@ -114,14 +124,12 @@ function App() {
       const data = await response.json();
       setGameStatus(data);
 
-      // Update readiness status in real-time
-      let player1Status = data.player1 === username ? 'You' : data.player1;
-      let player2Status = data.player2 === username ? 'You' : data.player2;
-
-      player1Status += data.player1_choice ? ' (Ready)' : ' (Not Ready)';
-      player2Status += data.player2_choice ? ' (Ready)' : ' (Not Ready)';
-
-      setOpponentChoiceStatus(`${player1Status} vs ${player2Status}`);
+      if (data.player2_choice) {
+        setOpponentChoiceStatus(`${data.player2} has provided their choice.`);
+        console.log(`${data.player2} has made their move:`, data.player2_choice);
+      } else {
+        setOpponentChoiceStatus(`Waiting for ${data.player2 || 'opponent'} to provide their choice.`);
+      }
 
       console.log('Game status updated:', data);
     };
@@ -138,25 +146,12 @@ function App() {
         <h1>Room: {selectedRoom}</h1>
         {gameStatus ? (
           <>
-            <h2>{gameStatus.player1 === username ? 'You' : gameStatus.player1} vs {gameStatus.player2 || 'Waiting for opponent'}</h2>
+            <h2>{gameStatus.player1} vs {gameStatus.player2 || 'Waiting for opponent'}</h2>
+            <p>{gameStatus.player1}: {gameStatus.player1_choice || 'Waiting for choice'}</p>
+            {gameStatus.player2 && <p>{gameStatus.player2}:
+{gameStatus.player2_choice || 'Waiting for choice'}</p>}
             <p>{opponentChoiceStatus}</p>
-            {gameStatus.status !== 'completed' && (
-              <div className="choices">
-                {["Scissors", "Paper", "Stone"].map(choice => (
-                  <button key={choice} onClick={() => handleChoice(choice)} disabled={!!userChoice}>
-                    {choice}
-                  </button>
-                ))}
-              </div>
-            )}
-            {gameStatus.status === 'completed' && (
-              <h3>
-                {gameStatus.result
-                  .replace(gameStatus.player1, gameStatus.player1 === username ? 'You' : gameStatus.player1)
-                  .replace(gameStatus.player2, gameStatus.player2 === username ? 'You' : gameStatus.player2)
-                  .replace("wins!", gameStatus.player1 === username ? (gameStatus.result.includes("wins!") ? "win!" : "lose!") : (gameStatus.result.includes("wins!") ? "win!" : "lose!"))}
-              </h3>
-            )}
+            {gameStatus.status === 'completed' && <h3>{gameStatus.result}</h3>}
           </>
         ) : (
           <>
@@ -180,20 +175,30 @@ function App() {
       <h1>Welcome, {username}</h1>
       <button onClick={createRoom}>Create Room</button>
       <h2>Available Rooms:</h2>
-      <div className="room-list">
-        {Object.values(rooms).map((room) => (
-          <div className="room-card" key={room.room_id}>
-            <div className="room-details">
-              <p>Game ID: {room.room_id}</p>
-              <p>{room.player1} vs {room.player2 || 'Waiting for opponent'}</p>
-              <p>Status: {room.status}</p>
-            </div>
-            {room.status === 'waiting' && (
-              <button className="join-button" onClick={() => joinRoom(room.room_id)}>Join Room</button>
-            )}
-          </div>
-        ))}
-      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Room ID</th>
+            <th>Player 1</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {Object.values(rooms).map((room) => (
+            <tr key={room.room_id}>
+              <td>{room.room_id}</td>
+              <td>{room.player1}</td>
+              <td>{room.status}</td>
+              <td>
+                {room.status === 'waiting' && (
+                  <button onClick={() => joinRoom(room.room_id)}>Join Room</button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
