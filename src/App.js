@@ -66,11 +66,11 @@ function App() {
   const handleChoice = async (choice) => {
     setUserChoice(choice);
     console.log(`${username} selected:`, choice);
-    
-    // Update gameStatus immediately to reflect the current user's choice
+
+    // Update gameStatus to reflect that the current user has made their choice
     setGameStatus(prevStatus => ({
         ...prevStatus,
-        [`${username === prevStatus.player1 ? 'player1_choice' : 'player2_choice'}`]: choice
+        [`${username === prevStatus.player1 ? 'player1_choice' : 'player2_choice'}`]: 'made_choice'
     }));
 
     const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/webhook', {
@@ -88,6 +88,7 @@ function App() {
     const data = await response.json();
     startPollingChoices(data.game_id);
 };
+
 
 
   // First poll: Check for opponent presence
@@ -152,8 +153,8 @@ const startPollingChoices = (gameId) => {
         {gameStatus ? (
           <>
             <h2>{gameStatus.player1 === username ? `${gameStatus.player1} vs ${gameStatus.player2 || 'Waiting for opponent'}` : `${gameStatus.player2} vs ${gameStatus.player1 || 'Waiting for opponent'}`}</h2>
-            <p>{gameStatus.player1}: {gameStatus.player1_choice || 'Waiting for choice'}</p>
-            {gameStatus.player2 && <p>{gameStatus.player2}: {gameStatus.player2_choice || 'Waiting for choice'}</p>}
+            <p>{gameStatus.player1}: {gameStatus.player1_choice === 'made_choice' ? 'Made their move' : 'Waiting for choice'}</p>
+            {gameStatus.player2 && <p>{gameStatus.player2}: {gameStatus.player2_choice === 'made_choice' ? 'Made their move' : 'Waiting for choice'}</p>}
             
             {gameStatus.status !== 'completed' && (
               <p>{opponentChoiceStatus}</p>
@@ -195,6 +196,7 @@ const startPollingChoices = (gameId) => {
         )}
       </div>
     );
+    
     
     
     
