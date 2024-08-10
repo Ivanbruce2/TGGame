@@ -83,10 +83,8 @@ function App() {
   };
 
   // First poll: Check for opponent presence
-// First poll: Check for opponent presence
-const startPollingOpponent = (roomId) => {
-  const pollOpponentStatus = async () => {
-    try {
+  const startPollingOpponent = (roomId) => {
+    const pollOpponentStatus = async () => {
       const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
         headers: {
           'ngrok-skip-browser-warning': 'true'
@@ -96,21 +94,12 @@ const startPollingOpponent = (roomId) => {
       const room = data[roomId];
       if (room && room.player2) {
         clearInterval(pollingRef.current); // Stop polling for opponent once joined
-        setGameStatus(prevStatus => ({
-          ...prevStatus,
-          player1: room.player1,
-          player2: room.player2,
-          status: 'in_progress'
-        }));
-        console.log(`Player 1: ${room.player1}, Player 2: ${room.player2}`);
+        setGameStatus({ ...gameStatus, player2: room.player2, status: 'in_progress' });
+        console.log(`${room.player2} has joined the room.`);
       }
-    } catch (error) {
-      console.error("Error fetching opponent status:", error);
-    }
+    };
+    pollingRef.current = setInterval(pollOpponentStatus, 3000);
   };
-  pollingRef.current = setInterval(pollOpponentStatus, 3000);
-};
-
 
   // Second poll: Check for choices once opponent has joined
   const startPollingChoices = (gameId) => {
