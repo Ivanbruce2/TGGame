@@ -63,7 +63,6 @@ function App() {
   }, []);
 
 
-
   const handleChoice = async (choice) => {
     const chatId = new URLSearchParams(window.location.search).get('chat_id');
     const username = new URLSearchParams(window.location.search).get('username');
@@ -156,7 +155,11 @@ useEffect(() => {
 
   return (
     <div className="App">
-      <h1>Welcome {username}! Please select your choice:</h1>
+      <h1>
+        {gameStatus.player2
+          ? `${gameStatus.player1} vs ${gameStatus.player2}!`
+          : `Welcome ${username}!`}
+      </h1>
       <div className="choices">
         {choices.map(choice => (
           <button key={choice} onClick={() => handleChoice(choice)} disabled={gameStatus?.status === 'completed'}>
@@ -164,6 +167,7 @@ useEffect(() => {
           </button>
         ))}
       </div>
+      {userChoice && <p>{username}: {userChoice}</p>}
       {gameStatus && gameStatus.status === 'completed' && (
         <div>
           <p>{gameStatus.player1}: {gameStatus.player1_choice}</p>
@@ -173,7 +177,6 @@ useEffect(() => {
       )}
     </div>
   );
-  
 }
 
 export default App;
