@@ -90,6 +90,7 @@ function App() {
       });
       const data = await response.json();
       const room = data[roomId];
+      console.log(room.player2)
       if (room && room.player2) {
         setOpponentJoined(true);
         setOpponentChoiceStatus(`${room.player2} has joined. Waiting for them to make a choice.`);
