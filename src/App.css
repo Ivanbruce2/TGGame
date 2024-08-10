@@ -89,6 +89,45 @@ button:active {
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
+.room-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.room-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1f3b73;
+  border-radius: 10px;
+  padding: 20px;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.room-details {
+  flex-grow: 1;
+}
+
+.room-details p {
+  margin: 5px 0;
+}
+
+.join-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.join-button:hover {
+  background-color: #0056b3;
+}
+
 h3 {
   margin-top: 20px;
   font-size: 1.8em;
