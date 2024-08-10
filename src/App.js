@@ -101,7 +101,7 @@ function App() {
     const pollGameStatus = async () => {
       console.log("Polling game status for game ID:", gameId);
       try {
-        const response = await fetch(`https://your-ngrok-url/game_status?game_id=${gameId}`);
+        const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`);
         const contentType = response.headers.get("Content-Type");
         console.log("Content-Type:", contentType);
   
