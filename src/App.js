@@ -30,7 +30,7 @@ function App() {
               chat_id: chatId,
             });
 
-            const response = await fetch('https://aa53-119-74-213-151.ngrok-free.app/webhook', {
+            const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/webhook', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -75,7 +75,7 @@ function App() {
     });
 
     try {
-      const response = await fetch('https://aa53-119-74-213-151.ngrok-free.app/webhook', {
+      const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/webhook', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -100,7 +100,7 @@ function App() {
     const pollGameStatus = async () => {
       console.log("Polling game status for game ID:", gameId);
       try {
-        const response = await fetch(`https://aa53-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
+        const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
           headers: {
             'ngrok-skip-browser-warning': 'true'  // Add this header to skip ngrok's warning page
           }
