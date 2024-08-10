@@ -162,11 +162,14 @@ const startPollingChoices = (gameId) => {
             )}
     
             {gameStatus.status === 'completed' && (
-              <h3>
-                {gameStatus.player1 === username 
-                  ? gameStatus.result.includes('wins') ? 'You Win!' : 'You Lose!'
-                  : gameStatus.result.includes('wins') ? 'You Lose!' : 'You Win!'}
-              </h3>
+              <div>
+                <h3>
+                  {gameStatus.result.includes('wins') && gameStatus.player1 === username ? 'You Win!' : ''}
+                  {gameStatus.result.includes('wins') && gameStatus.player2 === username ? 'You Lose!' : ''}
+                  {gameStatus.result.includes('draw') ? 'It\'s a Draw!' : ''}
+                </h3>
+                <p>{gameStatus.result}</p>
+              </div>
             )}
           </>
         ) : (
@@ -184,6 +187,7 @@ const startPollingChoices = (gameId) => {
         )}
       </div>
     );
+    
     
   }
 
