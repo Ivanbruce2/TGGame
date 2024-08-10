@@ -44,7 +44,7 @@ function App() {
     setSelectedRoom(data.room_id);
     console.log(`${username} created room:`, data.room_id);
     console.log("Here??")
-    console.log(data.game_id)
+    console.log(data.room_id)
     startPollingOpponent(data.room_id);
   };
 
