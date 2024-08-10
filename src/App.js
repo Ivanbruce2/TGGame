@@ -66,21 +66,29 @@ function App() {
   const handleChoice = async (choice) => {
     setUserChoice(choice);
     console.log(`${username} selected:`, choice);
+    
+    // Update gameStatus immediately to reflect the current user's choice
+    setGameStatus(prevStatus => ({
+        ...prevStatus,
+        [`${username === prevStatus.player1 ? 'player1_choice' : 'player2_choice'}`]: choice
+    }));
+
     const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/webhook', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'ngrok-skip-browser-warning': 'true',
-      },
-      body: new URLSearchParams({
-        username: username,
-        choice: choice,
-        room_id: selectedRoom,
-      }),
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'ngrok-skip-browser-warning': 'true',
+        },
+        body: new URLSearchParams({
+            username: username,
+            choice: choice,
+            room_id: selectedRoom,
+        }),
     });
     const data = await response.json();
     startPollingChoices(data.game_id);
-  };
+};
+
 
   // First poll: Check for opponent presence
   const startPollingOpponent = (roomId) => {
@@ -187,6 +195,7 @@ const startPollingChoices = (gameId) => {
         )}
       </div>
     );
+    
     
     
   }
