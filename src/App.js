@@ -7,7 +7,8 @@ function App() {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [gameStatus, setGameStatus] = useState(null);
   const [userChoice, setUserChoice] = useState('');
-  const [opponentChoiceStatus, setOpponentChoiceStatus] = useState(''); // Track opponent's status
+  const [opponentChoiceStatus, setOpponentChoiceStatus] = useState('');
+  const [opponentJoined, setOpponentJoined] = useState(false); // Track if opponent has joined
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -41,6 +42,7 @@ function App() {
     const data = await response.json();
     setSelectedRoom(data.room_id);
     console.log(`${username} created room:`, data.room_id);
+    startPollingOpponent(data.room_id);
   };
 
   const joinRoom = async (room_id) => {
@@ -76,28 +78,46 @@ function App() {
       }),
     });
     const data = await response.json();
-    startPolling(data.game_id);
+    startPollingChoices(data.game_id);
   };
 
-  const startPolling = (gameId) => {
+  // First poll: Check for opponent presence
+  const startPollingOpponent = (roomId) => {
+    const pollOpponentStatus = async () => {
+      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+        }
+      });
+      const data = await response.json();
+      const room = data[roomId];
+      if (room && room.player2) {
+        setOpponentJoined(true);
+        console.log(`${room.player2} has joined the room.`);
+        setOpponentChoiceStatus(`${room.player2} has joined. Waiting for them to make a choice.`);
+        clearInterval(opponentPollingInterval); // Stop polling for opponent once joined
+      }
+    };
+    const opponentPollingInterval = setInterval(pollOpponentStatus, 3000);
+  };
+
+  // Second poll: Check for choices once opponent has joined
+  const startPollingChoices = (gameId) => {
     const pollGameStatus = async () => {
       const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
         headers: {
-          'ngrok-skip-browser-warning': 'true'  // Add this header to skip ngrok's warning page
+          'ngrok-skip-browser-warning': 'true'
         }
       });
 
       const data = await response.json();
       setGameStatus(data);
 
-      if (data.player2 && !data.player2_choice) {
-        setOpponentChoiceStatus(`${data.player2} has joined the room. Waiting for them to make a choice.`);
-        console.log(`${data.player2} has joined the room.`);
-      } else if (data.player2_choice) {
+      if (data.player2_choice) {
         setOpponentChoiceStatus(`${data.player2} has provided their choice.`);
         console.log(`${data.player2} has made their move:`, data.player2_choice);
       } else {
-        setOpponentChoiceStatus(`Waiting for ${data.player2 || 'opponent'} to join and provide their choice.`);
+        setOpponentChoiceStatus(`Waiting for ${data.player2 || 'opponent'} to provide their choice.`);
       }
 
       console.log('Game status updated:', data);
@@ -127,7 +147,7 @@ function App() {
                 </button>
               ))}
             </div>
-            {userChoice && !gameStatus?.player2 && <p>Waiting for opponent to join...</p>}
+            {userChoice && !gameStatus?.player2 && <p>{opponentJoined ? opponentChoiceStatus : 'Waiting for opponent to join...'}</p>}
           </>
         )}
       </div>
