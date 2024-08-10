@@ -160,12 +160,13 @@ function App() {
       </div>
       {userChoice && <p>You chose: {userChoice}</p>}
       {gameStatus.Status === 'completed' && (
-        <div>
-          <p>Your Choice: {gameStatus.Player1Choice}</p>
-          <p>Opponent's Choice: {gameStatus.Player2Choice}</p>
-          <h3>{gameStatus.Result}</h3>
-        </div>
-      )}
+    <div>
+        <p>Your Choice: {gameStatus.Player1Choice}</p>
+        <p>Opponent's Choice: {gameStatus.Player2Choice}</p>
+        <h3>{gameStatus.Result}</h3>
+    </div>
+)}
+
     </div>
   );
 }
