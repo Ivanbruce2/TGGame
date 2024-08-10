@@ -7,7 +7,7 @@ function App() {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [gameStatus, setGameStatus] = useState(null);
   const [userChoice, setUserChoice] = useState('');
-  const [opponentChoiceStatus, setOpponentChoiceStatus] = useState('');
+  const [opponentChoiceStatus, setOpponentChoiceStatus] = useState(''); // Track opponent's status
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -24,6 +24,7 @@ function App() {
     });
     const data = await response.json();
     setRooms(data);
+    console.log('Rooms fetched:', data);
   };
 
   const createRoom = async () => {
@@ -39,6 +40,7 @@ function App() {
     });
     const data = await response.json();
     setSelectedRoom(data.room_id);
+    console.log(`${username} created room:`, data.room_id);
   };
 
   const joinRoom = async (room_id) => {
@@ -55,10 +57,12 @@ function App() {
     });
     const data = await response.json();
     setSelectedRoom(data.room_id);
+    console.log(`${username} joined room:`, data.room_id);
   };
 
   const handleChoice = async (choice) => {
     setUserChoice(choice);
+    console.log(`${username} selected:`, choice);
     const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/webhook', {
       method: 'POST',
       headers: {
@@ -86,13 +90,19 @@ function App() {
       const data = await response.json();
       setGameStatus(data);
 
-      if (data.player2) {
-        setOpponentChoiceStatus(
-          data.player2_choice
-            ? `${data.player2} has provided their choice.`
-            : `Waiting for ${data.player2} to provide their choice.`
-        );
+      // Log when the opponent joins or makes a move
+      if (data.player2 && !data.player2_choice) {
+        console.log(`${data.player2} has joined the room.`);
       }
+
+      if (data.player2_choice) {
+        setOpponentChoiceStatus(`${data.player2} has provided their choice.`);
+        console.log(`${data.player2} has made their move:`, data.player2_choice);
+      } else {
+        setOpponentChoiceStatus(`Waiting for ${data.player2 || 'opponent'} to provide their choice.`);
+      }
+
+      console.log('Game status updated:', data);
     };
     setInterval(pollGameStatus, 3000);
   };
@@ -101,35 +111,13 @@ function App() {
     return (
       <div className="App">
         <h1>Room: {selectedRoom}</h1>
-        {gameStatus && gameStatus.player1 && gameStatus.player2 ? (
-          <h2>{gameStatus.player1} vs {gameStatus.player2}</h2>
-        ) : (
-          <p>Waiting for opponent to join...</p>
-        )}
         {gameStatus ? (
           <>
-            <p>{gameStatus.player1}: {gameStatus.player1_choice || 'Pending move'}</p>
-            {gameStatus.player2 ? (
-              <p>{gameStatus.player2}: {gameStatus.player2_choice || 'Pending move'}</p>
-            ) : (
-              <p>Waiting for opponent to join...</p>
-            )}
-            {gameStatus.status === 'completed' ? (
-              <h3>{gameStatus.result}</h3>
-            ) : (
-              <>
-                {userChoice && opponentChoiceStatus && <p>{opponentChoiceStatus}</p>}
-                {!userChoice && (
-                  <div className="choices">
-                    {["Scissors", "Paper", "Stone"].map(choice => (
-                      <button key={choice} onClick={() => handleChoice(choice)}>
-                        {choice}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </>
-            )}
+            <h2>{gameStatus.player1} vs {gameStatus.player2}</h2>
+            <p>{gameStatus.player1}: {gameStatus.player1_choice}</p>
+            {gameStatus.player2 && <p>{gameStatus.player2}: {gameStatus.player2_choice}</p>}
+            <p>{opponentChoiceStatus}</p>
+            {gameStatus.status === 'completed' && <h3>{gameStatus.result}</h3>}
           </>
         ) : (
           <>
@@ -141,6 +129,7 @@ function App() {
                 </button>
               ))}
             </div>
+            {userChoice && !gameStatus?.player2 && <p>Waiting for opponent to join...</p>}
           </>
         )}
       </div>
