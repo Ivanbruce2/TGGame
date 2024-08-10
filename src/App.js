@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
@@ -8,8 +8,7 @@ function App() {
   const [gameStatus, setGameStatus] = useState(null);
   const [userChoice, setUserChoice] = useState('');
   const [opponentChoiceStatus, setOpponentChoiceStatus] = useState('');
-  const [opponentJoined, setOpponentJoined] = useState(false); // Track if opponent has joined
-  const pollingRef = useRef(null); // Reference to store the polling interval
+  const [opponentJoined, setOpponentJoined] = useState(false);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -19,151 +18,118 @@ function App() {
   }, []);
 
   const fetchRooms = async () => {
-    try {
-      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
-        headers: {
-          'ngrok-skip-browser-warning': 'true'  // Add this header to skip ngrok's warning page
-        }
-      });
-      const data = await response.json();
-      setRooms(data);
-      console.log('Rooms fetched:', data);
-    } catch (error) {
-      console.error('Error fetching rooms:', error);
-    }
+    const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true'
+      }
+    });
+    const data = await response.json();
+    setRooms(data);
+    console.log('Rooms fetched:', data);
   };
 
   const createRoom = async () => {
-    try {
-      const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/create_room', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'ngrok-skip-browser-warning': 'true',
-        },
-        body: new URLSearchParams({
-          username: username,
-        }),
-      });
-      const data = await response.json();
-      setSelectedRoom(data.room_id);
-      console.log(`${username} created room:`, data.room_id);
-      startPollingOpponent(data.room_id);
-    } catch (error) {
-      console.error('Error creating room:', error);
-    }
+    const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/create_room', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'ngrok-skip-browser-warning': 'true',
+      },
+      body: new URLSearchParams({
+        username: username,
+      }),
+    });
+    const data = await response.json();
+    setSelectedRoom(data.room_id);
+    console.log(`${username} created room:`, data.room_id);
+    startPollingOpponent(data.room_id);
   };
 
   const joinRoom = async (room_id) => {
-    try {
-      const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/join_room', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'ngrok-skip-browser-warning': 'true',
-        },
-        body: new URLSearchParams({
-          username: username,
-          room_id: room_id,
-        }),
-      });
-      const data = await response.json();
-      setSelectedRoom(data.room_id);
-      console.log(`${username} joined room:`, data.room_id);
-      setOpponentJoined(true); // Directly set that opponent has joined when joining
-    } catch (error) {
-      console.error('Error joining room:', error);
-    }
+    const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/join_room', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'ngrok-skip-browser-warning': 'true',
+      },
+      body: new URLSearchParams({
+        username: username,
+        room_id: room_id,
+      }),
+    });
+    const data = await response.json();
+    setSelectedRoom(data.room_id);
+    console.log(`${username} joined room:`, data.room_id);
   };
 
   const handleChoice = async (choice) => {
     setUserChoice(choice);
     console.log(`${username} selected:`, choice);
-    try {
-      const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/webhook', {
-        method: 'POST',
+    const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/webhook', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'ngrok-skip-browser-warning': 'true',
+      },
+      body: new URLSearchParams({
+        username: username,
+        choice: choice,
+        room_id: selectedRoom,
+      }),
+    });
+    const data = await response.json();
+    startPollingChoices(data.game_id);
+  };
+
+  const startPollingOpponent = (roomId) => {
+    const pollOpponentStatus = async () => {
+      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'ngrok-skip-browser-warning': 'true',
-        },
-        body: new URLSearchParams({
-          username: username,
-          choice: choice,
-          room_id: selectedRoom,
-        }),
+          'ngrok-skip-browser-warning': 'true'
+        }
       });
       const data = await response.json();
-      startPollingChoices(data.game_id);
-    } catch (error) {
-      console.error('Error sending choice:', error);
-    }
-  };
-
-  // First poll: Check for opponent presence
-  const startPollingOpponent = (roomId) => {
-    console.log("Starting to poll for opponent status...");
-    const pollOpponentStatus = async () => {
-      try {
-        const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
-          headers: {
-            'ngrok-skip-browser-warning': 'true'
-          }
-        });
-        const data = await response.json();
-        const room = data[roomId];
-        console.log(`Polling room status:`, room);
-        if (room && room.player2) {
-          setOpponentJoined(true);
-          console.log(`${room.player2} has joined the room.`);
-          setOpponentChoiceStatus(`${room.player2} has joined. Waiting for them to make a choice.`);
-          clearInterval(pollingRef.current); // Stop polling for opponent once joined
-          setGameStatus(room); // Update game status with both players
-        }
-      } catch (error) {
-        console.error('Error polling opponent status:', error);
+      const room = data[roomId];
+      if (room && room.player2) {
+        setOpponentJoined(true);
+        setOpponentChoiceStatus(`${room.player2} has joined. Waiting for them to make a choice.`);
+        clearInterval(opponentPollingInterval);
       }
     };
 
-    pollingRef.current = setInterval(pollOpponentStatus, 3000);
+    const opponentPollingInterval = setInterval(pollOpponentStatus, 3000);
   };
 
-  
-  // Second poll: Check for choices once opponent has joined
   const startPollingChoices = (gameId) => {
-    console.log("Starting to poll for game choices...");
     const pollGameStatus = async () => {
-      try {
-        const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
-          headers: {
-            'ngrok-skip-browser-warning': 'true'
-          }
-        });
-        const data = await response.json();
-        setGameStatus(data);
-
-        if (data.player2_choice) {
-          setOpponentChoiceStatus(`${data.player2} has provided their choice.`);
-          console.log(`${data.player2} has made their move:`, data.player2_choice);
-        } else {
-          setOpponentChoiceStatus(`Waiting for ${data.player2 || 'opponent'} to provide their choice.`);
+      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
         }
+      });
 
-        console.log('Game status updated:', data);
-      } catch (error) {
-        console.error('Error polling game status:', error);
+      const data = await response.json();
+      setGameStatus(data);
+
+      if (data.player2_choice) {
+        setOpponentChoiceStatus(`${data.player2} has provided their choice.`);
+        console.log(`${data.player2} has made their move:`, data.player2_choice);
+      } else {
+        setOpponentChoiceStatus(`Waiting for ${data.player2 || 'opponent'} to provide their choice.`);
       }
-    };
 
-    pollingRef.current = setInterval(pollGameStatus, 3000);
+      console.log('Game status updated:', data);
+    };
+    setInterval(pollGameStatus, 3000);
   };
 
   if (selectedRoom) {
     return (
       <div className="App">
         <h1>Room: {selectedRoom}</h1>
+        <h2>{gameStatus?.player1} vs {gameStatus?.player2 || 'Waiting for opponent'}</h2>
         {gameStatus ? (
           <>
-            <h2>{gameStatus.player1} vs {gameStatus.player2 || 'Waiting for opponent'}</h2>
             <p>{gameStatus.player1}: {gameStatus.player1_choice}</p>
             {gameStatus.player2 && <p>{gameStatus.player2}: {gameStatus.player2_choice}</p>}
             <p>{opponentChoiceStatus}</p>
@@ -179,7 +145,7 @@ function App() {
                 </button>
               ))}
             </div>
-            {userChoice && !gameStatus?.player2 && <p>{opponentJoined ? opponentChoiceStatus : 'Waiting for opponent to join...'}</p>}
+            {userChoice && <p>{opponentJoined ? opponentChoiceStatus : 'Waiting for opponent to join...'}</p>}
           </>
         )}
       </div>
@@ -218,6 +184,5 @@ function App() {
     </div>
   );
 }
-
 
 export default App;
