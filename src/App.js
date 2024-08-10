@@ -113,12 +113,13 @@ function App() {
       const data = await response.json();
       setGameStatus(data);
 
-      if (data.player2_choice) {
-        setOpponentChoiceStatus(`${data.player2} has provided their choice.`);
-        console.log(`${data.player2} has made their move:`, data.player2_choice);
-      } else {
-        setOpponentChoiceStatus(`Waiting for ${data.player2 || 'opponent'} to provide their choice.`);
-      }
+      let player1Status = data.player1 === username ? 'You' : data.player1;
+      let player2Status = data.player2 === username ? 'You' : data.player2;
+
+      player1Status += data.player1_choice ? ' (Ready)' : ' (Not Ready)';
+      player2Status += data.player2_choice ? ' (Ready)' : ' (Not Ready)';
+
+      setOpponentChoiceStatus(`${player1Status} vs ${player2Status}`);
 
       console.log('Game status updated:', data);
     };
@@ -135,9 +136,7 @@ function App() {
         <h1>Room: {selectedRoom}</h1>
         {gameStatus ? (
           <>
-            <h2>{gameStatus.player1} vs {gameStatus.player2 || 'Waiting for opponent'}</h2>
-            <p>{gameStatus.player1}: {gameStatus.player1_choice ? 'Ready' : 'Not Ready'}</p>
-            {gameStatus.player2 && <p>{gameStatus.player2}: {gameStatus.player2_choice ? 'Ready' : 'Not Ready'}</p>}
+            <h2>{gameStatus.player1 === username ? 'You' : gameStatus.player1} vs {gameStatus.player2 || 'Waiting for opponent'}</h2>
             <p>{opponentChoiceStatus}</p>
             {gameStatus.status !== 'completed' && (
               <div className="choices">
@@ -148,7 +147,11 @@ function App() {
                 ))}
               </div>
             )}
-            {gameStatus.status === 'completed' && <h3>{gameStatus.result}</h3>}
+            {gameStatus.status === 'completed' && (
+              <h3>
+                {gameStatus.result.replace(gameStatus.player1, gameStatus.player1 === username ? 'You' : gameStatus.player1).replace(gameStatus.player2, gameStatus.player2 === username ? 'You' : gameStatus.player2)}
+              </h3>
+            )}
           </>
         ) : (
           <>
