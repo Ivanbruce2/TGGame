@@ -89,39 +89,37 @@ function App() {
 
       const data = await response.json();  // Parse the JSON response
       console.log("Received game ID after choice submission:", data.game_id);
-      setGameId(data.game_id);  // Store the game ID for polling
+
+      if (data.game_id !== gameId) {
+        clearInterval(pollingRef.current); // Clear the old polling interval
+        setGameId(data.game_id);  // Update the game ID for polling
+        startPolling(data.game_id); // Start polling with the new game ID
+      }
     } catch (error) {
       console.error("Error sending choice:", error);
     }
   };
 
-  useEffect(() => {
-    if (!gameId) return;
-  
+  const startPolling = (currentGameId) => {
     const pollGameStatus = async () => {
-      console.log("Polling game status for game ID:", gameId);
+      console.log("Polling game status for game ID:", currentGameId);
       try {
-        const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
+        const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${currentGameId}`, {
           headers: {
             'ngrok-skip-browser-warning': 'true'  // Add this header to skip ngrok's warning page
           }
         });
         const contentType = response.headers.get("Content-Type");
         console.log("Content-Type:", contentType);
-  
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-  
+
         if (contentType && contentType.includes("application/json")) {
           const gameData = await response.json();
           console.log("Received game status:", gameData);
-  
-          // Check if the game ID has changed
-          if (gameData.game_id !== gameId) {
-            setGameId(gameData.game_id); // Update to the new game ID
-          }
-  
+
           setGameStatus(gameData);
         } else {
           const textResponse = await response.text();
@@ -132,14 +130,19 @@ function App() {
         console.error("Error fetching game status:", error);
       }
     };
-  
+
     pollingRef.current = setInterval(pollGameStatus, POLLING_INTERVAL);
-  
+  };
+
+  useEffect(() => {
+    if (gameId) {
+      startPolling(gameId);
+    }
+
     return () => {
-      clearInterval(pollingRef.current);
+      clearInterval(pollingRef.current); // Cleanup polling on component unmount or game ID change
     };
   }, [gameId]);
-  
 
   if (!gameStatus) {
     return <div>Loading game status...</div>;
