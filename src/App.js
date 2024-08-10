@@ -90,16 +90,14 @@ function App() {
       const data = await response.json();
       setGameStatus(data);
 
-      // Log when the opponent joins or makes a move
       if (data.player2 && !data.player2_choice) {
+        setOpponentChoiceStatus(`${data.player2} has joined the room. Waiting for them to make a choice.`);
         console.log(`${data.player2} has joined the room.`);
-      }
-
-      if (data.player2_choice) {
+      } else if (data.player2_choice) {
         setOpponentChoiceStatus(`${data.player2} has provided their choice.`);
         console.log(`${data.player2} has made their move:`, data.player2_choice);
       } else {
-        setOpponentChoiceStatus(`Waiting for ${data.player2 || 'opponent'} to provide their choice.`);
+        setOpponentChoiceStatus(`Waiting for ${data.player2 || 'opponent'} to join and provide their choice.`);
       }
 
       console.log('Game status updated:', data);
@@ -113,7 +111,7 @@ function App() {
         <h1>Room: {selectedRoom}</h1>
         {gameStatus ? (
           <>
-            <h2>{gameStatus.player1} vs {gameStatus.player2}</h2>
+            <h2>{gameStatus.player1} vs {gameStatus.player2 || 'Waiting for opponent'}</h2>
             <p>{gameStatus.player1}: {gameStatus.player1_choice}</p>
             {gameStatus.player2 && <p>{gameStatus.player2}: {gameStatus.player2_choice}</p>}
             <p>{opponentChoiceStatus}</p>
