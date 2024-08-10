@@ -126,6 +126,8 @@ function App() {
 
     pollingRef.current = setInterval(pollOpponentStatus, 3000);
   };
+
+  
   
   // Second poll: Check for choices once opponent has joined
   const startPollingChoices = (gameId) => {
