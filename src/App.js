@@ -233,7 +233,7 @@ function App() {
                   <>
                     <p>{gameStatus.result?.split('! ')[1]}</p>
                     <h2>
-                      {gameStatus.result?.includes(username) ? 'You Win!' : 'You Lose. Try again next time.'}
+                      {gameStatus.result?.includes(username) ? 'You Win!' : 'You Lose...'}
                     </h2>
                   </>
                 )}
