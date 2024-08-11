@@ -41,7 +41,7 @@ function App() {
   };
 
   const createRoom = async () => {
-    // setGameStatus(null);  // Reset game status
+    setGameStatus(null);  // Reset game status
     setUserChoice('');    // Reset user choice
     setOpponentChoiceStatus('');  // Reset opponent choice status
     
@@ -90,13 +90,7 @@ const startPollingChoices = (gameId) => {
             const data = await response.json();
             setGameStatus(data);
 
-            if (data.status === "waiting") {
-                console.log("Game reset to waiting state. Returning to lobby.");
-                clearInterval(pollingRef.current);
-
-                setSelectedRoom(null);
-                setGameStatus(null);
-            } else if (data.status === "completed") {
+            if (data.status === "completed") {
                 console.log("Game completed, stopping polling.");
                 clearInterval(pollingRef.current);
             } else if (!data.player1_choice || !data.player2_choice) {
