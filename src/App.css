@@ -109,7 +109,7 @@ body:before {
 .welcome-message {
   text-align: left;
   width: 100%;
-  font-size: 1em;
+  font-size: 1.5em;
   margin-bottom: 20px;
   color: #ffd700; /* Base color */
   font-family: 'Press Start 2P', cursive;
@@ -211,7 +211,7 @@ body:before {
   }
 
   .welcome-message {
-    font-size: 2em;
+    font-size: 1.5em;
     margin-bottom: 15px;
   }
 
@@ -232,7 +232,7 @@ body:before {
     font-size: 1.4em; /* Increase font size for the refresh button */
     padding: 8px 12px;
     margin: 5px 0;
-    width: 40%; /* Adjust width of the Refresh button */
+    width: 10%; /* Adjust width of the Refresh button */
   }
 
   .room-card {
