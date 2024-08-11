@@ -15,16 +15,15 @@ body, html {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Start content from the top */
+  justify-content: flex-start; /* Shift content towards the top */
   align-items: center;
   color: #fff;
-  padding: 10px 20px; /* Reduced padding */
+  padding: 10px; /* Reduced padding for more compact layout */
 }
 
 h1 {
-  font-size: 2em; /* Slightly smaller font size */
+  font-size: 2.5em;
   margin-bottom: 10px; /* Reduced margin */
-  margin-top: 10px; /* Reduced margin */
   color: #ffd700;
   text-shadow: 2px 2px 4px #000; 
 }
@@ -41,7 +40,7 @@ p {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 600px; /* Ensure the width is more compact */
+  max-width: 600px; /* More compact layout */
   margin-bottom: 10px; /* Reduced margin */
 }
 
@@ -49,19 +48,17 @@ p {
   background-color: #4CAF50;
   border: none;
   color: white;
-  padding: 10px 20px;
+  padding: 5px 15px; /* Reduced padding */
   text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
+  font-size: 14px; /* Slightly smaller font size */
   border-radius: 5px;
   cursor: pointer;
-  width: 150px;
 }
 
 .room-list {
   width: 100%;
-  max-width: 600px; /* Ensure the width is more compact */
+  max-width: 600px; /* More compact layout */
+  margin-top: 10px; /* Reduced margin */
 }
 
 .room-card {
@@ -70,28 +67,38 @@ p {
   align-items: center;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
-  padding: 8px; /* Reduced padding */
-  margin-bottom: 8px; /* Reduced margin */
+  padding: 10px; /* Reduced padding */
+  margin-bottom: 10px; /* Reduced margin */
   text-align: left;
+  flex-direction: row; /* Ensure content is side-by-side */
 }
 
-.room-details p {
-  margin: 3px 0; /* Reduced margin */
-  font-size: 14px; /* Slightly smaller font size */
+.room-details {
+  flex: 1; /* This will make sure the details take up available space */
 }
 
 .join-button {
-  padding: 5px 10px; /* Reduced padding */
-  font-size: 12px; /* Smaller font size */
-  margin-left: auto;
-  height: auto; /* Let the height adjust based on content */
+  flex-shrink: 0; /* Prevent the button from shrinking */
+  padding: 8px 15px; /* Reduced padding */
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  text-align: center;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column; /* Display "Join" and "Room" on two lines */
+  width: 70px; /* Reduced width */
+  height: 50px; /* Reduced height */
 }
 
 .join-button:disabled {
   background-color: #888888;
   cursor: not-allowed;
 }
-
 
 .choices {
   display: flex;
@@ -155,14 +162,6 @@ h3 {
 }
 
 @media (max-width: 480px) {
-  .App {
-    padding: 5px 10px; /* Even more compact padding on mobile */
-  }
-  .header-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
   h1 {
     font-size: 2em;
   }
@@ -181,11 +180,8 @@ h3 {
   }
 
   .room-card {
-    padding: 5px; /* Even more compact padding */
-  }
-
-  .join-button {
-    font-size: 10px; /* Smaller font size */
+    padding: 10px;
+    flex-direction: row; /* Ensure row layout even on mobile */
   }
 
   .room-details {
@@ -193,7 +189,11 @@ h3 {
     font-size: 12px; /* Smaller font size for mobile */
   }
 
-
+  .join-button {
+    width: 70px; /* Set a fixed width */
+    height: 50px; /* Set a fixed height */
+    font-size: 12px; /* Smaller font size for mobile */
+  }
 }
 
 @keyframes gradientShift {
