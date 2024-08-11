@@ -257,7 +257,7 @@ function App() {
               </div>
               {room.status === 'waiting' && (
                 <button className="join-button" onClick={() => joinRoom(room.room_id)}>
-                  Join<br />Room
+                  <b>JOIN</b>
                 </button>
               )}
             </div>
