@@ -55,7 +55,7 @@ p {
   font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
-  width: 150px; /* Adjusted width for a shorter button */
+  width: 150px;
 }
 
 .room-list {
@@ -73,6 +73,7 @@ p {
   padding: 15px;
   margin-bottom: 10px;
   text-align: left;
+  position: relative;
 }
 
 .room-details {
@@ -83,13 +84,17 @@ p {
   background-color: #4CAF50;
   border: none;
   color: white;
-  padding: 20px;
+  padding: 10px;
   text-align: center;
   font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
-  width: 100px; /* Adjusted width for a shorter button */
-  align-self: stretch; /* Makes the button take up the full height of the card */
+  width: 100px;
+  height: 100%; /* Ensure the button takes up the full height */
+  position: absolute;
+  right: 10px; /* Align to the right of the container */
+  top: 50%;
+  transform: translateY(-50%); /* Vertically center the button */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -188,6 +193,8 @@ h3 {
     margin-top: 10px;
     width: 100%;
     align-self: center;
+    position: static; /* Reset the absolute positioning on small screens */
+    transform: none;
   }
 }
 
