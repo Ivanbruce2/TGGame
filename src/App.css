@@ -15,15 +15,16 @@ body, html {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start; /* Start content from the top */
   align-items: center;
   color: #fff;
-  padding: 20px;
+  padding: 10px 20px; /* Reduced padding */
 }
 
 h1 {
-  font-size: 2.5em;
-  margin-bottom: 20px;
+  font-size: 2em; /* Slightly smaller font size */
+  margin-bottom: 10px; /* Reduced margin */
+  margin-top: 10px; /* Reduced margin */
   color: #ffd700;
   text-shadow: 2px 2px 4px #000; 
 }
@@ -40,8 +41,8 @@ p {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 800px;
-  margin-bottom: 20px;
+  max-width: 600px; /* Ensure the width is more compact */
+  margin-bottom: 10px; /* Reduced margin */
 }
 
 .refresh-button {
@@ -60,8 +61,7 @@ p {
 
 .room-list {
   width: 100%;
-  max-width: 800px;
-  margin-top: 20px;
+  max-width: 600px; /* Ensure the width is more compact */
 }
 
 .room-card {
@@ -70,33 +70,21 @@ p {
   align-items: center;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
-  padding: 15px;
-  margin-bottom: 10px;
+  padding: 8px; /* Reduced padding */
+  margin-bottom: 8px; /* Reduced margin */
   text-align: left;
-  flex-direction: row; /* Ensure content is side-by-side */
 }
 
-.room-details {
-  flex: 1; /* This will make sure the details take up available space */
+.room-details p {
+  margin: 3px 0; /* Reduced margin */
+  font-size: 14px; /* Slightly smaller font size */
 }
 
 .join-button {
-  flex-shrink: 0; /* Prevent the button from shrinking */
-  padding: 10px 20px;
-  background-color: #4CAF50;
-  border: none;
-  color: white;
-  text-align: center;
-  font-size: 14px;
-  border-radius: 5px;
-  cursor: pointer;
-  align-self: center; /* Center the button vertically */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column; /* Display "Join" and "Room" on two lines */
-  width: 80px; /* Set a fixed width */
-  height: 60px; /* Set a fixed height */
+  padding: 5px 10px; /* Reduced padding */
+  font-size: 12px; /* Smaller font size */
+  margin-left: auto;
+  height: auto; /* Let the height adjust based on content */
 }
 
 .join-button:disabled {
@@ -167,6 +155,14 @@ h3 {
 }
 
 @media (max-width: 480px) {
+  .App {
+    padding: 5px 10px; /* Even more compact padding on mobile */
+  }
+  .header-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   h1 {
     font-size: 2em;
   }
@@ -185,8 +181,11 @@ h3 {
   }
 
   .room-card {
-    padding: 10px;
-    flex-direction: row; /* Ensure row layout even on mobile */
+    padding: 5px; /* Even more compact padding */
+  }
+
+  .join-button {
+    font-size: 10px; /* Smaller font size */
   }
 
   .room-details {
@@ -194,12 +193,7 @@ h3 {
     font-size: 12px; /* Smaller font size for mobile */
   }
 
-  .join-button {
-    width: 80px; /* Set a fixed width */
-    height: 60px; /* Set a fixed height */
-    font-size: 12px; /* Smaller font size for mobile */
-    max-width: 30%; /* Ensure it fits within the container */
-  }
+
 }
 
 @keyframes gradientShift {
