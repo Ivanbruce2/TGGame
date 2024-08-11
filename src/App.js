@@ -96,7 +96,7 @@ function App() {
                 console.log("Error polling game status: Game not found");
                 clearInterval(pollingRef.current);
 
-                // If the game is not found, return to the lobby after 5 seconds
+                // Return to the lobby after 5 seconds if the game is not found
                 console.log("Returning to lobby in 5 seconds...");
                 setTimeout(() => {
                     setSelectedRoom(null);
@@ -108,16 +108,16 @@ function App() {
             const data = await response.json();
             setGameStatus(data);
 
-            if (data.status === "completed") {
-                console.log("Game completed, stopping polling.");
+            if (data.status === "waiting") {
+                console.log("Player removed or game reset to waiting state. Returning to lobby.");
                 clearInterval(pollingRef.current);
 
-                // Return to lobby after 15 seconds
-                setTimeout(() => {
-                    console.log("Returning to lobby after game completed.");
-                    setSelectedRoom(null);
-                    setGameStatus(null);
-                }, 15000); // 15 seconds delay
+                // Immediately send the player back to the lobby
+                setSelectedRoom(null);
+                setGameStatus(null);
+            } else if (data.status === "completed") {
+                console.log("Game completed, stopping polling.");
+                clearInterval(pollingRef.current);
             } else if (!data.player1_choice || !data.player2_choice) {
                 console.log("Waiting for players to make their choices...");
             } else {
@@ -137,6 +137,7 @@ function App() {
     // Start polling
     pollingRef.current = setInterval(pollGameStatus, 3000);
 };
+
 
   
 
