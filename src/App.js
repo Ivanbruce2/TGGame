@@ -117,6 +117,11 @@ const startPollingOpponent = (roomId) => {
 // Second poll: Check for choices once opponent has joined
 // Second poll: Check for choices once opponent has joined
 const startPollingChoices = (gameId) => {
+  // Clear any existing polling interval before starting a new one
+  if (pollingRef.current) {
+    clearInterval(pollingRef.current);
+  }
+
   const pollGameStatus = async () => {
     const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
       headers: {
@@ -127,8 +132,10 @@ const startPollingChoices = (gameId) => {
     const data = await response.json();
     setGameStatus(data);
 
+    // Stop polling when the game is completed
     if (data.status === 'completed') {
-      clearInterval(pollingRef.current); // Stop polling when the game is completed
+      clearInterval(pollingRef.current);
+      pollingRef.current = null; // Clear the ref to indicate no active polling
       console.log('Game completed:', data.result);
     }
 
@@ -148,6 +155,7 @@ const startPollingChoices = (gameId) => {
 
   pollingRef.current = setInterval(pollGameStatus, 3000);
 };
+
 
 
 
