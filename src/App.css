@@ -1,11 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Roboto:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 body, html {
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
-  background: linear-gradient(45deg, #28e0ae, #0044ff); 
+  background: linear-gradient(135deg, #4101ff, #880176, #9c0202); 
   background-size: 400% 400%; /* Extend the gradient */
   color: #ffd700;
   font-family: 'VT323', monospace;
@@ -29,7 +29,7 @@ body:before {
   top: -200px;
   left: -200px;
   transform: rotate(45deg);
-  animation: floatBg 20s infinite linear;
+  animation: floatBg 5s infinite linear; /* Speed up floating background animation */
   z-index: 0;
   pointer-events: none;
 }
@@ -73,15 +73,15 @@ body:before {
 }
 
 .pixel-button {
-  background-color: #ff0047; /* Primary color */
-  color: white;
-  font-size: 0.8em;
+  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); /* Rainbow gradient */
+  background-size: 200% 200%;
+  color: rgb(6, 6, 6);
+  font-size: 1em;
   border: 2px solid #333;
-  height: 40px; /* Fixed height for consistency */
-  line-height: 36px; /* Center text vertically */
-  padding: 0 16px; /* Adjusted padding to maintain height */
+  height: 50px; /* Consistent height */
+  line-height: 46px; /* Center text vertically */
+  margin: 10px 0; /* Vertical margin for spacing */
   border-radius: 4px;
-  margin-left: 8px; /* Space between buttons */
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -90,6 +90,15 @@ body:before {
   font-family: 'Press Start 2P', cursive; /* Matching the pixel art style */
   box-shadow: 0 4px #333; /* Pixelated shadow effect */
   position: relative;
+  animation: gradientShift 2s infinite linear; /* Animate the gradient */
+}
+
+.create-button {
+  width: 200px; /* Width for Create Room button */
+}
+
+.refresh-button {
+  width: 60px; /* Smaller width for Refresh button */
 }
 
 .pixel-button:active {
@@ -97,20 +106,20 @@ body:before {
   box-shadow: 0 0 #333;
 }
 
-.create-button {
-  background-color: #f3d020; /* Green background for create button */
-}
-
-.refresh-button {
-  background-color: #32e017; /* Blue background for refresh button */
-}
-
 .welcome-message {
   text-align: left;
   width: 100%;
   font-size: 3.5em;
   margin-bottom: 20px;
-  color: #ffffff;
+  color: #ffd700; /* Base color */
+  font-family: 'Press Start 2P', cursive;
+  position: relative;
+  text-shadow: 
+    1px 1px 0 #ff0047,   /* red shadow */
+    2px 2px 0 #ff8a00,   /* orange shadow */
+    3px 3px 0 #fcdc4d,   /* yellow shadow */
+    4px 4px 0 #28e0ae,   /* green shadow */
+    5px 5px 0 #0044ff;   /* blue shadow */
 }
 
 .header-row {
@@ -123,9 +132,6 @@ body:before {
   padding: 8px;
   margin-bottom: 10px;
 }
-
-
-
 
 .room-list {
   width: 100%;
@@ -166,9 +172,9 @@ body:before {
   background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); 
   background-size: 200% 200%; 
   border: none;
-  color: white;
+  color: rgb(0, 0, 0);
   text-align: center;
-  font-size: 16px;
+  font-size: 12px;
   border-radius: 5px;
   cursor: pointer;
   display: flex;
@@ -177,9 +183,9 @@ body:before {
   flex-direction: column;
   width: 70px;
   height: 50px;
-  animation: gradientShift 2s infinite;
+  animation: gradientShift 2s infinite linear;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Press Start 2P', cursive;
 }
 
 .join-button:hover {
@@ -223,10 +229,10 @@ body:before {
   }
 
   .refresh-button {
-    font-size: 1em;
+    font-size: 1.4em; /* Increase font size for the refresh button */
     padding: 8px 12px;
     margin: 5px 0;
-    width: 20%; /* Adjust width of the Refresh button */
+    width: 40%; /* Adjust width of the Refresh button */
   }
 
   .room-card {
@@ -245,4 +251,33 @@ body:before {
     bottom: 8px;
     right: 8px;
   }
+}
+
+.choices {
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically */
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Center content horizontally */
+}
+
+.choice-button {
+  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); /* Rainbow gradient */
+  background-size: 200% 200%;
+  color: rgb(6, 6, 6);
+  font-size: 1em;
+  border: 2px solid #333;
+  height: 50px; /* Consistent height */
+  width: 200px; /* Consistent width */
+  line-height: 46px; /* Center text vertically */
+  margin: 10px 0; /* Vertical margin for spacing */
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+  font-family: 'Press Start 2P', cursive; /* Matching the pixel art style */
+  box-shadow: 0 4px #333; /* Pixelated shadow effect */
+  animation: gradientShift 2s infinite linear; /* Animate the gradient */
 }

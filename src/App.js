@@ -199,12 +199,17 @@ function App() {
             {/* Render the choices */}
             {gameStatus.status !== 'completed' && (
               <div className="choices">
-                {["Scissors", "Paper", "Stone"].map(choice => (
-                  <button key={choice} onClick={() => handleChoice(choice)} disabled={!!userChoice}>
-                    {choice}
-                  </button>
-                ))}
-              </div>
+              {["Scissors", "Paper", "Stone"].map(choice => (
+                <button 
+                  key={choice} 
+                  className="choice-button" 
+                  onClick={() => handleChoice(choice)} 
+                  disabled={!!userChoice}
+                >
+                  {choice}
+                </button>
+              ))}
+            </div>
             )}
     
             {/* Render the opponent status below the choices */}
@@ -226,12 +231,17 @@ function App() {
           <>
             <p>Select your choice below:</p>
             <div className="choices">
-              {["Scissors", "Paper", "Stone"].map(choice => (
-                <button key={choice} onClick={() => handleChoice(choice)}>
-                  {choice}
-                </button>
-              ))}
-            </div>
+  {["Scissors", "Paper", "Stone"].map(choice => (
+    <button 
+      key={choice} 
+      className="choice-button" 
+      onClick={() => handleChoice(choice)} 
+      disabled={!!userChoice}
+    >
+      {choice}
+    </button>
+  ))}
+</div>
             {userChoice && !gameStatus?.player2 && <p>{opponentChoiceStatus || 'Waiting for opponent to join...'}</p>}
           </>
         )}
