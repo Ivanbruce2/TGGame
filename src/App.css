@@ -186,12 +186,19 @@ h3 {
 
   .room-card {
     padding: 10px;
+    flex-direction: row; /* Ensure row layout even on mobile */
+  }
+
+  .room-details {
+    max-width: 60%; /* Further reduce the width to make space for the button */
+    font-size: 12px; /* Smaller font size for mobile */
   }
 
   .join-button {
     width: 80px; /* Set a fixed width */
     height: 60px; /* Set a fixed height */
     font-size: 12px; /* Smaller font size for mobile */
+    max-width: 30%; /* Ensure it fits within the container */
   }
 }
 
