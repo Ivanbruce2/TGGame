@@ -213,10 +213,10 @@ function App() {
     <div className="App">
       <div className="container">
         <h1 className="welcome-message">Welcome, {username}</h1>
-        <div className="header-row">
-          <button className="create-button" onClick={createRoom}>+</button>
-          <button className="refresh-button" onClick={fetchRooms}>↻</button>
-        </div>
+        <div class="header-row">
+  <button class="pixel-button create-button">Create Room</button>
+  <button class="pixel-button refresh-button">↻</button>
+</div>
         <div className="room-list">
           {Object.values(rooms).map((room) => (
             <div className="room-card" key={room.room_id}>

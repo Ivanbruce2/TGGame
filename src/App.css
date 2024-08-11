@@ -61,46 +61,63 @@ body:before {
   padding: 20px;
   width: 100%;
   max-width: 600px;
-  margin-top: 20px;
+  margin-top: 0px;
+}
+
+.pixel-button {
+  background-color: #ff0047; /* Primary color */
+  color: white;
+  font-size: 0.8em;
+  border: 2px solid #333;
+  height: 40px; /* Fixed height for consistency */
+  line-height: 36px; /* Center text vertically */
+  padding: 0 16px; /* Adjusted padding to maintain height */
+  border-radius: 4px;
+  margin-left: 8px; /* Space between buttons */
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+  font-family: 'Press Start 2P', cursive; /* Matching the pixel art style */
+  box-shadow: 0 4px #333; /* Pixelated shadow effect */
+  position: relative;
+}
+
+.pixel-button:active {
+  top: 4px; /* Simulate button press */
+  box-shadow: 0 0 #333;
+}
+
+.create-button {
+  background-color: #f3d020; /* Green background for create button */
+}
+
+.refresh-button {
+  background-color: #32e017; /* Blue background for refresh button */
 }
 
 .welcome-message {
   text-align: left;
   width: 100%;
-  font-size: 2em;
+  font-size: 2.5em;
   margin-bottom: 20px;
   color: #ffd700;
 }
 
 .header-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end; /* Align buttons to the right */
   align-items: center;
-  width: 100%;
-  background-color: rgba(255, 255, 255, 0.9);
+  width: 97%;
+  background-color: rgba(248, 248, 245, 0.7); /* Add transparency */
   border-radius: 10px;
-  padding: 10px;
+  padding: 8px;
   margin-bottom: 10px;
 }
 
-.create-button, .refresh-button {
-  background: #2a2a72; /* A cool blue color to match the theme */
-  border: none;
-  color: white;
-  padding: 10px 15px;
-  text-align: center;
-  font-size: 1em;
-  border-radius: 15px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-  font-family: 'Roboto', sans-serif; /* Cooler font for the buttons */
-  width: 60px;
-}
 
-.create-button:hover, .refresh-button:hover {
-  background: #3a3a91; /* Slightly lighter on hover */
-}
+
 
 .room-list {
   width: 100%;
@@ -135,15 +152,15 @@ body:before {
 
 .join-button {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
+  top: 5px;
+  right: 5px;
   padding: 8px 15px;
   background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); 
   background-size: 200% 200%; 
   border: none;
   color: white;
   text-align: center;
-  font-size: 14px;
+  font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
   display: flex;
