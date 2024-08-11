@@ -3,8 +3,8 @@ import './App.css';
 
 function App() {
   const [username, setUsername] = useState('');
-  const [rooms, setRooms] = useState([]);
-  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [games, setGames] = useState([]);
+  const [selectedGame, setSelectedGame] = useState(null);
   const [gameStatus, setGameStatus] = useState(null);
   const [userChoice, setUserChoice] = useState('');
   const [opponentChoiceStatus, setOpponentChoiceStatus] = useState('');
@@ -14,33 +14,33 @@ function App() {
     const urlParams = new URLSearchParams(window.location.search);
     const usernameFromParams = urlParams.get('username');
     setUsername(usernameFromParams);
-    fetchRooms();
+    fetchGames();
 
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
-      leaveRoom(); // Ensures the user leaves the room if the component unmounts
+      leaveGame(); // Ensures the user leaves the game if the component unmounts
     };
-  }, [selectedRoom]);
+  }, [selectedGame]);
 
   const handleBeforeUnload = (event) => {
-    leaveRoom();
+    leaveGame();
     event.returnValue = ''; // This prompts the user before leaving
   };
 
-  const fetchRooms = async () => {
+  const fetchGames = async () => {
     const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
       headers: {
         'ngrok-skip-browser-warning': 'true'
       }
     });
     const data = await response.json();
-    setRooms(data);
-    console.log('Rooms fetched:', data);
+    setGames(data);
+    console.log('Games fetched:', data);
   };
 
-  const createRoom = async () => {
+  const createGame = async () => {
     setGameStatus(null);  // Reset game status
     setUserChoice('');    // Reset user choice
     setOpponentChoiceStatus('');  // Reset opponent choice status
@@ -57,16 +57,13 @@ function App() {
     });
   
     const data = await response.json();
-    setSelectedRoom(data.game_id);
+    setSelectedGame(data.game_id);
     console.log(`${username} created game:`, data.game_id);
   
-    // Delay the start of polling to ensure the room is fully set up
+    startPollingChoices(data.game_id);
+  };
 
-      startPollingChoices(data.game_id);
- // 1 second delay before polling starts
-};
-
-const startPollingChoices = (gameId) => {
+  const startPollingChoices = (gameId) => {
     const pollGameStatus = async () => {
         try {
             const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
@@ -81,7 +78,7 @@ const startPollingChoices = (gameId) => {
 
                 console.log("Returning to lobby in 5 seconds...");
                 setTimeout(() => {
-                    setSelectedRoom(null);
+                    setSelectedGame(null);
                     setGameStatus(null);
                 }, 5000);
                 return;
@@ -104,7 +101,7 @@ const startPollingChoices = (gameId) => {
         } catch (error) {
             console.error("Error during polling:", error);
             clearInterval(pollingRef.current);
-            setSelectedRoom(null);
+            setSelectedGame(null);
             setGameStatus(null);
         }
     };
@@ -112,7 +109,7 @@ const startPollingChoices = (gameId) => {
     pollingRef.current = setInterval(pollGameStatus, 3000);
 };
 
-const joinRoom = async (game_id) => {
+const joinGame = async (game_id) => {
   try {
       const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/join_room', {
           method: 'POST',
@@ -128,25 +125,19 @@ const joinRoom = async (game_id) => {
 
       const data = await response.json();
 
-      // Check if the data object and game_id are valid
       if (data && data.game_id) {
-          setSelectedRoom(data.game_id);
+          setSelectedGame(data.game_id);
           console.log(`${username} joined game:`, data.game_id);
           startPollingChoices(data.game_id);
       } else {
           console.error("Unexpected response data:", data);
       }
   } catch (error) {
-      console.error("Error in joinRoom:", error);
+      console.error("Error in joinGame:", error);
   }
 };
 
-  
-
-
-
-  
-  const handleChoice = async (choice) => {
+const handleChoice = async (choice) => {
     setUserChoice(choice);
     console.log(`${username} selected:`, choice);
 
@@ -160,7 +151,7 @@ const joinRoom = async (game_id) => {
             body: new URLSearchParams({
                 username: username,
                 choice: choice,
-                room_id: selectedRoom,
+                game_id: selectedGame,
             }),
         });
 
@@ -168,20 +159,16 @@ const joinRoom = async (game_id) => {
         setGameStatus(data); // Update the game status with the response from the server
         console.log("Game status updated:", data);
 
-        // If the game is completed, stop polling after 10 seconds
         if (data.status !== "completed") {
-            startPollingChoices(selectedRoom);
+            startPollingChoices(selectedGame);
         }
     } catch (error) {
         console.error("Error in handleChoice:", error);
     }
 };
 
-
-  
-
-  const leaveRoom = async () => {
-    if (selectedRoom) {
+const leaveGame = async () => {
+    if (selectedGame) {
       await fetch('https://90a3-119-74-213-151.ngrok-free.app/leave_room', {
         method: 'POST',
         headers: {
@@ -190,29 +177,27 @@ const joinRoom = async (game_id) => {
         },
         body: new URLSearchParams({
           username: username,
-          room_id: selectedRoom,
+          game_id: selectedGame,
         }),
       });
-      console.log(`${username} left room:`, selectedRoom);
+      console.log(`${username} left game:`, selectedGame);
       
-      // Reset relevant states
-      setSelectedRoom(null);
+      setSelectedGame(null);
       setGameStatus(null);
       setUserChoice('');
       setOpponentChoiceStatus('');
     }
-  };
-  
+};
 
-  useEffect(() => {
+useEffect(() => {
     return () => clearInterval(pollingRef.current);
   }, []);
 
-  if (selectedRoom) {
+  if (selectedGame) {
     console.log("Rendering game screen. Current gameStatus:", gameStatus);
     return (
       <div className="App">
-        <h1 className="welcome-message2">Room: {selectedRoom}</h1>
+        <h1 className="welcome-message2">Game: {selectedGame}</h1>
         {gameStatus ? (
           <>
             <h2 className="game-status">
@@ -221,7 +206,6 @@ const joinRoom = async (game_id) => {
               {gameStatus.player2 ? `${gameStatus.player2} ${gameStatus.player2_choice ? '✔️' : '❓'}` : '[Pending]'}
             </h2>
 
-            {/* Render the choices for Player 1 regardless of Player 2's status */}
             {gameStatus.status !== 'completed' && (
               <div className="choices">
                 {["Scissors", "Paper", "Stone"].map(choice => (
@@ -229,7 +213,7 @@ const joinRoom = async (game_id) => {
                     key={choice} 
                     className="choice-button" 
                     onClick={() => handleChoice(choice)} 
-                    disabled={!!userChoice} // Disable after Player 1 makes a choice
+                    disabled={!!userChoice}
                   >
                     {choice}
                   </button>
@@ -237,12 +221,10 @@ const joinRoom = async (game_id) => {
               </div>
             )}
 
-            {/* Render the opponent status below the choices */}
             {gameStatus.status !== 'completed' && (
               <p>{opponentChoiceStatus || 'Waiting for opponent to join...'}</p>
             )}
 
-            {/* Render the result when the game is completed */}
             {gameStatus.status === 'completed' && (
               <div>
                 {gameStatus.result?.includes('draw') ? (
@@ -256,7 +238,7 @@ const joinRoom = async (game_id) => {
                   </>
                 )}
                 <button className="return-button" onClick={() => {
-                  setSelectedRoom(null);
+                  setSelectedGame(null);
                   setGameStatus(null);
                   setUserChoice('');
                   setOpponentChoiceStatus('');
@@ -288,26 +270,24 @@ const joinRoom = async (game_id) => {
     );
   }
 
-  
-
   return (
     <div className="App">
-      <div className="container">
+      <div class="container">
         <h1 className="welcome-message">Welcome, {username}</h1>
         <div class="header-row">
-          <button class="pixel-button create-button" onClick={createRoom}>Create Room</button>
-          <button class="pixel-button refresh-button" onClick={fetchRooms}>↻</button>
+          <button class="pixel-button create-button" onClick={createGame}>Create Game</button>
+          <button class="pixel-button refresh-button" onClick={fetchGames}>↻</button>
         </div>
-        <div className="room-list">
-          {Object.values(rooms).map((room) => (
-            <div className="room-card" key={room.room_id}>
-              <div className="room-details">
-                <p>Game ID: {room.room_id}</p>
-                <p>{room.status === 'waiting' ? `Player: ${room.player1}` : `${room.player1} vs ${room.player2}`}</p>
-                <p>Status: {room.status === 'waiting' ? 'Waiting for opponent' : room.status}</p>
+        <div className="game-list">
+          {Object.values(games).map((game) => (
+            <div className="game-card" key={game.game_id}>
+              <div className="game-details">
+                <p>Game ID: {game.game_id}</p>
+                <p>{game.status === 'waiting' ? `Player: ${game.player1}` : `${game.player1} vs ${game.player2}`}</p>
+                <p>Status: {game.status === 'waiting' ? 'Waiting for opponent' : game.status}</p>
               </div>
-              {room.status === 'waiting' && (
-                <button className="join-button" onClick={() => joinRoom(game.game_id)}>
+              {game.status === 'waiting' && (
+                <button className="join-button" onClick={() => joinGame(game.game_id)}>
                   <b>JOIN</b>
                 </button>
               )}
