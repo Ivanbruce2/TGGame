@@ -165,13 +165,9 @@ function App() {
         console.log("Game status updated:", data);
 
         // If the game is completed, stop polling after 10 seconds
-        if (data.status === "completed") {
-            setTimeout(() => {
-                clearInterval(pollingRef.current);
-            }, 10000); // Stop polling after 10 seconds
-        } else {
+        
             startPollingChoices(selectedRoom);
-        }
+        
     } catch (error) {
         console.error("Error in handleChoice:", error);
     }
