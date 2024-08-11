@@ -108,8 +108,14 @@ function App() {
           'ngrok-skip-browser-warning': 'true'
         }
       });
+  
       const data = await response.json();
-      const room = data[roomId];
+  
+      // Assuming data is an array or object with rooms, find the room with the matching roomId
+      const room = data[roomId]; // If data is an object with roomId as keys
+      // If data is an array of rooms, find the room with the matching roomId
+      // const room = data.find(room => room.room_id === roomId);
+  
       if (room && room.player2) {
         clearInterval(pollingRef.current);
         setGameStatus({ ...gameStatus, player1: room.player1, player2: room.player2, status: 'in_progress' });
@@ -119,6 +125,7 @@ function App() {
     };
     pollingRef.current = setInterval(pollOpponentStatus, 3000);
   };
+  
 
   const startPollingChoices = (gameId) => {
     if (pollingRef.current) {
