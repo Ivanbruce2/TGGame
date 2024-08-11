@@ -185,16 +185,13 @@ h3 {
   }
 
   .room-card {
-    flex-direction: column;
-    align-items: flex-start;
+    padding: 10px;
   }
 
   .join-button {
-    margin-top: 10px;
-    width: 100%;
-    align-self: center;
-    position: static; /* Reset the absolute positioning on small screens */
-    transform: none;
+    width: 80px; /* Set a fixed width */
+    height: 60px; /* Set a fixed height */
+    font-size: 12px; /* Smaller font size for mobile */
   }
 }
 
