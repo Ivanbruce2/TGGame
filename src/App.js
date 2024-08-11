@@ -58,8 +58,11 @@ function App() {
     const data = await response.json();
     setSelectedRoom(data.room_id);
     console.log(`${username} created room:`, data.room_id);
+    console.log("Initial gameStatus after room creation:", gameStatus);
+  
     startPollingOpponent(data.room_id);
   };
+  
   
 
   const joinRoom = async (room_id) => {
@@ -106,31 +109,32 @@ function App() {
     startPollingChoices(data.game_id);
   };
 
- const startPollingOpponent = (roomId) => {
-  const pollOpponentStatus = async () => {
-    const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
-      headers: {
-        'ngrok-skip-browser-warning': 'true'
+  const startPollingOpponent = (roomId) => {
+    const pollOpponentStatus = async () => {
+      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+        }
+      });
+  
+      const data = await response.json();
+      console.log("Polling opponent status, current room data:", data);
+  
+      const room = data[roomId]; // Assuming data is an object with roomId as keys
+  
+      if (room && room.player2) {
+        clearInterval(pollingRef.current);
+        setGameStatus({ ...gameStatus, player1: room.player1, player2: room.player2, status: 'in_progress' });
+        console.log(`Player 1: ${room.player1}, Player 2: ${room.player2}`);
+        console.log("Updated gameStatus after opponent joins:", { player1: room.player1, player2: room.player2, status: 'in_progress' });
+        startPollingChoices(roomId);
+      } else {
+        console.log("No opponent yet, waiting for player 2 to join.");
       }
-    });
-
-    const data = await response.json();
-
-    // Assuming data is an array or object with rooms, find the room with the matching roomId
-    const room = data[roomId]; // If data is an object with roomId as keys
-    // If data is an array of rooms, find the room with the matching roomId
-    // const room = data.find(room => room.room_id === roomId);
-
-    if (room && room.player2) {
-      clearInterval(pollingRef.current);
-      setGameStatus({ ...gameStatus, player1: room.player1, player2: room.player2, status: 'in_progress' });
-      console.log(`Player 1: ${room.player1}, Player 2: ${room.player2}`);
-      startPollingChoices(roomId);
-    }
+    };
+    pollingRef.current = setInterval(pollOpponentStatus, 3000);
   };
-  pollingRef.current = setInterval(pollOpponentStatus, 3000);
-};
-
+  
 
   const startPollingChoices = (gameId) => {
     if (pollingRef.current) {
