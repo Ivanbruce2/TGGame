@@ -41,6 +41,10 @@ function App() {
   };
 
   const createRoom = async () => {
+    setGameStatus(null);  // Reset game status
+    setUserChoice('');    // Reset user choice
+    setOpponentChoiceStatus('');  // Reset opponent choice status
+    
     const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/create_room', {
       method: 'POST',
       headers: {
@@ -56,6 +60,7 @@ function App() {
     console.log(`${username} created room:`, data.room_id);
     startPollingOpponent(data.room_id);
   };
+  
 
   const joinRoom = async (room_id) => {
     const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/join_room', {
@@ -178,9 +183,15 @@ function App() {
         }),
       });
       console.log(`${username} left room:`, selectedRoom);
+      
+      // Reset relevant states
       setSelectedRoom(null);
+      setGameStatus(null);
+      setUserChoice('');
+      setOpponentChoiceStatus('');
     }
   };
+  
 
   useEffect(() => {
     return () => clearInterval(pollingRef.current);
@@ -229,9 +240,15 @@ function App() {
         <h2>{gameStatus.result.includes(username) ? 'You Win!' : 'You Lose. Try again next time.'}</h2>
       </>
     )}
-    <button className="return-button" onClick={() => setSelectedRoom(null)}>
-      Return to Lobby
-    </button>
+<button className="return-button" onClick={() => {
+  setSelectedRoom(null);
+  setGameStatus(null);  // Reset game status
+  setUserChoice('');    // Reset user choice
+  setOpponentChoiceStatus('');  // Reset opponent choice status
+}}>
+  Return to Lobby
+</button>
+
   </div>
 )}
 
