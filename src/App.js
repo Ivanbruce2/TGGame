@@ -15,7 +15,19 @@ function App() {
     const usernameFromParams = urlParams.get('username');
     setUsername(usernameFromParams);
     fetchRooms();
-  }, []);
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      leaveRoom(); // Ensures the user leaves the room if the component unmounts
+    };
+  }, [selectedRoom]);
+
+  const handleBeforeUnload = (event) => {
+    leaveRoom();
+    event.returnValue = ''; // This prompts the user before leaving
+  };
 
   const fetchRooms = async () => {
     const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
@@ -66,28 +78,28 @@ function App() {
   const handleChoice = async (choice) => {
     setUserChoice(choice);
     console.log(`${username} selected:`, choice);
-    
+
     // Update gameStatus immediately to reflect that the current user has made their choice
     setGameStatus(prevStatus => ({
-        ...prevStatus,
-        [`${username === prevStatus.player1 ? 'player1_choice' : 'player2_choice'}`]: 'made_choice'
+      ...prevStatus,
+      [`${username === prevStatus.player1 ? 'player1_choice' : 'player2_choice'}`]: 'made_choice'
     }));
 
     const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/webhook', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'ngrok-skip-browser-warning': 'true',
-        },
-        body: new URLSearchParams({
-            username: username,
-            choice: choice,
-            room_id: selectedRoom,
-        }),
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'ngrok-skip-browser-warning': 'true',
+      },
+      body: new URLSearchParams({
+        username: username,
+        choice: choice,
+        room_id: selectedRoom,
+      }),
     });
     const data = await response.json();
     startPollingChoices(data.game_id);
-};
+  };
 
   const startPollingOpponent = (roomId) => {
     const pollOpponentStatus = async () => {
@@ -143,6 +155,24 @@ function App() {
     };
 
     pollingRef.current = setInterval(pollGameStatus, 3000);
+  };
+
+  const leaveRoom = async () => {
+    if (selectedRoom) {
+      await fetch('https://90a3-119-74-213-151.ngrok-free.app/leave_room', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'ngrok-skip-browser-warning': 'true',
+        },
+        body: new URLSearchParams({
+          username: username,
+          room_id: selectedRoom,
+        }),
+      });
+      console.log(`${username} left room:`, selectedRoom);
+      setSelectedRoom(null);
+    }
   };
 
   useEffect(() => {
@@ -214,9 +244,9 @@ function App() {
       <div className="container">
         <h1 className="welcome-message">Welcome, {username}</h1>
         <div class="header-row">
-  <button class="pixel-button create-button">Create Room</button>
-  <button class="pixel-button refresh-button">↻</button>
-</div>
+          <button class="pixel-button create-button" onClick={createRoom}>Create Room</button>
+          <button class="pixel-button refresh-button" onClick={fetchRooms}>↻</button>
+        </div>
         <div className="room-list">
           {Object.values(rooms).map((room) => (
             <div className="room-card" key={room.room_id}>
