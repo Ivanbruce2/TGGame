@@ -73,28 +73,24 @@ p {
   padding: 15px;
   margin-bottom: 10px;
   text-align: left;
-  position: relative;
+  flex-direction: row; /* Ensure content is side-by-side */
 }
 
 .room-details {
-  flex-grow: 1;
+  flex: 1; /* This will make sure the details take up available space */
 }
 
 .join-button {
+  flex-shrink: 0; /* Prevent the button from shrinking */
+  padding: 15px 25px;
   background-color: #4CAF50;
   border: none;
   color: white;
-  padding: 10px;
   text-align: center;
   font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
-  width: 100px;
-  height: 100%; /* Ensure the button takes up the full height */
-  position: absolute;
-  right: 10px; /* Align to the right of the container */
-  top: 50%;
-  transform: translateY(-50%); /* Vertically center the button */
+  align-self: stretch; /* Make the button span the height of the container */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -104,6 +100,7 @@ p {
   background-color: #888888;
   cursor: not-allowed;
 }
+
 
 .choices {
   display: flex;
