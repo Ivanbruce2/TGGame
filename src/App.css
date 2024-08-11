@@ -136,6 +136,23 @@ body:before {
     5px 5px 0 #0044ff;   /* blue shadow */
 }
 
+.welcome-message2 {
+  text-transform: uppercase;
+  text-align: center;
+  width: 100%;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  color: #ffd700; /* Base color */
+  font-family: 'Press Start 2P', cursive;
+  position: relative;
+  text-shadow: 
+    1px 1px 0 #ff0047,   /* red shadow */
+    2px 2px 0 #ff8a00,   /* orange shadow */
+    3px 3px 0 #fcdc4d,   /* yellow shadow */
+    4px 4px 0 #28e0ae,   /* green shadow */
+    5px 5px 0 #0044ff;   /* blue shadow */
+}
+
 .header-row {
   display: flex;
   justify-content: flex-start; /* Align buttons to the right */

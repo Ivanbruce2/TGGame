@@ -189,7 +189,7 @@ function App() {
   if (selectedRoom) {
     return (
       <div className="App">
-        <h1>Room: {selectedRoom}</h1>
+        <h1 className="welcome-message2">Room: {selectedRoom}</h1>
         {gameStatus ? (
           <>
             <h2>{gameStatus.player1 === username ? `${gameStatus.player1} vs ${gameStatus.player2 || 'Waiting for opponent'}` : `${gameStatus.player2} vs ${gameStatus.player1 || 'Waiting for opponent'}`}</h2>
