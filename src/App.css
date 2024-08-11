@@ -203,15 +203,22 @@ body:before {
 
   .header-row {
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-start; /* Align buttons to the left on mobile */
     max-width: 100%;
   }
 
-  .create-button, .refresh-button {
+  .create-button {
+    font-size: 0.8em;
+    padding: 8px 24px; /* Make the create button longer */
+    margin: 5px 0;
+    width: 60%; /* Make the Create Room button wider */
+  }
+
+  .refresh-button {
     font-size: 0.8em;
     padding: 8px 12px;
     margin: 5px 0;
-    width: 15%;
+    width: 20%; /* Adjust width of the Refresh button */
   }
 
   .room-card {
