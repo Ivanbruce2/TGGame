@@ -88,7 +88,6 @@ function App() {
 };
 
 
-
 // First poll: Check for opponent presence and then start polling game status
 const startPollingOpponent = (roomId) => {
   const pollOpponentStatus = async () => {
@@ -109,10 +108,6 @@ const startPollingOpponent = (roomId) => {
   pollingRef.current = setInterval(pollOpponentStatus, 3000);
 };
 
-
-
-  // Second poll: Check for choices once opponent has joined
-// Second poll: Check for choices once opponent has joined
 // Second poll: Check for choices once opponent has joined
 const startPollingChoices = (gameId) => {
   // Clear any existing polling interval before starting a new one
@@ -153,9 +148,6 @@ const startPollingChoices = (gameId) => {
 
   pollingRef.current = setInterval(pollGameStatus, 3000);
 };
-
-
-
 
   useEffect(() => {
     return () => clearInterval(pollingRef.current); // Cleanup on component unmount
@@ -219,17 +211,12 @@ const startPollingChoices = (gameId) => {
         )}
       </div>
     );
-    
-    
-    
-    
-    
-    
   }
 
   return (
     <div className="App">
       <h1>Welcome, {username}</h1>
+      <button onClick={createRoom} className="create-button">Create Room</button>
       <div className="header-row">
         <h2>Available Rooms:</h2>
         <button className="refresh-button" onClick={fetchRooms}>Refresh</button>
@@ -252,7 +239,6 @@ const startPollingChoices = (gameId) => {
       </div>
     </div>
   );
-  
 }
 
 export default App;
