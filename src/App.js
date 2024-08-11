@@ -60,7 +60,7 @@ function App() {
     console.log(`${username} created room:`, data.room_id);
     console.log("Initial gameStatus after room creation:", gameStatus);
   
-    startPollingOpponent(data.room_id);
+    startPollingChoices(data.room_id);
   };
   
   
@@ -80,7 +80,7 @@ function App() {
     const data = await response.json();
     setSelectedRoom(data.room_id);
     console.log(`${username} joined room:`, data.room_id);
-    startPollingOpponent(data.room_id);
+    startPollingChoices(data.room_id);
   };
 
   const startPollingChoices = (roomId) => {
@@ -113,27 +113,34 @@ function App() {
   const handleChoice = async (choice) => {
     setUserChoice(choice);
     console.log(`${username} selected:`, choice);
-  
+
     try {
-      const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/submit_choice', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'ngrok-skip-browser-warning': 'true',
-        },
-        body: new URLSearchParams({
-          username: username,
-          choice: choice,
-          room_id: selectedRoom,
-        }),
-      });
-  
-      const data = await response.json();
-      setGameStatus(data);
+        const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/webhook', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'ngrok-skip-browser-warning': 'true',
+            },
+            body: new URLSearchParams({
+                username: username,
+                choice: choice,
+                room_id: selectedRoom,
+            }),
+        });
+
+        const data = await response.json();
+        setGameStatus(data); // Update the game status with the response from the server
+        console.log("Game status updated:", data);
+
+        // Optionally, start polling for the opponent's choice if the game is not yet completed
+        if (data.status !== "completed") {
+            startPollingChoices(selectedRoom);
+        }
     } catch (error) {
-      console.error("Error in handleChoice:", error);
+        console.error("Error in handleChoice:", error);
     }
-  };
+};
+
   
 
   const leaveRoom = async () => {
