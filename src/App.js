@@ -84,59 +84,60 @@ function App() {
   };
 
   const startPollingChoices = (roomId) => {
-    let pollingAttempts = 0;  // Counter for polling attempts
-  
     const pollGameStatus = async () => {
-      try {
-        const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${roomId}`, {
-          headers: {
-            'ngrok-skip-browser-warning': 'true'
-          }
-        });
-  
-        if (response.status === 404) {
-          console.log("Error polling game status: Game not found");
-  
-          // Clear polling immediately upon encountering an error
-          clearInterval(pollingRef.current);
-          
-          pollingAttempts += 1;
-  
-          if (pollingAttempts === 1) {
-            console.log("First polling error encountered. Returning to lobby in 5 seconds...");
-            setTimeout(() => {
-              setSelectedRoom(null);
-              setGameStatus(null);
-            }, 5000);
-          }
-          return; // Exit early if game is not found
+        try {
+            const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${roomId}`, {
+                headers: {
+                    'ngrok-skip-browser-warning': 'true'
+                }
+            });
+
+            if (response.status === 404) {
+                console.log("Error polling game status: Game not found");
+                clearInterval(pollingRef.current);
+
+                // If the game is not found, return to the lobby after 5 seconds
+                console.log("Returning to lobby in 5 seconds...");
+                setTimeout(() => {
+                    setSelectedRoom(null);
+                    setGameStatus(null);
+                }, 5000);
+                return;
+            }
+
+            const data = await response.json();
+            setGameStatus(data);
+
+            if (data.status === "completed") {
+                console.log("Game completed, stopping polling.");
+                clearInterval(pollingRef.current);
+
+                // Return to lobby after 15 seconds
+                setTimeout(() => {
+                    console.log("Returning to lobby after game completed.");
+                    setSelectedRoom(null);
+                    setGameStatus(null);
+                }, 15000); // 15 seconds delay
+            } else if (!data.player1_choice || !data.player2_choice) {
+                console.log("Waiting for players to make their choices...");
+            } else {
+                console.log("Both players have made their choices. Determining the result...");
+                clearInterval(pollingRef.current);
+            }
+
+            console.log("Game status updated:", data);
+        } catch (error) {
+            console.error("Error during polling:", error);
+            clearInterval(pollingRef.current);
+            setSelectedRoom(null);
+            setGameStatus(null);
         }
-  
-        const data = await response.json();
-        setGameStatus(data);
-  
-        // Handle polling logic for choices
-        if (!data.player1_choice || !data.player2_choice) {
-          console.log("Waiting for players to make their choices...");
-        } else {
-          console.log("Both players have made their choices. Determining the result...");
-          clearInterval(pollingRef.current);
-          // Handle the result (you might want to call a function to process the game result here)
-        }
-  
-        console.log("Game status updated:", data);
-      } catch (error) {
-        console.error("Error during polling:", error);
-        // Stop polling on unexpected error
-        clearInterval(pollingRef.current);
-        setSelectedRoom(null);
-        setGameStatus(null);
-      }
     };
-  
+
     // Start polling
     pollingRef.current = setInterval(pollGameStatus, 3000);
-  };
+};
+
   
 
 
