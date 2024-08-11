@@ -108,19 +108,21 @@ body:before {
 }
 
 .room-card {
+  position: relative; /* Enable absolute positioning for child elements */
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   padding: 10px;
   margin-bottom: 10px;
   text-align: left;
-  flex-direction: row;
+  flex-direction: column;
 }
 
 .room-details {
   flex: 1;
+  font-size: 1.2em; /* Increase font size for room details */
+  margin-right: 80px; /* Provide space for the Join button */
 }
 
 .room-details p {
@@ -129,9 +131,10 @@ body:before {
   line-height: 1.2;
 }
 
-
 .join-button {
-  flex-shrink: 0;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
   padding: 8px 15px;
   background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); 
   background-size: 200% 200%; 
@@ -195,9 +198,16 @@ body:before {
     padding: 8px;
   }
 
+  .room-details {
+    font-size: 1.1em; /* Slightly smaller font size for mobile */
+    margin-right: 60px; /* Adjust margin for smaller screens */
+  }
+
   .join-button {
     width: 60px;
     height: 40px;
     font-size: 12px;
+    bottom: 8px;
+    right: 8px;
   }
 }
