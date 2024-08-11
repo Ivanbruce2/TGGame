@@ -42,7 +42,6 @@ function App() {
     const data = await response.json();
     setSelectedRoom(data.room_id);
     console.log(`${username} created room:`, data.room_id);
-    startPollingOpponent(data.room_id);
   };
 
   const joinRoom = async (room_id) => {
@@ -60,7 +59,6 @@ function App() {
     const data = await response.json();
     setSelectedRoom(data.room_id);
     console.log(`${username} joined room:`, data.room_id);
-    startPollingOpponent(data.room_id);
   };
 
   const handleChoice = async (choice) => {
@@ -232,8 +230,9 @@ const startPollingChoices = (gameId) => {
   return (
     <div className="App">
       <h1>Welcome, {username}</h1>
-      <button onClick={createRoom}>Create Room</button>
+      <button onClick={createRoom} className="create-room-button">Create Room</button>
       <h2>Available Rooms:</h2>
+      <button onClick={fetchRooms} className="refresh-button">Refresh</button>
       <div className="room-list">
         {Object.values(rooms).map((room) => (
           <div key={room.room_id} className="room-card">
