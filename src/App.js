@@ -41,7 +41,7 @@ function App() {
   };
 
   const createRoom = async () => {
-    setGameStatus(null);  // Reset game status
+    // setGameStatus(null);  // Reset game status
     setUserChoice('');    // Reset user choice
     setOpponentChoiceStatus('');  // Reset opponent choice status
     
