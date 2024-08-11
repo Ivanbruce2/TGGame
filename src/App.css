@@ -92,14 +92,20 @@ body:before {
   animation: gradientShift 2s infinite linear;
 }
 .game-result {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   margin-top: 20px;
 }
 
 .return-button {
-  margin: 20px auto; /* Center horizontally */
-  display: block; /* Ensure the button respects margin: auto */
+  margin-top: 20px;
+  padding: 10px 20px; /* Add some padding for better button appearance */
+  font-size: 1em;
 }
+
 
 .pixel-button {
   background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); /* Rainbow gradient */
