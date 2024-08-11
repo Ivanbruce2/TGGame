@@ -107,6 +107,7 @@ body:before {
 }
 
 .welcome-message {
+  text-transform: uppercase;
   text-align: left;
   width: 100%;
   font-size: 1.5em;
@@ -213,6 +214,7 @@ body:before {
   .welcome-message {
     font-size: 1.5em;
     margin-bottom: 15px;
+    text-transform: uppercase;
   }
 
   .header-row {

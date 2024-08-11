@@ -101,31 +101,31 @@ function App() {
     startPollingChoices(data.game_id);
   };
 
-  const startPollingOpponent = (roomId) => {
-    const pollOpponentStatus = async () => {
-      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
-        headers: {
-          'ngrok-skip-browser-warning': 'true'
-        }
-      });
-  
-      const data = await response.json();
-  
-      // Assuming data is an array or object with rooms, find the room with the matching roomId
-      const room = data[roomId]; // If data is an object with roomId as keys
-      // If data is an array of rooms, find the room with the matching roomId
-      // const room = data.find(room => room.room_id === roomId);
-  
-      if (room && room.player2) {
-        clearInterval(pollingRef.current);
-        setGameStatus({ ...gameStatus, player1: room.player1, player2: room.player2, status: 'in_progress' });
-        console.log(`Player 1: ${room.player1}, Player 2: ${room.player2}`);
-        startPollingChoices(roomId);
+ const startPollingOpponent = (roomId) => {
+  const pollOpponentStatus = async () => {
+    const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true'
       }
-    };
-    pollingRef.current = setInterval(pollOpponentStatus, 3000);
+    });
+
+    const data = await response.json();
+
+    // Assuming data is an array or object with rooms, find the room with the matching roomId
+    const room = data[roomId]; // If data is an object with roomId as keys
+    // If data is an array of rooms, find the room with the matching roomId
+    // const room = data.find(room => room.room_id === roomId);
+
+    if (room && room.player2) {
+      clearInterval(pollingRef.current);
+      setGameStatus({ ...gameStatus, player1: room.player1, player2: room.player2, status: 'in_progress' });
+      console.log(`Player 1: ${room.player1}, Player 2: ${room.player2}`);
+      startPollingChoices(roomId);
+    }
   };
-  
+  pollingRef.current = setInterval(pollOpponentStatus, 3000);
+};
+
 
   const startPollingChoices = (gameId) => {
     if (pollingRef.current) {
