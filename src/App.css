@@ -8,6 +8,21 @@ body, html {
   background: linear-gradient(135deg, #6a11cb, #2575fc);
   color: #ffd700;
   font-family: 'VT323', monospace;
+  overflow-x: hidden;
+  position: relative; /* Needed for positioning the background effect */
+}
+
+body:before {
+  content: '';
+  position: absolute;
+  width: 800px;
+  height: 800px;
+  background-color: rgba(255, 255, 255, 0.1);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  z-index: 0;
+  pointer-events: none; /* Ensures it doesn't interfere with clicks */
 }
 
 .App {
@@ -20,6 +35,8 @@ body, html {
   align-items: center;
   color: #fff;
   padding: 10px;
+  position: relative;
+  z-index: 1; /* Ensure content is above the background */
 }
 
 h1 {
@@ -63,7 +80,7 @@ p {
   justify-content: center;
   align-items: center;
   position: relative;
-  z-index: 0;
+  z-index: 1;
   overflow: hidden;
   font-family: 'Press Start 2P', cursive; 
 }
