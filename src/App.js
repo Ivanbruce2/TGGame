@@ -132,18 +132,16 @@ const startPollingChoices = (gameId) => {
       console.log('Game completed:', data.result);
     }
 
-    // Updating UI based on the moves made
-    let opponentStatusMessage = '';
+    // Update UI for choices and results
     if (data.player1_choice && data.player2_choice) {
-      opponentStatusMessage = 'Both players have made their move.';
+      setOpponentChoiceStatus('Both players have made their move.');
     } else if (data.player1_choice && !data.player2_choice) {
-      opponentStatusMessage = `${data.player2} is waiting to make a choice.`;
+      setOpponentChoiceStatus(`${data.player2} is waiting to make a choice.`);
     } else if (!data.player1_choice && data.player2_choice) {
-      opponentStatusMessage = `${data.player1} is waiting to make a choice.`;
+      setOpponentChoiceStatus(`${data.player1} is waiting to make a choice.`);
     } else {
-      opponentStatusMessage = 'Waiting for both players to make a choice.';
+      setOpponentChoiceStatus('Waiting for both players to make a choice.');
     }
-    setOpponentChoiceStatus(opponentStatusMessage);
 
     console.log('Game status updated:', data);
   };
@@ -164,8 +162,11 @@ const startPollingChoices = (gameId) => {
         {gameStatus ? (
           <>
             <h2>{gameStatus.player1 === username ? `${gameStatus.player1} vs ${gameStatus.player2 || 'Waiting for opponent'}` : `${gameStatus.player2} vs ${gameStatus.player1 || 'Waiting for opponent'}`}</h2>
-            <p>{gameStatus.player1}: {gameStatus.player1_choice ? 'Made their move' : 'Waiting for choice'}</p>
-            {gameStatus.player2 && <p>{gameStatus.player2}: {gameStatus.player2_choice ? 'Made their move' : 'Waiting for choice'}</p>}
+            <div>
+          <span>{gameStatus.player1}: {gameStatus.player1_choice ? 'Made their move' : 'Waiting for choice'}</span>
+          <span> | </span>
+          {gameStatus.player2 && <span>{gameStatus.player2}: {gameStatus.player2_choice ? 'Made their move' : 'Waiting for choice'}</span>}
+        </div>
             
             {gameStatus.status !== 'completed' && (
               <p>{opponentChoiceStatus}</p>
@@ -184,11 +185,9 @@ const startPollingChoices = (gameId) => {
             {gameStatus.status === 'completed' && (
               <div>
                 <h3>
-                  {gameStatus.result.includes('wins') && gameStatus.player1 === username ? 'You Win!' : ''}
-                  {gameStatus.result.includes('wins') && gameStatus.player2 === username ? 'You Lose!' : ''}
-                  {gameStatus.result.includes('draw') ? 'It\'s a Draw!' : ''}
+                  {gameStatus.result.includes(username) ? 'You Win!' : 'You Lose!'}
                 </h3>
-                <p>{gameStatus.result}</p>
+                <p>{gameStatus.result.split('! ')[1]}</p>
               </div>
             )}
           </>
