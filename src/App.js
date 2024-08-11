@@ -57,14 +57,67 @@ function App() {
     });
   
     const data = await response.json();
-    console.log("Response data:", data);  // Log the entire response data
     setSelectedRoom(data.game_id);
-    console.log(`${username} created room:`, data.game_id);
-    console.log("Initial gameStatus after room creation:", gameStatus);
+    console.log(`${username} created game:`, data.game_id);
   
-    startPollingChoices(data.game_id);
-  };
-  
+    // Delay the start of polling to ensure the room is fully set up
+    setTimeout(() => {
+      startPollingChoices(data.game_id);
+    }, 1000);  // 1 second delay before polling starts
+};
+
+const startPollingChoices = (gameId) => {
+    const pollGameStatus = async () => {
+        try {
+            const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
+                headers: {
+                    'ngrok-skip-browser-warning': 'true'
+                }
+            });
+
+            if (response.status === 404) {
+                console.log("Error polling game status: Game not found");
+                clearInterval(pollingRef.current);
+
+                console.log("Returning to lobby in 5 seconds...");
+                setTimeout(() => {
+                    setSelectedRoom(null);
+                    setGameStatus(null);
+                }, 5000);
+                return;
+            }
+
+            const data = await response.json();
+            setGameStatus(data);
+
+            if (data.status === "waiting") {
+                console.log("Game reset to waiting state. Returning to lobby.");
+                clearInterval(pollingRef.current);
+
+                setSelectedRoom(null);
+                setGameStatus(null);
+            } else if (data.status === "completed") {
+                console.log("Game completed, stopping polling.");
+                clearInterval(pollingRef.current);
+            } else if (!data.player1_choice || !data.player2_choice) {
+                console.log("Waiting for players to make their choices...");
+            } else {
+                console.log("Both players have made their choices. Determining the result...");
+                clearInterval(pollingRef.current);
+            }
+
+            console.log("Game status updated:", data);
+        } catch (error) {
+            console.error("Error during polling:", error);
+            clearInterval(pollingRef.current);
+            setSelectedRoom(null);
+            setGameStatus(null);
+        }
+    };
+
+    pollingRef.current = setInterval(pollGameStatus, 3000);
+};
+
   
   
 
@@ -88,60 +141,7 @@ function App() {
   };
   
 
-  const startPollingChoices = (roomId) => {
-    const pollGameStatus = async () => {
-        try {
-            const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${roomId}`, {
-                headers: {
-                    'ngrok-skip-browser-warning': 'true'
-                }
-            });
 
-            if (response.status === 404) {
-                console.log("Error polling game status: Game not found");
-                clearInterval(pollingRef.current);
-
-                // Return to the lobby after 5 seconds if the game is not found
-                console.log("Returning to lobby in 5 seconds...");
-                setTimeout(() => {
-                    setSelectedRoom(null);
-                    setGameStatus(null);
-                }, 5000);
-                return;
-            }
-
-            const data = await response.json();
-            setGameStatus(data);
-
-            if (data.status === "waiting") {
-                console.log("Player removed or game reset to waiting state. Returning to lobby.");
-                clearInterval(pollingRef.current);
-
-                // Immediately send the player back to the lobby
-                setSelectedRoom(null);
-                setGameStatus(null);
-            } else if (data.status === "completed") {
-                console.log("Game completed, stopping polling.");
-                clearInterval(pollingRef.current);
-            } else if (!data.player1_choice || !data.player2_choice) {
-                console.log("Waiting for players to make their choices...");
-            } else {
-                console.log("Both players have made their choices. Determining the result...");
-                clearInterval(pollingRef.current);
-            }
-
-            console.log("Game status updated:", data);
-        } catch (error) {
-            console.error("Error during polling:", error);
-            clearInterval(pollingRef.current);
-            setSelectedRoom(null);
-            setGameStatus(null);
-        }
-    };
-
-    // Start polling
-    pollingRef.current = setInterval(pollGameStatus, 3000);
-};
 
 
   
