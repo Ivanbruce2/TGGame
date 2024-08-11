@@ -287,7 +287,7 @@ useEffect(() => {
         <p>Status: {game.status === 'waiting' ? 'Waiting for opponent' : game.status}</p>
       </div>
       {game.status === 'waiting' && (
-        <button className="join-button" onClick={() => joinRoom(game.game_id)}>
+        <button className="join-button" onClick={() => joinGame(game.game_id)}>
           <b>JOIN</b>
         </button>
       )}
