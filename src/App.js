@@ -128,10 +128,18 @@ function App() {
                 setTimeout(() => {
                     clearInterval(pollingRef.current);
                     console.log("Returning to lobby after game not found.");
+
+                    // Stop polling and return to the lobby
                     setSelectedRoom(null);
                     setGameStatus(null);
                     setUserChoice('');
                     setOpponentChoiceStatus('');
+
+                    // Stop further polling
+                    if (pollingRef.current) {
+                        clearInterval(pollingRef.current);
+                        pollingRef.current = null; // Make sure to clear the reference
+                    }
                 }, 5000); // 5-second delay
             }
         }
@@ -139,6 +147,7 @@ function App() {
 
     pollingRef.current = setInterval(pollGameStatus, 3000);
 };
+
 
 
 
