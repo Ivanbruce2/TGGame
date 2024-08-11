@@ -96,15 +96,17 @@ function App() {
   
         if (response.status === 404) {
           console.log("Error polling game status: Game not found");
+  
+          // Clear polling immediately upon encountering an error
+          clearInterval(pollingRef.current);
+          
           pollingAttempts += 1;
   
-          // Stop polling and return to lobby after the first error and after 5 seconds
           if (pollingAttempts === 1) {
             console.log("First polling error encountered. Returning to lobby in 5 seconds...");
             setTimeout(() => {
               setSelectedRoom(null);
               setGameStatus(null);
-              clearInterval(pollingRef.current);
             }, 5000);
           }
           return; // Exit early if game is not found
@@ -132,6 +134,7 @@ function App() {
       }
     };
   
+    // Start polling
     pollingRef.current = setInterval(pollGameStatus, 3000);
   };
   
