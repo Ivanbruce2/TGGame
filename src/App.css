@@ -135,6 +135,24 @@ body:before {
     4px 4px 0 #28e0ae,   /* green shadow */
     5px 5px 0 #0044ff;   /* blue shadow */
 }
+.game-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'VT323', monospace;
+  font-size: 1.5em;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.player-status {
+  display: flex;
+  align-items: center;
+}
+
+.vs {
+  margin: 0 10px;
+}
 
 .welcome-message2 {
   text-transform: uppercase;
