@@ -74,7 +74,7 @@ function App() {
       },
       body: new URLSearchParams({
         username: username,
-        room_id: room_id,
+        game_id: room_id,
       }),
     });
     const data = await response.json();
