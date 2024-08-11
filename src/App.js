@@ -197,6 +197,27 @@ function App() {
     </h2>
 
     {/* Render the choices */}
+    {gameStatus.status !== 'completed' && (
+      <div className="choices">
+        {["Scissors", "Paper", "Stone"].map(choice => (
+          <button 
+            key={choice} 
+            className="choice-button" 
+            onClick={() => handleChoice(choice)} 
+            disabled={!!userChoice}
+          >
+            {choice}
+          </button>
+        ))}
+      </div>
+    )}
+
+    {/* Render the opponent status below the choices */}
+    {gameStatus.status !== 'completed' && (
+      <p>{opponentChoiceStatus}</p>
+    )}
+
+    {/* Render the result when the game is completed */}
     {gameStatus.status === 'completed' && (
   <div>
     {/* Check if it's a draw */}
@@ -218,24 +239,6 @@ function App() {
   </div>
 )}
 
-
-    {/* Render the opponent status below the choices */}
-    {gameStatus.status !== 'completed' && (
-      <p>{opponentChoiceStatus}</p>
-    )}
-
-    {/* Render the result when the game is completed */}
-    {gameStatus.status === 'completed' && (
-      <div>
-        <p>{gameStatus.result.includes('Draw') ? "It's a Draw!" : gameStatus.result.split('! ')[1]}</p>
-        <h2>
-          {gameStatus.result.includes(username) ? 'You Win!' : gameStatus.result.includes('Draw') ? "It's a Draw!" : 'You Lose. Try again next time.'}
-        </h2>
-        <button className="pixel-button return-button" onClick={() => setSelectedRoom(null)}>
-          Return to Lobby
-        </button>
-      </div>
-    )}
   </>
 ) : (
   <>
