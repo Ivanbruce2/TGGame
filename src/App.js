@@ -204,11 +204,13 @@ function App() {
         {gameStatus ? (
   <>
     <h2 className="game-status">
-      {gameStatus.player1} {gameStatus.player1_choice ? '✔️' : '❓'} vs {gameStatus.player2} {gameStatus.player2_choice ? '✔️' : '❓'}
+      {gameStatus.player1 ? `${gameStatus.player1} ${gameStatus.player1_choice ? '✔️' : '❓'}` : 'Waiting for Player 1'} 
+      vs 
+      {gameStatus.player2 ? `${gameStatus.player2} ${gameStatus.player2_choice ? '✔️' : '❓'}` : 'Waiting for Player 2'}
     </h2>
 
     {/* Render the choices */}
-    {gameStatus.status !== 'completed' && (
+    {gameStatus.status !== 'completed' && gameStatus.player2 && (
       <div className="choices">
         {["Scissors", "Paper", "Stone"].map(choice => (
           <button 
@@ -224,35 +226,33 @@ function App() {
     )}
 
     {/* Render the opponent status below the choices */}
-    {gameStatus.status !== 'completed' && (
+    {gameStatus.status !== 'completed' && gameStatus.player2 && (
       <p>{opponentChoiceStatus}</p>
     )}
 
     {/* Render the result when the game is completed */}
     {gameStatus.status === 'completed' && (
-  <div className="game-result">
-    {/* Check if it's a draw */}
-    {gameStatus.result.includes('draw') ? (
-      <p>It's a Draw! Both players chose {gameStatus.player1_choice}.</p>
-    ) : (
-      <>
-        <p>{gameStatus.result.split('! ')[1]}</p>
-        <h2>{gameStatus.result.includes(username) ? 'You Win!' : 'You Lose. Try again next time.'}</h2>
-      </>
+      <div>
+        {gameStatus.result.includes('draw') ? (
+          <p>It's a Draw! Both players chose {gameStatus.player1_choice}.</p>
+        ) : (
+          <>
+            <p>{gameStatus.result.split('! ')[1]}</p>
+            <h2>
+              {gameStatus.result.includes(username) ? 'You Win!' : 'You Lose. Try again next time.'}
+            </h2>
+          </>
+        )}
+        <button className="return-button" onClick={() => {
+          setSelectedRoom(null);
+          setGameStatus(null);
+          setUserChoice('');
+          setOpponentChoiceStatus('');
+        }}>
+          Return to Lobby
+        </button>
+      </div>
     )}
-<button className="return-button" onClick={() => {
-  setSelectedRoom(null);
-  setGameStatus(null);  // Reset game status
-  setUserChoice('');    // Reset user choice
-  setOpponentChoiceStatus('');  // Reset opponent choice status
-}}>
-  Return to Lobby
-</button>
-
-  </div>
-)}
-
-
   </>
 ) : (
   <>
@@ -272,6 +272,7 @@ function App() {
     {userChoice && !gameStatus?.player2 && <p>{opponentChoiceStatus || 'Waiting for opponent to join...'}</p>}
   </>
 )}
+
 
 
       </div>
