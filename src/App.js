@@ -174,9 +174,9 @@ const startPollingChoices = (gameId) => {
             {/* Conditionally render player statuses only if the game is not completed */}
             {gameStatus.status !== 'completed' && (
               <div>
-                <span>{gameStatus.player1}: {gameStatus.player1_choice ? 'Made their move' : 'Waiting for choice'}</span>
+                <span>{gameStatus.player1}: {gameStatus.player1_choice ? 'Ready!' : 'Waiting for choice'}</span>
                 <span> | </span>
-                {gameStatus.player2 && <span>{gameStatus.player2}: {gameStatus.player2_choice ? 'Made their move' : 'Waiting for choice'}</span>}
+                {gameStatus.player2 && <span>{gameStatus.player2}: {gameStatus.player2_choice ? 'Ready!' : 'Waiting for choice'}</span>}
               </div>
             )}
     
@@ -200,7 +200,7 @@ const startPollingChoices = (gameId) => {
             {gameStatus.status === 'completed' && (
               <div>
                 <h3>
-                  {gameStatus.result.includes(username) ? 'You Win!' : 'You Lose!'}
+                  {gameStatus.result.includes(username) ? 'You Win!' : 'You Lose. Try again next time.'}
                 </h3>
                 <p>{gameStatus.result.split('! ')[1]}</p>
               </div>
