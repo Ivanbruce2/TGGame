@@ -166,9 +166,9 @@ function App() {
         console.log("Game status updated:", data);
 
         // If the game is completed, stop polling after 10 seconds
-        
+        if (data.status !== "completed") {
             startPollingChoices(selectedRoom);
-        
+        }
     } catch (error) {
         console.error("Error in handleChoice:", error);
     }
