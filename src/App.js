@@ -83,95 +83,58 @@ function App() {
     startPollingOpponent(data.room_id);
   };
 
+  const startPollingChoices = (roomId) => {
+    const pollGameStatus = async () => {
+      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?room_id=${roomId}`, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+        }
+      });
+  
+      const data = await response.json();
+      setGameStatus(data);
+  
+      if (!data.player2) {
+        console.log("Waiting for Player 2 to join...");
+      } else if (!data.player1_choice || !data.player2_choice) {
+        console.log("Waiting for players to make their choices...");
+      } else {
+        console.log("Both players have made their choices. Determining the result...");
+        clearInterval(pollingRef.current);
+        // Handle the result
+      }
+  
+      console.log("Game status updated:", data);
+    };
+  
+    pollingRef.current = setInterval(pollGameStatus, 3000);
+  };
+  
   const handleChoice = async (choice) => {
     setUserChoice(choice);
     console.log(`${username} selected:`, choice);
-
-    // Update gameStatus immediately to reflect that the current user has made their choice
-    setGameStatus(prevStatus => ({
-      ...prevStatus,
-      [`${username === prevStatus.player1 ? 'player1_choice' : 'player2_choice'}`]: 'made_choice'
-    }));
-
-    const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/webhook', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'ngrok-skip-browser-warning': 'true',
-      },
-      body: new URLSearchParams({
-        username: username,
-        choice: choice,
-        room_id: selectedRoom,
-      }),
-    });
-    const data = await response.json();
-    startPollingChoices(data.game_id);
-  };
-
-  const startPollingOpponent = (roomId) => {
-    const pollOpponentStatus = async () => {
-      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
+  
+    try {
+      const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/submit_choice', {
+        method: 'POST',
         headers: {
-          'ngrok-skip-browser-warning': 'true'
-        }
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'ngrok-skip-browser-warning': 'true',
+        },
+        body: new URLSearchParams({
+          username: username,
+          choice: choice,
+          room_id: selectedRoom,
+        }),
       });
   
-      const data = await response.json();
-      console.log("Polling opponent status, current room data:", data);
-  
-      const room = data[roomId]; // Assuming data is an object with roomId as keys
-  
-      if (room && room.player2) {
-        clearInterval(pollingRef.current);
-        setGameStatus({ ...gameStatus, player1: room.player1, player2: room.player2, status: 'in_progress' });
-        console.log(`Player 1: ${room.player1}, Player 2: ${room.player2}`);
-        console.log("Updated gameStatus after opponent joins:", { player1: room.player1, player2: room.player2, status: 'in_progress' });
-        startPollingChoices(roomId);
-      } else {
-        console.log("No opponent yet, waiting for player 2 to join.");
-      }
-    };
-    pollingRef.current = setInterval(pollOpponentStatus, 3000);
-  };
-  
-
-  const startPollingChoices = (gameId) => {
-    if (pollingRef.current) {
-      clearInterval(pollingRef.current);
-    }
-
-    const pollGameStatus = async () => {
-      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
-        headers: {
-          'ngrok-skip-browser-warning': 'true'
-        }
-      });
-
       const data = await response.json();
       setGameStatus(data);
-
-      if (data.status === 'completed') {
-        clearInterval(pollingRef.current);
-        pollingRef.current = null;
-        console.log('Game completed:', data.result);
-      }
-
-      if (data.player1_choice && data.player2_choice) {
-        setOpponentChoiceStatus('Both players have made their move.');
-      } else if (data.player1_choice && !data.player2_choice) {
-        setOpponentChoiceStatus(`${data.player2} is waiting to make a choice.`);
-      } else if (!data.player1_choice && data.player2_choice) {
-        setOpponentChoiceStatus(`${data.player1} is waiting to make a choice.`);
-      } else {
-        setOpponentChoiceStatus('Waiting for both players to make a choice.');
-      }
-
-      console.log('Game status updated:', data);
-    };
-
-    pollingRef.current = setInterval(pollGameStatus, 3000);
+    } catch (error) {
+      console.error("Error in handleChoice:", error);
+    }
   };
+  
 
   const leaveRoom = async () => {
     if (selectedRoom) {
