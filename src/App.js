@@ -65,7 +65,7 @@ function App() {
   
   
 
-  const joinRoom = async (room_id) => {
+  const joinRoom = async (game_id) => {
     const response = await fetch('https://90a3-119-74-213-151.ngrok-free.app/join_room', {
       method: 'POST',
       headers: {
@@ -74,14 +74,16 @@ function App() {
       },
       body: new URLSearchParams({
         username: username,
-        game_id: room_id,
+        game_id: game_id, // Use 'game_id' here as well
       }),
     });
+  
     const data = await response.json();
-    setSelectedRoom(data.room_id);
-    console.log(`${username} joined room:`, data.room_id);
-    startPollingChoices(data.room_id);
+    setSelectedRoom(data.game_id); // Adjust this to match the response structure
+    console.log(`${username} joined game:`, data.game_id);
+    startPollingChoices(data.game_id); // Pass the correct identifier to startPollingChoices
   };
+  
 
   const startPollingChoices = (roomId) => {
     const pollGameStatus = async () => {
