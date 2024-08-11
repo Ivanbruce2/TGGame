@@ -82,18 +82,21 @@ p {
 
 .join-button {
   flex-shrink: 0; /* Prevent the button from shrinking */
-  padding: 15px 25px;
+  padding: 10px 20px;
   background-color: #4CAF50;
   border: none;
   color: white;
   text-align: center;
-  font-size: 16px;
+  font-size: 14px;
   border-radius: 5px;
   cursor: pointer;
-  align-self: stretch; /* Make the button span the height of the container */
+  align-self: center; /* Center the button vertically */
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column; /* Display "Join" and "Room" on two lines */
+  width: 80px; /* Set a fixed width */
+  height: 60px; /* Set a fixed height */
 }
 
 .join-button:disabled {
