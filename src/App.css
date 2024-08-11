@@ -8,8 +8,8 @@ body, html {
   background: linear-gradient(135deg, #6a11cb, #2575fc);
   color: #ffd700;
   font-family: 'VT323', monospace;
-  overflow-x: hidden;
-  position: relative; /* Needed for positioning the background effect */
+  overflow: hidden;
+  position: relative;
 }
 
 body:before {
@@ -18,11 +18,28 @@ body:before {
   width: 800px;
   height: 800px;
   background-color: rgba(255, 255, 255, 0.1);
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(45deg);
+  top: -200px; /* Start slightly off-screen */
+  left: -200px; /* Start slightly off-screen */
+  transform: rotate(45deg);
+  animation: floatBg 20s infinite linear;
   z-index: 0;
-  pointer-events: none; /* Ensures it doesn't interfere with clicks */
+  pointer-events: none;
+}
+
+@keyframes floatBg {
+  0% {
+    top: -200px;
+    left: -200px;
+  }
+  50% {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+  100% {
+    top: calc(100% + 200px); /* End slightly off-screen */
+    left: calc(100% + 200px); /* End slightly off-screen */
+  }
 }
 
 .App {
@@ -36,7 +53,7 @@ body:before {
   color: #fff;
   padding: 10px;
   position: relative;
-  z-index: 1; /* Ensure content is above the background */
+  z-index: 1;
 }
 
 h1 {
