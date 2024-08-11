@@ -85,7 +85,7 @@ function App() {
 
   const startPollingChoices = (roomId) => {
     const pollGameStatus = async () => {
-      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?room_id=${roomId}`, {
+      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${roomId}`, {
         headers: {
           'ngrok-skip-browser-warning': 'true'
         }
