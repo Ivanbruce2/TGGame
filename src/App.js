@@ -84,6 +84,8 @@ function App() {
   };
 
   const startPollingChoices = (roomId) => {
+    let errorCount = 0;
+
     const pollGameStatus = async () => {
         try {
             // Fetch the game status directly
@@ -101,6 +103,9 @@ function App() {
             setGameStatus(gameData);
             console.log("Polling game status, current game data:", gameData);
 
+            // Reset error count if the game is found
+            errorCount = 0;
+
             // Check if both players are present and if they have made their choices
             if (gameData.player2) {
                 if (!gameData.player1_choice || !gameData.player2_choice) {
@@ -115,12 +120,26 @@ function App() {
             }
         } catch (error) {
             console.error("Error polling game status:", error);
-            clearInterval(pollingRef.current);
+            errorCount += 1;
+
+            if (errorCount === 1) {
+                // First polling error: start a timeout to return to the lobby after 5 seconds
+                console.log("First polling error encountered. Returning to lobby in 5 seconds...");
+                setTimeout(() => {
+                    clearInterval(pollingRef.current);
+                    console.log("Returning to lobby after game not found.");
+                    setSelectedRoom(null);
+                    setGameStatus(null);
+                    setUserChoice('');
+                    setOpponentChoiceStatus('');
+                }, 5000); // 5-second delay
+            }
         }
     };
 
     pollingRef.current = setInterval(pollGameStatus, 3000);
 };
+
 
 
   
@@ -147,9 +166,9 @@ function App() {
         console.log("Game status updated:", data);
 
         // Optionally, start polling for the opponent's choice if the game is not yet completed
-        if (data.status !== "completed") {
+        
             startPollingChoices(selectedRoom);
-        }
+        
     } catch (error) {
         console.error("Error in handleChoice:", error);
     }
