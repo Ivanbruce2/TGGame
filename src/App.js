@@ -230,29 +230,29 @@ const startPollingChoices = (gameId) => {
   return (
     <div className="App">
       <h1>Welcome, {username}</h1>
-      <button onClick={createRoom} className="create-room-button">Create Room</button>
-      <h2>Available Rooms:</h2>
-      <button onClick={fetchRooms} className="refresh-button">Refresh</button>
+      <div className="header-row">
+        <h2>Available Rooms:</h2>
+        <button className="refresh-button" onClick={fetchRooms}>Refresh</button>
+      </div>
       <div className="room-list">
         {Object.values(rooms).map((room) => (
-          <div key={room.room_id} className="room-card">
+          <div className="room-card" key={room.room_id}>
             <div className="room-details">
               <p>Game ID: {room.room_id}</p>
-              <p>{room.player1} vs {room.player2 || 'Waiting for opponent'}</p>
-              <p>Status: {room.status}</p>
+              <p>{room.status === 'waiting' ? `Player: ${room.player1}` : `${room.player1} vs ${room.player2}`}</p>
+              <p>Status: {room.status === 'waiting' ? 'Waiting for opponent' : room.status}</p>
             </div>
-            <button
-              className="join-button"
-              onClick={() => joinRoom(room.room_id)}
-              disabled={room.status !== 'waiting'}
-            >
-              Join Room
-            </button>
+            {room.status === 'waiting' && (
+              <button className="join-button" onClick={() => joinRoom(room.room_id)}>
+                Join<br />Room
+              </button>
+            )}
           </div>
         ))}
       </div>
     </div>
   );
+  
 }
 
 export default App;
