@@ -60,7 +60,7 @@ body:before {
   border-radius: 10px;
   padding: 20px;
   width: 100%;
-  max-width: 800px;
+  max-width: 600px;
   margin-top: 20px;
 }
 
@@ -83,7 +83,7 @@ body:before {
   margin-bottom: 10px;
 }
 
-.create-button {
+.create-button, .refresh-button {
   background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); 
   background-size: 200% 200%; 
   border: none;
@@ -97,22 +97,7 @@ body:before {
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
   animation: gradientShift 2s infinite;
   font-family: 'Press Start 2P', cursive;
-}
-
-.refresh-button {
-  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); 
-  background-size: 200% 200%; 
-  border: none;
-  color: white;
-  padding: 10px 15px;
-  text-align: center;
-  font-size: 1em;
-  border-radius: 15px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-  animation: gradientShift 2s infinite;
-  font-family: 'Press Start 2P', cursive;
+  width: 120px; /* Set a fixed width for buttons */
 }
 
 .room-list {
@@ -178,7 +163,7 @@ body:before {
 @media (max-width: 480px) {
   .container {
     padding: 15px;
-    max-width: 90%; /* Reduce the max-width for mobile devices */
+    max-width: 100%; /* Allow the container to fill the width on mobile */
   }
 
   .welcome-message {
@@ -187,15 +172,16 @@ body:before {
   }
 
   .header-row {
-    flex-direction: column;
-    max-width: 90%; /* Reduce the max-width for mobile devices */
+    flex-direction: row; /* Ensure buttons are side by side on mobile */
+    justify-content: space-between;
+    max-width: 100%; /* Adjust the width to fit mobile screens */
   }
 
   .create-button, .refresh-button {
     font-size: 0.8em;
     padding: 8px 12px;
     margin: 5px 0;
-    width: 100%; /* Make buttons full-width on mobile */
+    width: 48%; /* Reduce width for side-by-side display */
   }
 
   .room-card {
