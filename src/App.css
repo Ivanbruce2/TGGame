@@ -107,7 +107,7 @@ body:before {
 
 .header-row {
   display: flex;
-  justify-content: flex-end; /* Align buttons to the right */
+  justify-content: flex-start; /* Align buttons to the right */
   align-items: center;
   width: 97%;
   background-color: rgba(248, 248, 245, 0.7); /* Add transparency */
