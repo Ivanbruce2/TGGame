@@ -233,7 +233,7 @@ function App() {
         </h2>
       </>
     )}
-    <button className="pixel-button return-button" onClick={() => setSelectedRoom(null)}>
+    <button className="return-button" onClick={() => setSelectedRoom(null)}>
       Return to Lobby
     </button>
   </div>

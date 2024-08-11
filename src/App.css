@@ -102,9 +102,25 @@ body:before {
 
 .return-button {
   margin-top: 20px;
-  padding: 10px 20px; /* Add some padding for better button appearance */
+  padding: 10px 20px;
   font-size: 1em;
+  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff);
+  background-size: 200% 200%;
+  color: rgb(6, 6, 6);
+  border: 2px solid #333;
+  height: 50px;
+  line-height: 46px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+  font-family: 'Press Start 2P', cursive;
+  box-shadow: 0 4px #333;
+  animation: gradientShift 2s infinite linear;
 }
+
 
 
 .pixel-button {
