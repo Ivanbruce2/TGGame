@@ -170,16 +170,17 @@ const startPollingChoices = (gameId) => {
         {gameStatus ? (
           <>
             <h2>{gameStatus.player1 === username ? `${gameStatus.player1} vs ${gameStatus.player2 || 'Waiting for opponent'}` : `${gameStatus.player2} vs ${gameStatus.player1 || 'Waiting for opponent'}`}</h2>
-            <div>
-          <span>{gameStatus.player1}: {gameStatus.player1_choice ? 'Made their move' : 'Waiting for choice'}</span>
-          <span> | </span>
-          {gameStatus.player2 && <span>{gameStatus.player2}: {gameStatus.player2_choice ? 'Made their move' : 'Waiting for choice'}</span>}
-        </div>
             
+            {/* Conditionally render player statuses only if the game is not completed */}
             {gameStatus.status !== 'completed' && (
-              <p>{opponentChoiceStatus}</p>
+              <div>
+                <span>{gameStatus.player1}: {gameStatus.player1_choice ? 'Made their move' : 'Waiting for choice'}</span>
+                <span> | </span>
+                {gameStatus.player2 && <span>{gameStatus.player2}: {gameStatus.player2_choice ? 'Made their move' : 'Waiting for choice'}</span>}
+              </div>
             )}
     
+            {/* Render the choices */}
             {gameStatus.status !== 'completed' && (
               <div className="choices">
                 {["Scissors", "Paper", "Stone"].map(choice => (
@@ -190,6 +191,12 @@ const startPollingChoices = (gameId) => {
               </div>
             )}
     
+            {/* Render the opponent status below the choices */}
+            {gameStatus.status !== 'completed' && (
+              <p>{opponentChoiceStatus}</p>
+            )}
+    
+            {/* Render the result when the game is completed */}
             {gameStatus.status === 'completed' && (
               <div>
                 <h3>
@@ -214,6 +221,7 @@ const startPollingChoices = (gameId) => {
         )}
       </div>
     );
+    
     
     
     
