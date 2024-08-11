@@ -55,6 +55,7 @@ p {
   font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
+  width: 150px; /* Adjusted width for a shorter button */
 }
 
 .room-list {
@@ -84,16 +85,14 @@ p {
   color: white;
   padding: 20px;
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
-  height: 100%;
-  width: 100px;
-  margin-left: 10px;
+  width: 100px; /* Adjusted width for a shorter button */
+  align-self: stretch; /* Makes the button take up the full height of the card */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .join-button:disabled {
@@ -188,6 +187,7 @@ h3 {
   .join-button {
     margin-top: 10px;
     width: 100%;
+    align-self: center;
   }
 }
 
