@@ -163,7 +163,7 @@ body:before {
 @media (max-width: 480px) {
   .container {
     padding: 15px;
-    max-width: 100%; /* Allow the container to fill the width on mobile */
+    max-width: 90%; /* Allow the container to fill the width on mobile */
   }
 
   .welcome-message {
