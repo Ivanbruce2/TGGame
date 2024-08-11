@@ -218,7 +218,7 @@ const startPollingChoices = (gameId) => {
       <h1>Welcome, {username}</h1>
       <button onClick={createRoom} className="create-button">Create Room</button>
       <div className="header-row">
-        <h2>Available Rooms:</h2>
+        <h2><u>Available Rooms</u></h2>
         <button className="refresh-button" onClick={fetchRooms}>Refresh</button>
       </div>
       <div className="room-list">
