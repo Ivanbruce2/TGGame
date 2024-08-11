@@ -42,6 +42,7 @@ function App() {
     const data = await response.json();
     setSelectedRoom(data.room_id);
     console.log(`${username} created room:`, data.room_id);
+    startPollingOpponent(data.room_id);
   };
 
   const joinRoom = async (room_id) => {
@@ -59,12 +60,14 @@ function App() {
     const data = await response.json();
     setSelectedRoom(data.room_id);
     console.log(`${username} joined room:`, data.room_id);
+    startPollingOpponent(data.room_id);
   };
 
   const handleChoice = async (choice) => {
     setUserChoice(choice);
     console.log(`${username} selected:`, choice);
     
+    // Update gameStatus immediately to reflect that the current user has made their choice
     setGameStatus(prevStatus => ({
         ...prevStatus,
         [`${username === prevStatus.player1 ? 'player1_choice' : 'player2_choice'}`]: 'made_choice'
@@ -84,7 +87,7 @@ function App() {
     });
     const data = await response.json();
     startPollingChoices(data.game_id);
-  };
+};
 
   const startPollingOpponent = (roomId) => {
     const pollOpponentStatus = async () => {
