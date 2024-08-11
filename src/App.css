@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Raleway:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Roboto:wght@700&display=swap');
 
 body, html {
   margin: 0;
@@ -8,7 +8,7 @@ body, html {
   background: linear-gradient(45deg, #28e0ae, #0044ff); 
   background-size: 400% 400%; /* Extend the gradient */
   color: #ffd700;
-  font-family: 'Raleway', sans-serif; /* Updated to Raleway for body text */
+  font-family: 'VT323', monospace;
   overflow: hidden;
   position: relative;
   animation: rainbowShift 15s ease infinite; /* Add animation for gradient shift */
@@ -52,7 +52,7 @@ body:before {
 
 .App {
   text-align: center;
-  font-family: 'Raleway', sans-serif; /* Updated to Raleway for overall app */
+  font-family: 'VT323', monospace; 
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -87,7 +87,7 @@ body:before {
   justify-content: center;
   align-items: center;
   text-transform: uppercase;
-  font-family: 'Poppins', sans-serif; /* Updated to Poppins for buttons */
+  font-family: 'Press Start 2P', cursive; /* Matching the pixel art style */
   box-shadow: 0 4px #333; /* Pixelated shadow effect */
   position: relative;
 }
@@ -111,7 +111,6 @@ body:before {
   font-size: 3.5em;
   margin-bottom: 20px;
   color: #ffffff;
-  font-family: 'Poppins', sans-serif; /* Updated to Poppins for headings */
 }
 
 .header-row {
@@ -124,6 +123,9 @@ body:before {
   padding: 8px;
   margin-bottom: 10px;
 }
+
+
+
 
 .room-list {
   width: 100%;
@@ -177,7 +179,7 @@ body:before {
   height: 50px;
   animation: gradientShift 2s infinite;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-  font-family: 'Poppins', sans-serif; /* Updated to Poppins for buttons */
+  font-family: 'Roboto', sans-serif;
 }
 
 .join-button:hover {
