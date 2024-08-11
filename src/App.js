@@ -278,22 +278,22 @@ useEffect(() => {
           <button class="pixel-button create-button" onClick={createGame}>Create Game</button>
           <button class="pixel-button refresh-button" onClick={fetchGames}>↻</button>
         </div>
-        <div className="game-list">
-          {Object.values(games).map((game) => (
-            <div className="game-card" key={game.game_id}>
-              <div className="game-details">
-                <p>Game ID: {game.game_id}</p>
-                <p>{game.status === 'waiting' ? `Player: ${game.player1}` : `${game.player1} vs ${game.player2}`}</p>
-                <p>Status: {game.status === 'waiting' ? 'Waiting for opponent' : game.status}</p>
-              </div>
-              {game.status === 'waiting' && (
-                <button className="join-button" onClick={() => joinGame(game.game_id)}>
-                  <b>JOIN</b>
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
+        <div className="room-list">
+  {Object.values(games).map((game) => (
+    <div className="room-card" key={game.game_id}>
+      <div className="room-details">
+        <p>Game ID: {game.game_id}</p>
+        <p>{game.status === 'waiting' ? `Player: ${game.player1}` : `${game.player1} vs ${game.player2}`}</p>
+        <p>Status: {game.status === 'waiting' ? 'Waiting for opponent' : game.status}</p>
+      </div>
+      {game.status === 'waiting' && (
+        <button className="join-button" onClick={() => joinRoom(game.game_id)}>
+          <b>JOIN</b>
+        </button>
+      )}
+    </div>
+  ))}
+</div>
       </div>
     </div>
   );
