@@ -141,9 +141,6 @@ function App() {
 
 
 
-
-
-
   
   const handleChoice = async (choice) => {
     setUserChoice(choice);
@@ -168,9 +165,9 @@ function App() {
         console.log("Game status updated:", data);
 
         // Optionally, start polling for the opponent's choice if the game is not yet completed
-        
+        if (data.status !== "completed") {
             startPollingChoices(selectedRoom);
-        
+        }
     } catch (error) {
         console.error("Error in handleChoice:", error);
     }
