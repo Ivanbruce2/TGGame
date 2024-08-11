@@ -229,10 +229,11 @@ function App() {
             {/* Render the result when the game is completed */}
             {gameStatus.status === 'completed' && (
               <div>
-                <h3>
-                  {gameStatus.result.includes(username) ? 'You Win!' : 'You Lose. Try again next time.'}
-                </h3>
                 <p>{gameStatus.result.split('! ')[1]}</p>
+                <h2>
+                  {gameStatus.result.includes(username) ? 'You Win!' : 'You Lose. Try again next time.'}
+                </h2>
+                
               </div>
             )}
           </>
