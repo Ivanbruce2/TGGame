@@ -204,28 +204,28 @@ function App() {
 
   return (
     <div className="App">
-      <div><h1>Welcome, {username}</h1></div>
-      <div className="header-row">
-        <button className="filter-button">Filters</button>
-        
-        <button className="create-button" onClick={createRoom}>+</button>
-        <button className="refresh-button" onClick={fetchRooms}>↻</button>
-      </div>
-      <div className="room-list">
-        {Object.values(rooms).map((room) => (
-          <div className="room-card" key={room.room_id}>
-            <div className="room-details">
-              <p>Game ID: {room.room_id}</p>
-              <p>{room.status === 'waiting' ? `Player: ${room.player1}` : `${room.player1} vs ${room.player2}`}</p>
-              <p>Status: {room.status === 'waiting' ? 'Waiting for opponent' : room.status}</p>
+      <div className="container">
+        <h1 className="welcome-message">Welcome, {username}</h1>
+        <div className="header-row">
+          <button className="create-button" onClick={createRoom}>Create Room</button>
+          <button className="refresh-button" onClick={fetchRooms}>↻</button>
+        </div>
+        <div className="room-list">
+          {Object.values(rooms).map((room) => (
+            <div className="room-card" key={room.room_id}>
+              <div className="room-details">
+                <p>Game ID: {room.room_id}</p>
+                <p>{room.status === 'waiting' ? `Player: ${room.player1}` : `${room.player1} vs ${room.player2}`}</p>
+                <p>Status: {room.status === 'waiting' ? 'Waiting for opponent' : room.status}</p>
+              </div>
+              {room.status === 'waiting' && (
+                <button className="join-button" onClick={() => joinRoom(room.room_id)}>
+                  Join<br />Room
+                </button>
+              )}
             </div>
-            {room.status === 'waiting' && (
-              <button className="join-button" onClick={() => joinRoom(room.room_id)}>
-                Join<br />Room
-              </button>
-            )}
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

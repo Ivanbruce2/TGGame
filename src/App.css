@@ -18,8 +18,8 @@ body:before {
   width: 800px;
   height: 800px;
   background-color: rgba(255, 255, 255, 0.1);
-  top: -200px; /* Start slightly off-screen */
-  left: -200px; /* Start slightly off-screen */
+  top: -200px;
+  left: -200px;
   transform: rotate(45deg);
   animation: floatBg 20s infinite linear;
   z-index: 0;
@@ -37,8 +37,8 @@ body:before {
     transform: translate(-50%, -50%) rotate(45deg);
   }
   100% {
-    top: calc(100% + 200px); /* End slightly off-screen */
-    left: calc(100% + 200px); /* End slightly off-screen */
+    top: calc(100% + 200px);
+    left: calc(100% + 200px);
   }
 }
 
@@ -56,55 +56,69 @@ body:before {
   z-index: 1;
 }
 
-h1 {
-  font-size: 2.5em;
-  margin-bottom: 10px;
-  color: #ffd700;
-  text-shadow: 2px 2px 4px #000; 
+.container {
+  border-radius: 10px;
+  padding: 20px;
+  width: 100%;
+  max-width: 800px;
+  margin-top: 20px;
 }
 
-p {
-  font-size: 1.5em;
-  margin-bottom: 15px;
+.welcome-message {
+  text-align: left;
+  width: 100%;
+  font-size: 2em;
+  margin-bottom: 20px;
   color: #ffd700;
-  text-shadow: 1px 1px 3px #000;
 }
 
 .header-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Push + to the left and refresh to the right */
   align-items: center;
   width: 100%;
-  max-width: 600px;
+  background-color: rgba(255, 255, 255, 0.9); /* Container background for + and refresh */
+  border-radius: 10px;
+  padding: 10px;
   margin-bottom: 10px;
 }
 
-.icon-button {
+.create-button {
   background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); 
   background-size: 200% 200%; 
   border: none;
   color: white;
-  padding: 15px 20px;
+  padding: 10px 15px;
   text-align: center;
   font-size: 1em;
-  margin: 0 5px;
   border-radius: 15px;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
   animation: gradientShift 2s infinite;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-  overflow: hidden;
-  font-family: 'Press Start 2P', cursive; 
+  font-family: 'Press Start 2P', cursive;
+}
+
+.refresh-button {
+  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); 
+  background-size: 200% 200%; 
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  text-align: center;
+  font-size: 1em;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  animation: gradientShift 2s infinite;
+  font-family: 'Press Start 2P', cursive;
 }
 
 .room-list {
   width: 100%;
-  max-width: 600px;
+  max-height: 400px; /* Set a maximum height for the scrollable area */
+  overflow-y: auto; /* Enable vertical scroll */
   margin-top: 10px;
 }
 
@@ -162,36 +176,32 @@ p {
 }
 
 @media (max-width: 480px) {
-  h1 {
-    font-size: 2em;
+  .container {
+    padding: 15px;
   }
 
-  p {
-    font-size: 1.2em;
-  }
-
-  button {
-    font-size: 1.2em;
-    padding: 12px 20px;
-  }
-
-  h3 {
+  .welcome-message {
     font-size: 1.5em;
+    margin-bottom: 15px;
+  }
+
+  .header-row {
+    flex-direction: column;
+  }
+
+  .create-button, .refresh-button {
+    font-size: 0.8em;
+    padding: 8px 12px;
+    margin: 5px 0;
   }
 
   .room-card {
-    padding: 10px;
-    flex-direction: row;
-  }
-
-  .room-details {
-    max-width: 60%;
-    font-size: 12px;
+    padding: 8px;
   }
 
   .join-button {
-    width: 70px;
-    height: 50px;
+    width: 60px;
+    height: 40px;
     font-size: 12px;
   }
 }
