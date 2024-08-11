@@ -183,28 +183,28 @@ function App() {
               vs 
               {gameStatus.player2 ? `${gameStatus.player2} ${gameStatus.player2_choice ? '✔️' : '❓'}` : 'Waiting for Player 2'}
             </h2>
-  
-            {/* Render the choices only if both players have joined */}
-            {gameStatus.status !== 'completed' && gameStatus.player1 && gameStatus.player2 && (
+
+            {/* Render the choices for Player 1 regardless of Player 2's status */}
+            {gameStatus.status !== 'completed' && (
               <div className="choices">
                 {["Scissors", "Paper", "Stone"].map(choice => (
                   <button 
                     key={choice} 
                     className="choice-button" 
                     onClick={() => handleChoice(choice)} 
-                    disabled={!!userChoice}
+                    disabled={!!userChoice} // Disable after Player 1 makes a choice
                   >
                     {choice}
                   </button>
                 ))}
               </div>
             )}
-  
+
             {/* Render the opponent status below the choices */}
-            {gameStatus.status !== 'completed' && gameStatus.player2 && (
-              <p>{opponentChoiceStatus}</p>
+            {gameStatus.status !== 'completed' && (
+              <p>{opponentChoiceStatus || 'Waiting for opponent to join...'}</p>
             )}
-  
+
             {/* Render the result when the game is completed */}
             {gameStatus.status === 'completed' && (
               <div>
@@ -250,6 +250,7 @@ function App() {
       </div>
     );
   }
+
   
 
   return (
