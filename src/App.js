@@ -61,9 +61,9 @@ function App() {
     console.log(`${username} created game:`, data.game_id);
   
     // Delay the start of polling to ensure the room is fully set up
-    setTimeout(() => {
+
       startPollingChoices(data.game_id);
-    }, 1000);  // 1 second delay before polling starts
+ // 1 second delay before polling starts
 };
 
 const startPollingChoices = (gameId) => {
