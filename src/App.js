@@ -113,7 +113,8 @@ function App() {
                 } else {
                     console.log("Both players have made their choices. Determining the result...");
                     clearInterval(pollingRef.current);
-                    // Handle the result here (e.g., update the UI, declare the winner, etc.)
+                    pollingRef.current = null; // Ensure polling is stopped
+                    // Handle the result (you might want to call a function to process the game result here)
                 }
             } else {
                 console.log("No opponent yet, waiting for player 2 to join.");
@@ -127,6 +128,7 @@ function App() {
                 console.log("First polling error encountered. Returning to lobby in 5 seconds...");
                 setTimeout(() => {
                     clearInterval(pollingRef.current);
+                    pollingRef.current = null; // Ensure polling is stopped
                     console.log("Returning to lobby after game not found.");
 
                     // Stop polling and return to the lobby
@@ -135,11 +137,6 @@ function App() {
                     setUserChoice('');
                     setOpponentChoiceStatus('');
 
-                    // Stop further polling
-                    if (pollingRef.current) {
-                        clearInterval(pollingRef.current);
-                        pollingRef.current = null; // Make sure to clear the reference
-                    }
                 }, 5000); // 5-second delay
             }
         }
@@ -147,6 +144,7 @@ function App() {
 
     pollingRef.current = setInterval(pollGameStatus, 3000);
 };
+
 
 
 
