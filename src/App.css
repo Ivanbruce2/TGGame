@@ -181,7 +181,7 @@ body:before {
     font-size: 0.8em;
     padding: 8px 12px;
     margin: 5px 0;
-    width: 48%; /* Reduce width for side-by-side display */
+    width: 15%; /* Reduce width for side-by-side display */
   }
 
   .room-card {
