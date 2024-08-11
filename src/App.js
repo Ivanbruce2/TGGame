@@ -307,7 +307,7 @@ const joinRoom = async (game_id) => {
                 <p>Status: {room.status === 'waiting' ? 'Waiting for opponent' : room.status}</p>
               </div>
               {room.status === 'waiting' && (
-                <button className="join-button" onClick={() => joinRoom(room.room_id)}>
+                <button className="join-button" onClick={() => joinRoom(game.game_id)}>
                   <b>JOIN</b>
                 </button>
               )}
