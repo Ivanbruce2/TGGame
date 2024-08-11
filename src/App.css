@@ -7,6 +7,7 @@ body, html {
   width: 100%;
   background: linear-gradient(135deg, #6a11cb, #2575fc);
   color: #ffd700;
+  font-family: 'VT323', monospace;
 }
 
 .App {
@@ -15,15 +16,15 @@ body, html {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Shift content towards the top */
+  justify-content: flex-start;
   align-items: center;
   color: #fff;
-  padding: 10px; /* Reduced padding for more compact layout */
+  padding: 10px;
 }
 
 h1 {
   font-size: 2.5em;
-  margin-bottom: 10px; /* Reduced margin */
+  margin-bottom: 10px;
   color: #ffd700;
   text-shadow: 2px 2px 4px #000; 
 }
@@ -40,25 +41,37 @@ p {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 600px; /* More compact layout */
-  margin-bottom: 10px; /* Reduced margin */
+  max-width: 600px;
+  margin-bottom: 10px;
 }
 
-.refresh-button {
-  background-color: #4CAF50;
+.icon-button {
+  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); 
+  background-size: 200% 200%; 
   border: none;
   color: white;
-  padding: 5px 15px; /* Reduced padding */
+  padding: 15px 20px;
   text-align: center;
-  font-size: 14px; /* Slightly smaller font size */
-  border-radius: 5px;
+  font-size: 1em;
+  margin: 0 5px;
+  border-radius: 15px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  animation: gradientShift 2s infinite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+  font-family: 'Press Start 2P', cursive; 
 }
 
 .room-list {
   width: 100%;
-  max-width: 600px; /* More compact layout */
-  margin-top: 10px; /* Reduced margin */
+  max-width: 600px;
+  margin-top: 10px;
 }
 
 .room-card {
@@ -67,20 +80,21 @@ p {
   align-items: center;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
-  padding: 10px; /* Reduced padding */
-  margin-bottom: 10px; /* Reduced margin */
+  padding: 10px;
+  margin-bottom: 10px;
   text-align: left;
-  flex-direction: row; /* Ensure content is side-by-side */
+  flex-direction: row;
 }
 
 .room-details {
-  flex: 1; /* This will make sure the details take up available space */
+  flex: 1;
 }
 
 .join-button {
-  flex-shrink: 0; /* Prevent the button from shrinking */
-  padding: 8px 15px; /* Reduced padding */
-  background-color: #4CAF50;
+  flex-shrink: 0;
+  padding: 8px 15px;
+  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); 
+  background-size: 200% 200%; 
   border: none;
   color: white;
   text-align: center;
@@ -90,75 +104,27 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column; /* Display "Join" and "Room" on two lines */
-  width: 70px; /* Reduced width */
-  height: 50px; /* Reduced height */
-}
-
-.join-button:disabled {
-  background-color: #888888;
-  cursor: not-allowed;
-}
-
-.choices {
-  display: flex;
   flex-direction: column;
-  align-items: center;
-}
-
-button {
-  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); 
-  border: none;
-  color: white;
-  padding: 15px 20px;
-  text-align: center;
-  font-size: 1em;
-  margin: 15px 0;
-  border-radius: 15px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-  width: 90%; 
-  max-width: 400px; 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-size: 200% 200%; 
+  width: 70px;
+  height: 50px;
   animation: gradientShift 2s infinite;
-  position: relative;
-  z-index: 0;
-  overflow: hidden;
-  font-family: 'Press Start 2P', cursive; 
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-button:before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle at center, transparent, rgba(255, 255, 255, 0.2));
-  transform: rotate(45deg);
-  animation: shine 4s infinite linear;
-  z-index: 1;
-}
-
-button:hover {
+.join-button:hover {
   transform: scale(1.1) rotate(2deg);
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
 }
 
-button:active {
+.join-button:active {
   transform: scale(0.9) rotate(-2deg);
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-h3 {
-  margin-top: 20px;
-  font-size: 1.8em;
-  color: #FFD700;
-  text-shadow: 2px 2px 4px #000;
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 @media (max-width: 480px) {
@@ -181,28 +147,17 @@ h3 {
 
   .room-card {
     padding: 10px;
-    flex-direction: row; /* Ensure row layout even on mobile */
+    flex-direction: row;
   }
 
   .room-details {
-    max-width: 60%; /* Further reduce the width to make space for the button */
-    font-size: 12px; /* Smaller font size for mobile */
+    max-width: 60%;
+    font-size: 12px;
   }
 
   .join-button {
-    width: 70px; /* Set a fixed width */
-    height: 50px; /* Set a fixed height */
-    font-size: 12px; /* Smaller font size for mobile */
+    width: 70px;
+    height: 50px;
+    font-size: 12px;
   }
-}
-
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes shine {
-  0% { transform: translate(-100%, -100%) rotate(45deg); }
-  100% { transform: translate(100%, 100%) rotate(45deg); }
 }

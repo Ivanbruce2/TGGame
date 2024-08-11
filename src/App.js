@@ -65,7 +65,6 @@ function App() {
     setUserChoice(choice);
     console.log(`${username} selected:`, choice);
     
-    // Update gameStatus immediately to reflect that the current user has made their choice
     setGameStatus(prevStatus => ({
         ...prevStatus,
         [`${username === prevStatus.player1 ? 'player1_choice' : 'player2_choice'}`]: 'made_choice'
@@ -85,72 +84,66 @@ function App() {
     });
     const data = await response.json();
     startPollingChoices(data.game_id);
-};
-
-
-// First poll: Check for opponent presence and then start polling game status
-const startPollingOpponent = (roomId) => {
-  const pollOpponentStatus = async () => {
-    const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
-      headers: {
-        'ngrok-skip-browser-warning': 'true'
-      }
-    });
-    const data = await response.json();
-    const room = data[roomId];
-    if (room && room.player2) {
-      clearInterval(pollingRef.current); // Stop polling for opponent once joined
-      setGameStatus({ ...gameStatus, player1: room.player1, player2: room.player2, status: 'in_progress' });
-      console.log(`Player 1: ${room.player1}, Player 2: ${room.player2}`); // Log Player 1 and Player 2
-      startPollingChoices(roomId);  // Start polling game status
-    }
   };
-  pollingRef.current = setInterval(pollOpponentStatus, 3000);
-};
 
-// Second poll: Check for choices once opponent has joined
-const startPollingChoices = (gameId) => {
-  // Clear any existing polling interval before starting a new one
-  if (pollingRef.current) {
-    clearInterval(pollingRef.current);
-  }
-
-  const pollGameStatus = async () => {
-    const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
-      headers: {
-        'ngrok-skip-browser-warning': 'true'
+  const startPollingOpponent = (roomId) => {
+    const pollOpponentStatus = async () => {
+      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+        }
+      });
+      const data = await response.json();
+      const room = data[roomId];
+      if (room && room.player2) {
+        clearInterval(pollingRef.current);
+        setGameStatus({ ...gameStatus, player1: room.player1, player2: room.player2, status: 'in_progress' });
+        console.log(`Player 1: ${room.player1}, Player 2: ${room.player2}`);
+        startPollingChoices(roomId);
       }
-    });
+    };
+    pollingRef.current = setInterval(pollOpponentStatus, 3000);
+  };
 
-    const data = await response.json();
-    setGameStatus(data);
-
-    // Stop polling when the game is completed
-    if (data.status === 'completed') {
+  const startPollingChoices = (gameId) => {
+    if (pollingRef.current) {
       clearInterval(pollingRef.current);
-      pollingRef.current = null; // Clear the ref to indicate no active polling
-      console.log('Game completed:', data.result);
     }
 
-    // Update UI for choices and results
-    if (data.player1_choice && data.player2_choice) {
-      setOpponentChoiceStatus('Both players have made their move.');
-    } else if (data.player1_choice && !data.player2_choice) {
-      setOpponentChoiceStatus(`${data.player2} is waiting to make a choice.`);
-    } else if (!data.player1_choice && data.player2_choice) {
-      setOpponentChoiceStatus(`${data.player1} is waiting to make a choice.`);
-    } else {
-      setOpponentChoiceStatus('Waiting for both players to make a choice.');
-    }
+    const pollGameStatus = async () => {
+      const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+        }
+      });
 
-    console.log('Game status updated:', data);
+      const data = await response.json();
+      setGameStatus(data);
+
+      if (data.status === 'completed') {
+        clearInterval(pollingRef.current);
+        pollingRef.current = null;
+        console.log('Game completed:', data.result);
+      }
+
+      if (data.player1_choice && data.player2_choice) {
+        setOpponentChoiceStatus('Both players have made their move.');
+      } else if (data.player1_choice && !data.player2_choice) {
+        setOpponentChoiceStatus(`${data.player2} is waiting to make a choice.`);
+      } else if (!data.player1_choice && data.player2_choice) {
+        setOpponentChoiceStatus(`${data.player1} is waiting to make a choice.`);
+      } else {
+        setOpponentChoiceStatus('Waiting for both players to make a choice.');
+      }
+
+      console.log('Game status updated:', data);
+    };
+
+    pollingRef.current = setInterval(pollGameStatus, 3000);
   };
-
-  pollingRef.current = setInterval(pollGameStatus, 3000);
-};
 
   useEffect(() => {
-    return () => clearInterval(pollingRef.current); // Cleanup on component unmount
+    return () => clearInterval(pollingRef.current);
   }, []);
 
   if (selectedRoom) {
@@ -160,8 +153,7 @@ const startPollingChoices = (gameId) => {
         {gameStatus ? (
           <>
             <h2>{gameStatus.player1 === username ? `${gameStatus.player1} vs ${gameStatus.player2 || 'Waiting for opponent'}` : `${gameStatus.player2} vs ${gameStatus.player1 || 'Waiting for opponent'}`}</h2>
-            
-            {/* Conditionally render player statuses only if the game is not completed */}
+
             {gameStatus.status !== 'completed' && (
               <div>
                 <span>{gameStatus.player1}: {gameStatus.player1_choice ? 'Ready!' : 'Waiting for choice'}</span>
@@ -169,8 +161,7 @@ const startPollingChoices = (gameId) => {
                 {gameStatus.player2 && <span>{gameStatus.player2}: {gameStatus.player2_choice ? 'Ready!' : 'Waiting for choice'}</span>}
               </div>
             )}
-    
-            {/* Render the choices */}
+
             {gameStatus.status !== 'completed' && (
               <div className="choices">
                 {["Scissors", "Paper", "Stone"].map(choice => (
@@ -180,13 +171,11 @@ const startPollingChoices = (gameId) => {
                 ))}
               </div>
             )}
-    
-            {/* Render the opponent status below the choices */}
+
             {gameStatus.status !== 'completed' && (
               <p>{opponentChoiceStatus}</p>
             )}
-    
-            {/* Render the result when the game is completed */}
+
             {gameStatus.status === 'completed' && (
               <div>
                 <h3>
@@ -215,11 +204,12 @@ const startPollingChoices = (gameId) => {
 
   return (
     <div className="App">
-      <h1>Welcome, {username}</h1>
-      <button onClick={createRoom} className="create-button">Create Room</button>
+      <div><h1>Welcome, {username}</h1></div>
       <div className="header-row">
-        <h2><u>Available Room(s)</u></h2>
-        <button className="refresh-button" onClick={fetchRooms}>Refresh</button>
+        <button className="filter-button">Filters</button>
+        
+        <button className="create-button" onClick={createRoom}>+</button>
+        <button className="refresh-button" onClick={fetchRooms}>↻</button>
       </div>
       <div className="room-list">
         {Object.values(rooms).map((room) => (
