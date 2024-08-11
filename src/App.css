@@ -97,7 +97,12 @@ body:before {
   justify-content: center;
   align-items: center;
   text-align: center;
+  width: 100%; /* Ensures the container takes full width */
   margin-top: 20px;
+}
+
+.game-result p, .game-result h2 {
+  width: 100%; /* Ensure text content takes full width and aligns consistently */
 }
 
 .return-button {
@@ -112,14 +117,15 @@ body:before {
   line-height: 46px;
   border-radius: 4px;
   cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   text-transform: uppercase;
   font-family: 'Press Start 2P', cursive;
   box-shadow: 0 4px #333;
   animation: gradientShift 2s infinite linear;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
 
 
 

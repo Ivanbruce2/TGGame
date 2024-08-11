@@ -219,18 +219,14 @@ function App() {
 
     {/* Render the result when the game is completed */}
     {gameStatus.status === 'completed' && (
-  <div>
+  <div className="game-result">
     {/* Check if it's a draw */}
     {gameStatus.result.includes('draw') ? (
-      <>
-        <p>It's a Draw! Both players chose {gameStatus.player1_choice}.</p>
-      </>
+      <p>It's a Draw! Both players chose {gameStatus.player1_choice}.</p>
     ) : (
       <>
         <p>{gameStatus.result.split('! ')[1]}</p>
-        <h2>
-          {gameStatus.result.includes(username) ? 'You Win!' : 'You Lose. Try again next time.'}
-        </h2>
+        <h2>{gameStatus.result.includes(username) ? 'You Win!' : 'You Lose. Try again next time.'}</h2>
       </>
     )}
     <button className="return-button" onClick={() => setSelectedRoom(null)}>
@@ -238,6 +234,7 @@ function App() {
     </button>
   </div>
 )}
+
 
   </>
 ) : (
