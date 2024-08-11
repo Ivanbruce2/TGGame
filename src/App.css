@@ -123,6 +123,13 @@ body:before {
   flex: 1;
 }
 
+.room-details p {
+  margin: 0;
+  padding: 0;
+  line-height: 1.2;
+}
+
+
 .join-button {
   flex-shrink: 0;
   padding: 8px 15px;
@@ -162,7 +169,7 @@ body:before {
 
 @media (max-width: 480px) {
   .container {
-    padding: 1px;
+    padding: 15px;
     max-width: 90%; /* Allow the container to fill the width on mobile */
   }
 
