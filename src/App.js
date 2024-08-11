@@ -233,9 +233,9 @@ function App() {
         <h2>
           {gameStatus.result.includes(username) ? 'You Win!' : gameStatus.result.includes('Draw') ? "It's a Draw!" : 'You Lose. Try again next time.'}
         </h2>
-        <button className="pixel-button" onClick={() => setSelectedRoom(null)}>
-          Return to Lobby
-        </button>
+        <button className="pixel-button return-button" onClick={() => setSelectedRoom(null)}>
+      Return to Lobby
+    </button>
       </div>
     )}
   </>
