@@ -199,7 +199,7 @@ function App() {
           <>
             <h2 className="game-status">
               {gameStatus.player1 ? `${gameStatus.player1} ${gameStatus.player1_choice ? '✔️' : '❓'}` : '[Pending]'} 
-              vs  
+              {' vs '}    
               {gameStatus.player2 ? `${gameStatus.player2} ${gameStatus.player2_choice ? '✔️' : '❓'}` : '[Pending]'}
             </h2>
 
