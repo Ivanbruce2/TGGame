@@ -5,11 +5,19 @@ body, html {
   padding: 0;
   height: 100%;
   width: 100%;
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); 
+  background-size: 400% 400%; /* Extend the gradient */
   color: #ffd700;
   font-family: 'VT323', monospace;
   overflow: hidden;
   position: relative;
+  animation: rainbowShift 15s ease infinite; /* Add animation for gradient shift */
+}
+
+@keyframes rainbowShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 body:before {
