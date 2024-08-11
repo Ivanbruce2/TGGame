@@ -215,7 +215,7 @@ body:before {
   }
 
   .refresh-button {
-    font-size: 0.8em;
+    font-size: 1.2em;
     padding: 8px 12px;
     margin: 5px 0;
     width: 20%; /* Adjust width of the Refresh button */
