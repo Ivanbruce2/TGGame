@@ -5,31 +5,19 @@ body, html {
   padding: 0;
   height: 100%;
   width: 100%;
-  background: radial-gradient(circle, #4101ff, #880176, #9c0202);
+  background: linear-gradient(135deg, #4101ff, #880176, #9c0202); 
   background-size: 400% 400%; /* Extend the gradient */
   color: #ffd700;
   font-family: 'VT323', monospace;
   overflow: hidden;
   position: relative;
-  animation: rainbowPulse 15s ease infinite; /* Add animation for radial gradient */
+  animation: rainbowShift 15s ease infinite; /* Add animation for gradient shift */
 }
 
-@keyframes rainbowPulse {
-  0% {
-    background: radial-gradient(circle, #28e0ae, #0044ff, #ff0047);
-  }
-  25% {
-    background: radial-gradient(circle, #28e0ae, #0044ff, #ff0047);
-  }
-  50% {
-    background: radial-gradient(circle, #28e0ae, #0044ff, #ff0047);
-  }
-  75% {
-    background: radial-gradient(circle, #28e0ae, #0044ff, #ff0047);
-  }
-  100% {
-    background: radial-gradient(circle, #28e0ae, #0044ff, #ff0047);
-  }
+@keyframes rainbowShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 body:before {
@@ -61,7 +49,6 @@ body:before {
     left: calc(100% + 200px);
   }
 }
-
 
 .App {
   text-align: center;
@@ -122,41 +109,6 @@ body:before {
 .welcome-message {
   text-transform: uppercase;
   text-align: left;
-  width: 100%;
-  font-size: 1.5em;
-  margin-bottom: 20px;
-  color: #ffd700; /* Base color */
-  font-family: 'Press Start 2P', cursive;
-  position: relative;
-  text-shadow: 
-    1px 1px 0 #ff0047,   /* red shadow */
-    2px 2px 0 #ff8a00,   /* orange shadow */
-    3px 3px 0 #fcdc4d,   /* yellow shadow */
-    4px 4px 0 #28e0ae,   /* green shadow */
-    5px 5px 0 #0044ff;   /* blue shadow */
-}
-.game-status {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'VT323', monospace;
-  font-size: 1.5em;
-  color: white;
-  margin-bottom: 20px;
-}
-
-.player-status {
-  display: flex;
-  align-items: center;
-}
-
-.vs {
-  margin: 0 10px;
-}
-
-.welcome-message2 {
-  text-transform: uppercase;
-  text-align: center;
   width: 100%;
   font-size: 1.5em;
   margin-bottom: 20px;
