@@ -85,48 +85,43 @@ function App() {
 
   const startPollingChoices = (roomId) => {
     const pollGameStatus = async () => {
-        const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/list_rooms`, {
-            headers: {
-                'ngrok-skip-browser-warning': 'true'
-            }
-        });
-
-        const data = await response.json();
-        console.log("Polling room status, current room data:", data);
-
-        const room = data[roomId]; // Assuming data is an object with roomId as keys
-
-        // Check if Player 2 has joined
-        if (room && room.player2) {
-            console.log(`Player 1: ${room.player1}, Player 2: ${room.player2}`);
-            
-            // Fetch the game status
-            const gameResponse = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${roomId}`, {
+        try {
+            // Fetch the game status directly
+            const response = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${roomId}`, {
                 headers: {
                     'ngrok-skip-browser-warning': 'true'
                 }
             });
 
-            const gameData = await gameResponse.json();
-            setGameStatus(gameData);
-
-            // Handle polling logic for choices
-            if (!gameData.player1_choice || !gameData.player2_choice) {
-                console.log("Waiting for players to make their choices...");
-            } else {
-                console.log("Both players have made their choices. Determining the result...");
-                clearInterval(pollingRef.current);
-                // Handle the result (you might want to call a function to process the game result here)
+            if (!response.ok) {
+                throw new Error("Game not found");
             }
 
-            console.log("Game status updated:", gameData);
-        } else {
-            console.log("No opponent yet, waiting for player 2 to join.");
+            const gameData = await response.json();
+            setGameStatus(gameData);
+            console.log("Polling game status, current game data:", gameData);
+
+            // Check if both players are present and if they have made their choices
+            if (gameData.player2) {
+                if (!gameData.player1_choice || !gameData.player2_choice) {
+                    console.log("Waiting for players to make their choices...");
+                } else {
+                    console.log("Both players have made their choices. Determining the result...");
+                    clearInterval(pollingRef.current);
+                    // Handle the result here (e.g., update the UI, declare the winner, etc.)
+                }
+            } else {
+                console.log("No opponent yet, waiting for player 2 to join.");
+            }
+        } catch (error) {
+            console.error("Error polling game status:", error);
+            clearInterval(pollingRef.current);
         }
     };
 
     pollingRef.current = setInterval(pollGameStatus, 3000);
 };
+
 
   
   const handleChoice = async (choice) => {
