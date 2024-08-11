@@ -178,6 +178,7 @@ body:before {
 @media (max-width: 480px) {
   .container {
     padding: 15px;
+    max-width: 90%; /* Reduce the max-width for mobile devices */
   }
 
   .welcome-message {
@@ -187,12 +188,14 @@ body:before {
 
   .header-row {
     flex-direction: column;
+    max-width: 90%; /* Reduce the max-width for mobile devices */
   }
 
   .create-button, .refresh-button {
     font-size: 0.8em;
     padding: 8px 12px;
     margin: 5px 0;
+    width: 100%; /* Make buttons full-width on mobile */
   }
 
   .room-card {

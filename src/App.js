@@ -153,7 +153,8 @@ function App() {
         {gameStatus ? (
           <>
             <h2>{gameStatus.player1 === username ? `${gameStatus.player1} vs ${gameStatus.player2 || 'Waiting for opponent'}` : `${gameStatus.player2} vs ${gameStatus.player1 || 'Waiting for opponent'}`}</h2>
-
+            
+            {/* Conditionally render player statuses only if the game is not completed */}
             {gameStatus.status !== 'completed' && (
               <div>
                 <span>{gameStatus.player1}: {gameStatus.player1_choice ? 'Ready!' : 'Waiting for choice'}</span>
@@ -161,7 +162,8 @@ function App() {
                 {gameStatus.player2 && <span>{gameStatus.player2}: {gameStatus.player2_choice ? 'Ready!' : 'Waiting for choice'}</span>}
               </div>
             )}
-
+    
+            {/* Render the choices */}
             {gameStatus.status !== 'completed' && (
               <div className="choices">
                 {["Scissors", "Paper", "Stone"].map(choice => (
@@ -171,11 +173,13 @@ function App() {
                 ))}
               </div>
             )}
-
+    
+            {/* Render the opponent status below the choices */}
             {gameStatus.status !== 'completed' && (
               <p>{opponentChoiceStatus}</p>
             )}
-
+    
+            {/* Render the result when the game is completed */}
             {gameStatus.status === 'completed' && (
               <div>
                 <h3>
@@ -207,7 +211,7 @@ function App() {
       <div className="container">
         <h1 className="welcome-message">Welcome, {username}</h1>
         <div className="header-row">
-          <button className="create-button" onClick={createRoom}>Create Room</button>
+          <button className="create-button" onClick={createRoom}>+</button>
           <button className="refresh-button" onClick={fetchRooms}>↻</button>
         </div>
         <div className="room-list">
