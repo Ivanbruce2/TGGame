@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Roboto:wght@700&display=swap');
 
 body, html {
   margin: 0;
@@ -74,18 +74,17 @@ body:before {
 
 .header-row {
   display: flex;
-  justify-content: space-between; /* Push + to the left and refresh to the right */
+  justify-content: space-between;
   align-items: center;
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.9); /* Container background for + and refresh */
+  background-color: rgba(255, 255, 255, 0.9);
   border-radius: 10px;
   padding: 10px;
   margin-bottom: 10px;
 }
 
 .create-button, .refresh-button {
-  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); 
-  background-size: 200% 200%; 
+  background: #2a2a72; /* A cool blue color to match the theme */
   border: none;
   color: white;
   padding: 10px 15px;
@@ -95,20 +94,23 @@ body:before {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-  animation: gradientShift 2s infinite;
-  font-family: 'Press Start 2P', cursive;
-  width: 60px; /* Set a fixed width for buttons */
+  font-family: 'Roboto', sans-serif; /* Cooler font for the buttons */
+  width: 60px;
+}
+
+.create-button:hover, .refresh-button:hover {
+  background: #3a3a91; /* Slightly lighter on hover */
 }
 
 .room-list {
   width: 100%;
-  max-height: 400px; /* Set a maximum height for the scrollable area */
-  overflow-y: auto; /* Enable vertical scroll */
+  max-height: 400px;
+  overflow-y: auto;
   margin-top: 10px;
 }
 
 .room-card {
-  position: relative; /* Enable absolute positioning for child elements */
+  position: relative;
   display: flex;
   align-items: flex-start;
   background-color: rgba(255, 255, 255, 0.1);
@@ -121,8 +123,8 @@ body:before {
 
 .room-details {
   flex: 1;
-  font-size: 1.2em; /* Increase font size for room details */
-  margin-right: 80px; /* Provide space for the Join button */
+  font-size: 1.2em;
+  margin-right: 80px;
 }
 
 .room-details p {
@@ -152,6 +154,7 @@ body:before {
   height: 50px;
   animation: gradientShift 2s infinite;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  font-family: 'Roboto', sans-serif;
 }
 
 .join-button:hover {
@@ -182,16 +185,16 @@ body:before {
   }
 
   .header-row {
-    flex-direction: row; /* Ensure buttons are side by side on mobile */
+    flex-direction: row;
     justify-content: space-between;
-    max-width: 100%; /* Adjust the width to fit mobile screens */
+    max-width: 100%;
   }
 
   .create-button, .refresh-button {
     font-size: 0.8em;
     padding: 8px 12px;
     margin: 5px 0;
-    width: 15%; /* Reduce width for side-by-side display */
+    width: 15%;
   }
 
   .room-card {
@@ -199,8 +202,8 @@ body:before {
   }
 
   .room-details {
-    font-size: 1.1em; /* Slightly smaller font size for mobile */
-    margin-right: 60px; /* Adjust margin for smaller screens */
+    font-size: 1.1em;
+    margin-right: 60px;
   }
 
   .join-button {
