@@ -101,7 +101,7 @@ function App() {
             console.log(`Player 1: ${room.player1}, Player 2: ${room.player2}`);
             
             // Fetch the game status
-            const gameResponse = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?room_id=${roomId}`, {
+            const gameResponse = await fetch(`https://90a3-119-74-213-151.ngrok-free.app/game_status?game_id=${roomId}`, {
                 headers: {
                     'ngrok-skip-browser-warning': 'true'
                 }
