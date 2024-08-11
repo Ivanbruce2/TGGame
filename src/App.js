@@ -85,6 +85,7 @@ function App() {
 
   const startPollingChoices = (roomId) => {
     let errorCount = 0;
+    let errorTimeout = null;
 
     const pollGameStatus = async () => {
         try {
@@ -105,6 +106,7 @@ function App() {
 
             // Reset error count if the game is found
             errorCount = 0;
+            clearTimeout(errorTimeout); // Clear any existing timeout if polling is successful
 
             // Check if both players are present and if they have made their choices
             if (gameData.player2) {
@@ -126,7 +128,8 @@ function App() {
             if (errorCount === 1) {
                 // First polling error: start a timeout to return to the lobby after 5 seconds
                 console.log("First polling error encountered. Returning to lobby in 5 seconds...");
-                setTimeout(() => {
+
+                errorTimeout = setTimeout(() => {
                     clearInterval(pollingRef.current);
                     pollingRef.current = null; // Ensure polling is stopped
                     console.log("Returning to lobby after game not found.");
@@ -143,7 +146,16 @@ function App() {
     };
 
     pollingRef.current = setInterval(pollGameStatus, 3000);
+
+    // Clear interval and timeout when unmounting or leaving the room
+    return () => {
+        clearInterval(pollingRef.current);
+        clearTimeout(errorTimeout);
+        pollingRef.current = null;
+        errorTimeout = null;
+    };
 };
+
 
 
 
