@@ -55,13 +55,16 @@ function App() {
         username: username,
       }),
     });
+  
     const data = await response.json();
-    setSelectedRoom(data.room_id);
-    console.log(`${username} created room:`, data.room_id);
+    console.log("Response data:", data);  // Log the entire response data
+    setSelectedRoom(data.game_id);
+    console.log(`${username} created room:`, data.game_id);
     console.log("Initial gameStatus after room creation:", gameStatus);
   
-    startPollingChoices(data.room_id);
+    startPollingChoices(data.game_id);
   };
+  
   
   
 
