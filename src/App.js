@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
+import { parseInitData } from '@telegram-apps/sdk';
+
 import './App.css';
 
 function App() {
@@ -15,6 +17,11 @@ function App() {
   useEffect(() => {
     console.log("initDataRaw:", initDataRaw);
     console.log("initData:", initData);
+    console.log(parseInitData(initDataString));
+    // or
+    console.log(parseInitData(new URLSearchParams(initDataString)));
+
+
     const urlParams = new URLSearchParams(window.location.search);
     const usernameFromParams = urlParams.get('username');
     console.log("Username from URL params:", usernameFromParams);
