@@ -37,7 +37,7 @@ function App() {
   };
 
   const fetchGames = async () => {
-    const response = await fetch(`https://efb5-119-74-213-151.ngrok-free.app/list_rooms`, {
+    const response = await fetch(`https://1648-119-74-213-151.ngrok-free.app/list_rooms`, {
       headers: {
         'ngrok-skip-browser-warning': 'true'
       }
@@ -52,7 +52,7 @@ function App() {
     setUserChoice('');    // Reset user choice
     setOpponentChoiceStatus('');  // Reset opponent choice status
     
-    const response = await fetch('https://efb5-119-74-213-151.ngrok-free.app/create_room', {
+    const response = await fetch('https://1648-119-74-213-151.ngrok-free.app/create_room', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -73,7 +73,7 @@ function App() {
   const startPollingChoices = (gameId) => {
     const pollGameStatus = async () => {
         try {
-            const response = await fetch(`https://efb5-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
+            const response = await fetch(`https://1648-119-74-213-151.ngrok-free.app/game_status?game_id=${gameId}`, {
                 headers: {
                     'ngrok-skip-browser-warning': 'true'
                 }
@@ -118,7 +118,7 @@ function App() {
 
 const joinGame = async (game_id) => {
   try {
-      const response = await fetch('https://efb5-119-74-213-151.ngrok-free.app/join_room', {
+      const response = await fetch('https://1648-119-74-213-151.ngrok-free.app/join_room', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
@@ -149,7 +149,7 @@ const handleChoice = async (choice) => {
     console.log(`${username} selected:`, choice);
 
     try {
-        const response = await fetch('https://efb5-119-74-213-151.ngrok-free.app/webhook', {
+        const response = await fetch('https://1648-119-74-213-151.ngrok-free.app/webhook', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -176,7 +176,7 @@ const handleChoice = async (choice) => {
 
 const leaveGame = async () => {
     if (selectedGame) {
-      await fetch('https://efb5-119-74-213-151.ngrok-free.app/leave_room', {
+      await fetch('https://1648-119-74-213-151.ngrok-free.app/leave_room', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
