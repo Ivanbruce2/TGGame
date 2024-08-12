@@ -17,15 +17,10 @@ function App() {
   useEffect(() => {
     console.log("initDataRaw:", initDataRaw);
     console.log("initData:", initData);
-    console.log(parseInitData(initData));
-    // or
-    console.log(parseInitData(new URLSearchParams(initData)));
+    const retrievedUsername = initData.user.username || "Unknown Username";
 
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const usernameFromParams = urlParams.get('username');
-    console.log("Username from URL params:", usernameFromParams);
-    setUsername(usernameFromParams);
+ 
+    setUsername(retrievedUsername);
     fetchGames();
 
     window.addEventListener('beforeunload', handleBeforeUnload);
