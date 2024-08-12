@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { retrieveLaunchParams } from '@telegram-apps/sdk';
 import './App.css';
 
 function App() {
@@ -9,10 +10,14 @@ function App() {
   const [userChoice, setUserChoice] = useState('');
   const [opponentChoiceStatus, setOpponentChoiceStatus] = useState('');
   const pollingRef = useRef(null);
+  const { initDataRaw, initData } = retrieveLaunchParams();
 
   useEffect(() => {
+    console.log("initDataRaw:", initDataRaw);
+    console.log("initData:", initData);
     const urlParams = new URLSearchParams(window.location.search);
     const usernameFromParams = urlParams.get('username');
+    console.log("Username from URL params:", usernameFromParams);
     setUsername(usernameFromParams);
     fetchGames();
 
