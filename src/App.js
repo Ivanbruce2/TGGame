@@ -17,9 +17,9 @@ function App() {
   useEffect(() => {
     console.log("initDataRaw:", initDataRaw);
     console.log("initData:", initData);
-    console.log(parseInitData(initDataString));
+    console.log(parseInitData(initData));
     // or
-    console.log(parseInitData(new URLSearchParams(initDataString)));
+    console.log(parseInitData(new URLSearchParams(initData)));
 
 
     const urlParams = new URLSearchParams(window.location.search);
