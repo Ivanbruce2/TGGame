@@ -3,6 +3,7 @@ import { retrieveLaunchParams } from '@telegram-apps/sdk';
 import './App.css';
 
 function App() {
+  const [userID, setUserID] = useState('');
   const [username, setUsername] = useState('');
   const [rooms, setRooms] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
@@ -15,7 +16,9 @@ function App() {
     console.log("initDataRaw:", initDataRaw);
     console.log("initData:", initData);
     const retrievedUsername = initData.user.username || "Unknown Username";
+    const retrievedUserID = initData.user.id || "Unknown UserID";
 
+    setUserID(retrievedUserID);
     setUsername(retrievedUsername);
     fetchRooms();
 
