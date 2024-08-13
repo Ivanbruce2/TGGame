@@ -46,27 +46,7 @@ function App() {
     console.log('Rooms fetched:', data);
   };
 
-  const createRoom = async () => {
-    setGameStatus(null);
-    setUserChoice('');
-    
-    const response = await fetch(' https://bf624dc291e08644f85d1314883bcc30.serveo.net/create_room', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'ngrok-skip-browser-warning': 'true',
-      },
-      body: new URLSearchParams({
-        username: userID,
-      }),
-    });
-  
-    const data = await response.json();
-    setSelectedRoom(data.room_id);
-    console.log(`${username} created room:`, data.room_id);
-  
-    startPollingChoices(data.room_id);
-  };
+
 
   const startPollingChoices = (roomId) => {
     const pollGameStatus = async () => {
@@ -112,63 +92,86 @@ function App() {
     pollingRef.current = setInterval(pollGameStatus, 3000);
   };
 
-  const joinRoom = async (roomId) => {
-    try {
-      const response = await fetch(' https://bf624dc291e08644f85d1314883bcc30.serveo.net/join_room', {
+  const createRoom = async () => {
+    setGameStatus(null);
+    setUserChoice('');
+
+    const response = await fetch(' https://bf624dc291e08644f85d1314883bcc30.serveo.net/create_room', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'ngrok-skip-browser-warning': 'true',
+            'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
-          username: username,
-          room_id: roomId,
+            userid: userID,
+            username: username,
         }),
-      });
+    });
 
-      const data = await response.json();
+    const data = await response.json();
+    setSelectedRoom(data.room_id);
+    console.log(`${username} created room:`, data.room_id);
 
-      if (data && data.room_id) {
-        setSelectedRoom(data.room_id);
-        console.log(`${username} joined room:`, data.room_id);
-        startPollingChoices(data.room_id);
-      } else {
-        console.error("Unexpected response data:", data);
-      }
+    startPollingChoices(data.room_id);
+};
+
+const joinRoom = async (roomId) => {
+    try {
+        const response = await fetch(' https://bf624dc291e08644f85d1314883bcc30.serveo.net/join_room', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                userid: userID,
+                username: username,
+                room_id: roomId,
+            }),
+        });
+
+        const data = await response.json();
+
+        if (data && data.room_id) {
+            setSelectedRoom(data.room_id);
+            console.log(`${username} joined room:`, data.room_id);
+            startPollingChoices(data.room_id);
+        } else {
+            console.error("Unexpected response data:", data);
+        }
     } catch (error) {
-      console.error("Error in joinRoom:", error);
+        console.error("Error in joinRoom:", error);
     }
-  };
+};
 
-  const handleChoice = async (choice) => {
+const handleChoice = async (choice) => {
     setUserChoice(choice);
     console.log(`${username} selected:`, choice);
 
     try {
-      const response = await fetch(' https://bf624dc291e08644f85d1314883bcc30.serveo.net/webhook', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'ngrok-skip-browser-warning': 'true',
-        },
-        body: new URLSearchParams({
-          username: username,
-          choice: choice,
-          room_id: selectedRoom,
-        }),
-      });
+        const response = await fetch(' https://bf624dc291e08644f85d1314883bcc30.serveo.net/webhook', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                userid: userID,
+                username: username,
+                choice: choice,
+                room_id: selectedRoom,
+            }),
+        });
 
-      const data = await response.json();
-      setGameStatus(data);
-      console.log("Game status updated:", data);
+        const data = await response.json();
+        setGameStatus(data);
+        console.log("Game status updated:", data);
 
-      if (data.status !== "completed") {
-        startPollingChoices(selectedRoom);
-      }
+        if (data.status !== "completed") {
+            startPollingChoices(selectedRoom);
+        }
     } catch (error) {
-      console.error("Error in handleChoice:", error);
+        console.error("Error in handleChoice:", error);
     }
-  };
+};
+
 
   const leaveGame = async () => {
     if (selectedRoom) {
