@@ -93,27 +93,36 @@ function App() {
   };
 
   const createRoom = async () => {
+    if (!userID) {
+      console.error("UserID is empty. Cannot create room.");
+      return;
+    }
+  
     setGameStatus(null);
     setUserChoice('');
-
-    const response = await fetch(' https://bf624dc291e08644f85d1314883bcc30.serveo.net/create_room', {
+  
+    try {
+      const response = await fetch(' https://bf624dc291e08644f85d1314883bcc30.serveo.net/create_room', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
-            userid: userID,
-            username: username,
+          userid: userID,     // Ensure this is the correct variable
+          username: username, // Ensure this is the correct variable
         }),
-    });
-
-    const data = await response.json();
-    setSelectedRoom(data.room_id);
-    console.log(`${username} created room:`, data.room_id);
-
-    startPollingChoices(data.room_id);
-};
-
+      });
+  
+      const data = await response.json();
+      setSelectedRoom(data.room_id);
+      console.log(`${username} created room:`, data.room_id);
+  
+      startPollingChoices(data.room_id);
+    } catch (error) {
+      console.error("Error creating room:", error);
+    }
+  };
+  
 const joinRoom = async (roomId) => {
     try {
         const response = await fetch(' https://bf624dc291e08644f85d1314883bcc30.serveo.net/join_room', {
