@@ -212,31 +212,31 @@ function App() {
               {' vs '}
               {gameStatus.player2 ? `${gameStatus.player2} ${gameStatus.player2_choice ? '✔️' : '❓'}` : '[Pending]'}
             </h2>
-
-            {gameStatus.status !== 'completed' && (
-              <div className="choices">
-                {["Scissors", "Paper", "Stone"].map(choice => (
-                  <button
-                    key={choice}
-                    className="choice-button"
-                    onClick={() => handleChoice(choice)}
-                    disabled={!!userChoice}
-                  >
-                    {choice}
-                  </button>
-                ))}
-              </div>
-            )}
-
+  
             {gameStatus.status !== 'completed' && (
               <>
+                <div className="choices">
+                  {["Scissors", "Paper", "Stone"].map(choice => (
+                    <button
+                      key={choice}
+                      className="choice-button"
+                      onClick={() => handleChoice(choice)}
+                      disabled={!!userChoice}
+                    >
+                      {choice}
+                    </button>
+                  ))}
+                </div>
+  
                 <p>Waiting for opponent...</p>
-                <button className="return-button" onClick={leaveGame}>
-                  Return to Lobby
-                </button>
               </>
             )}
-
+  
+            {/* The Return to Lobby button should always be visible when the game is in waiting or in progress */}
+            <button className="return-button" onClick={leaveGame}>
+              Return to Lobby
+            </button>
+  
             {gameStatus.status === 'completed' && (
               <div>
                 {gameStatus.result?.includes('draw') ? (
@@ -279,6 +279,7 @@ function App() {
       </div>
     );
   }
+  
 
   return (
     <div className="App">
