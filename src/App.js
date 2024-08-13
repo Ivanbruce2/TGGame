@@ -33,7 +33,7 @@ function App() {
   };
 
   const fetchRooms = async () => {
-    const response = await fetch(`https://1648-119-74-213-151.ngrok-free.app/list_rooms`, {
+    const response = await fetch(` https://bf624dc291e08644f85d1314883bcc30.serveo.net/list_rooms`, {
       headers: {
         'ngrok-skip-browser-warning': 'true'
       }
@@ -47,7 +47,7 @@ function App() {
     setGameStatus(null);
     setUserChoice('');
     
-    const response = await fetch('https://1648-119-74-213-151.ngrok-free.app/create_room', {
+    const response = await fetch(' https://bf624dc291e08644f85d1314883bcc30.serveo.net/create_room', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -68,7 +68,7 @@ function App() {
   const startPollingChoices = (roomId) => {
     const pollGameStatus = async () => {
       try {
-        const response = await fetch(`https://1648-119-74-213-151.ngrok-free.app/game_status?room_id=${roomId}`, {
+        const response = await fetch(` https://bf624dc291e08644f85d1314883bcc30.serveo.net/game_status?room_id=${roomId}`, {
           headers: {
             'ngrok-skip-browser-warning': 'true'
           }
@@ -111,7 +111,7 @@ function App() {
 
   const joinRoom = async (roomId) => {
     try {
-      const response = await fetch('https://1648-119-74-213-151.ngrok-free.app/join_room', {
+      const response = await fetch(' https://bf624dc291e08644f85d1314883bcc30.serveo.net/join_room', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -142,7 +142,7 @@ function App() {
     console.log(`${username} selected:`, choice);
 
     try {
-      const response = await fetch('https://1648-119-74-213-151.ngrok-free.app/webhook', {
+      const response = await fetch(' https://bf624dc291e08644f85d1314883bcc30.serveo.net/webhook', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -169,7 +169,7 @@ function App() {
 
   const leaveGame = async () => {
     if (selectedRoom) {
-      await fetch('https://1648-119-74-213-151.ngrok-free.app/leave_room', {
+      await fetch(' https://bf624dc291e08644f85d1314883bcc30.serveo.net/leave_room', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
