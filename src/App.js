@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
-// import ConnectButton from './Components/ConnectButton';
+
 
 import './App.css';
 
@@ -279,10 +279,7 @@ useEffect(() => {
 
   return (
     <div className="App">
-       {/* <div className="connect-button-wrapper">
-        <ConnectButton />
-      </div> */}
-      <div class="container">
+         <div class="container">
         <h1 className="welcome-message">Welcome, {username}</h1>
         <div class="header-row">
           <button class="pixel-button create-button" onClick={createGame}>Create Game</button>
