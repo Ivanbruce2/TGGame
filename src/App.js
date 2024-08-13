@@ -10,6 +10,7 @@ function App() {
   const [gameStatus, setGameStatus] = useState(null);
   const [userChoice, setUserChoice] = useState('');
   const pollingRef = useRef(null);
+  const roomPollingRef = useRef(null);  // Ref to store the room polling interval
   const { initDataRaw, initData } = retrieveLaunchParams();
 
   useEffect(() => {
@@ -20,13 +21,14 @@ function App() {
 
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);
-    fetchRooms();
+    startPollingRooms(); // Start polling rooms when component mounts
 
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       leaveGame();
+      clearInterval(roomPollingRef.current); // Clear room polling on unmount
     };
   }, [selectedRoom]);
 
@@ -36,22 +38,29 @@ function App() {
   };
 
   const fetchRooms = async () => {
-    const response = await fetch(` https://bf624dc291e08644f85d1314883bcc30.serveo.net/list_rooms`, {
-      headers: {
-        'ngrok-skip-browser-warning': 'true'
-      }
-    });
-    const data = await response.json();
-    setRooms(data);
-    console.log('Rooms fetched:', data);
+    try {
+      const response = await fetch(`https://bf624dc291e08644f85d1314883bcc30.serveo.net/list_rooms`, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+        }
+      });
+      const data = await response.json();
+      setRooms(data);
+      console.log('Rooms fetched:', data);
+    } catch (error) {
+      console.error('Error fetching rooms:', error);
+    }
   };
 
-
+  const startPollingRooms = () => {
+    // Poll the rooms every 5 seconds
+    roomPollingRef.current = setInterval(fetchRooms, 5000);
+  };
 
   const startPollingChoices = (roomId) => {
     const pollGameStatus = async () => {
       try {
-        const response = await fetch(` https://bf624dc291e08644f85d1314883bcc30.serveo.net/game_status?room_id=${roomId}`, {
+        const response = await fetch(`https://bf624dc291e08644f85d1314883bcc30.serveo.net/game_status?room_id=${roomId}`, {
           headers: {
             'ngrok-skip-browser-warning': 'true'
           }
@@ -97,12 +106,12 @@ function App() {
       console.error("UserID is empty. Cannot create room.");
       return;
     }
-  
+
     setGameStatus(null);
     setUserChoice('');
-  
+
     try {
-      const response = await fetch(' https://bf624dc291e08644f85d1314883bcc30.serveo.net/create_room', {
+      const response = await fetch('https://bf624dc291e08644f85d1314883bcc30.serveo.net/create_room', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -112,91 +121,91 @@ function App() {
           username: username, // Ensure this is the correct variable
         }),
       });
-  
+
       const data = await response.json();
       setSelectedRoom(data.room_id);
       console.log(`${username} created room:`, data.room_id);
-  
+
       startPollingChoices(data.room_id);
     } catch (error) {
       console.error("Error creating room:", error);
     }
   };
-  
-const joinRoom = async (roomId) => {
+
+  const joinRoom = async (roomId) => {
     try {
-        const response = await fetch(' https://bf624dc291e08644f85d1314883bcc30.serveo.net/join_room', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                userid: userID,
-                username: username,
-                room_id: roomId,
-            }),
-        });
+      const response = await fetch('https://bf624dc291e08644f85d1314883bcc30.serveo.net/join_room', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          userid: userID,
+          username: username,
+          room_id: roomId,
+        }),
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (data && data.room_id) {
-            setSelectedRoom(data.room_id);
-            console.log(`${username} joined room:`, data.room_id);
-            startPollingChoices(data.room_id);
-        } else {
-            console.error("Unexpected response data:", data);
-        }
+      if (data && data.room_id) {
+        setSelectedRoom(data.room_id);
+        console.log(`${username} joined room:`, data.room_id);
+        startPollingChoices(data.room_id);
+      } else {
+        console.error("Unexpected response data:", data);
+      }
     } catch (error) {
-        console.error("Error in joinRoom:", error);
+      console.error("Error in joinRoom:", error);
     }
-};
+  };
 
-const handleChoice = async (choice) => {
+  const handleChoice = async (choice) => {
     setUserChoice(choice);
     console.log(`${username} selected:`, choice);
 
     try {
-        const response = await fetch(' https://bf624dc291e08644f85d1314883bcc30.serveo.net/webhook', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                userid: userID,
-                username: username,
-                choice: choice,
-                room_id: selectedRoom,
-            }),
-        });
+      const response = await fetch('https://bf624dc291e08644f85d1314883bcc30.serveo.net/webhook', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          userid: userID,
+          username: username,
+          choice: choice,
+          room_id: selectedRoom,
+        }),
+      });
 
-        const data = await response.json();
-        setGameStatus(data);
-        console.log("Game status updated:", data);
+      const data = await response.json();
+      setGameStatus(data);
+      console.log("Game status updated:", data);
 
-        if (data.status !== "completed") {
-            startPollingChoices(selectedRoom);
-        }
+      if (data.status !== "completed") {
+        startPollingChoices(selectedRoom);
+      }
     } catch (error) {
-        console.error("Error in handleChoice:", error);
+      console.error("Error in handleChoice:", error);
     }
-};
-
+  };
 
   const leaveGame = async () => {
     if (selectedRoom) {
-      await fetch(' https://bf624dc291e08644f85d1314883bcc30.serveo.net/leave_room', {
+      await fetch('https://bf624dc291e08644f85d1314883bcc30.serveo.net/leave_room', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           'ngrok-skip-browser-warning': 'true',
         },
         body: new URLSearchParams({
+          userid: userID,
           username: username,
           room_id: selectedRoom,
         }),
       });
       console.log(`${username} left room:`, selectedRoom);
-      
+
       setSelectedRoom(null);
       setGameStatus(null);
       setUserChoice('');
@@ -204,7 +213,10 @@ const handleChoice = async (choice) => {
   };
 
   useEffect(() => {
-    return () => clearInterval(pollingRef.current);
+    return () => {
+      clearInterval(pollingRef.current);
+      clearInterval(roomPollingRef.current);  // Clear room polling interval on component unmount
+    };
   }, []);
 
   if (selectedRoom) {
@@ -215,18 +227,18 @@ const handleChoice = async (choice) => {
         {gameStatus ? (
           <>
             <h2 className="game-status">
-              {gameStatus.player1 ? `${gameStatus.player1} ${gameStatus.player1_choice ? '✔️' : '❓'}` : '[Pending]'} 
-              {' vs '}    
+              {gameStatus.player1 ? `${gameStatus.player1} ${gameStatus.player1_choice ? '✔️' : '❓'}` : '[Pending]'}
+              {' vs '}
               {gameStatus.player2 ? `${gameStatus.player2} ${gameStatus.player2_choice ? '✔️' : '❓'}` : '[Pending]'}
             </h2>
 
             {gameStatus.status !== 'completed' && (
               <div className="choices">
                 {["Scissors", "Paper", "Stone"].map(choice => (
-                  <button 
-                    key={choice} 
-                    className="choice-button" 
-                    onClick={() => handleChoice(choice)} 
+                  <button
+                    key={choice}
+                    className="choice-button"
+                    onClick={() => handleChoice(choice)}
                     disabled={!!userChoice}
                   >
                     {choice}
@@ -266,10 +278,10 @@ const handleChoice = async (choice) => {
             <p>Select your choice below:</p>
             <div className="choices">
               {["Scissors", "Paper", "Stone"].map(choice => (
-                <button 
-                  key={choice} 
-                  className="choice-button" 
-                  onClick={() => handleChoice(choice)} 
+                <button
+                  key={choice}
+                  className="choice-button"
+                  onClick={() => handleChoice(choice)}
                   disabled={!!userChoice}
                 >
                   {choice}
@@ -284,11 +296,11 @@ const handleChoice = async (choice) => {
 
   return (
     <div className="App">
-      <div class="container">
+      <div className="container">
         <h1 className="welcome-message">Welcome, {username}</h1>
-        <div class="header-row">
-          <button class="pixel-button create-button" onClick={createRoom}>Create Room</button>
-          <button class="pixel-button refresh-button" onClick={fetchRooms}>↻</button>
+        <div className="header-row">
+          <button className="pixel-button create-button" onClick={createRoom}>Create Room</button>
+          <button className="pixel-button refresh-button" onClick={fetchRooms}>↻</button>
         </div>
         <div className="room-list">
           {Object.values(rooms).map((room) => (
