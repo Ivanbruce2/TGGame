@@ -9,10 +9,8 @@ function App() {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [gameStatus, setGameStatus] = useState(null);
   const [userChoice, setUserChoice] = useState('');
-  const [countdown, setCountdown] = useState(0); // State to track the countdown
   const pollingRef = useRef(null);
   const roomPollingRef = useRef(null);
-  const choiceTimeoutRef = useRef(null);
   const { initDataRaw, initData } = retrieveLaunchParams();
 
   useEffect(() => {
@@ -30,7 +28,6 @@ function App() {
       leaveGame();
       clearInterval(roomPollingRef.current);
       clearInterval(pollingRef.current);
-      clearTimeout(choiceTimeoutRef.current);
     };
   }, [selectedRoom]);
 
@@ -80,10 +77,6 @@ function App() {
 
         if (data.status === "completed") {
           clearInterval(pollingRef.current);
-        } else if (!data.player1_choice || !data.player2_choice) {
-          console.log("Waiting for players to make their choices...");
-        } else {
-          clearInterval(pollingRef.current);
         }
       } catch (error) {
         console.error("Error during polling:", error);
@@ -94,19 +87,6 @@ function App() {
     };
 
     pollingRef.current = setInterval(pollGameStatus, 3000);
-  };
-
-  const startChoiceCountdown = () => {
-    setCountdown(10); // Start a 10-second countdown
-    const intervalId = setInterval(() => {
-      setCountdown(prevCountdown => {
-        if (prevCountdown === 1) {
-          clearInterval(intervalId);
-          leaveGame(); // Kick the player out if no choice is made within the time limit
-        }
-        return prevCountdown - 1;
-      });
-    }, 1000);
   };
 
   const createRoom = async () => {
@@ -132,15 +112,6 @@ function App() {
 
       const data = await response.json();
       setSelectedRoom(data.room_id);
-
-      // Set a timeout for player 1 to make a choice within 60 seconds
-      choiceTimeoutRef.current = setTimeout(() => {
-        if (!userChoice) {
-          console.log("Player 1 did not make a choice within 60 seconds, leaving the game.");
-          leaveGame();
-        }
-      }, 60000);
-
       startPollingChoices(data.room_id);
     } catch (error) {
       console.error("Error creating room:", error);
@@ -165,7 +136,6 @@ function App() {
 
       if (data && data.room_id) {
         setSelectedRoom(data.room_id);
-        startChoiceCountdown(); // Start the countdown for both players
         startPollingChoices(data.room_id);
       } else {
         console.error("Unexpected response data:", data);
@@ -198,8 +168,6 @@ function App() {
       if (data.status !== "completed") {
         startPollingChoices(selectedRoom);
       }
-
-      clearTimeout(choiceTimeoutRef.current); // Clear the timeout if the choice is made
     } catch (error) {
       console.error("Error in handleChoice:", error);
     }
@@ -223,8 +191,6 @@ function App() {
       setSelectedRoom(null);
       setGameStatus(null);
       setUserChoice('');
-
-      clearTimeout(choiceTimeoutRef.current); // Clear the timeout on leave
     }
   };
 
@@ -232,7 +198,6 @@ function App() {
     return () => {
       clearInterval(pollingRef.current);
       clearInterval(roomPollingRef.current);
-      clearTimeout(choiceTimeoutRef.current);
     };
   }, []);
 
@@ -266,11 +231,9 @@ function App() {
             {gameStatus.status !== 'completed' && (
               <>
                 <p>Waiting for opponent...</p>
-                {!gameStatus.player2 && (
-                  <button className="return-button" onClick={leaveGame}>
-                    Return to Lobby
-                  </button>
-                )}
+                <button className="return-button" onClick={leaveGame}>
+                  Return to Lobby
+                </button>
               </>
             )}
 
@@ -311,7 +274,6 @@ function App() {
                 </button>
               ))}
             </div>
-            <p>Time left: {countdown} seconds</p> {/* Display countdown */}
           </>
         )}
       </div>
