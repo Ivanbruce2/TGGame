@@ -9,26 +9,28 @@ function App() {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [gameStatus, setGameStatus] = useState(null);
   const [userChoice, setUserChoice] = useState('');
+  const [countdown, setCountdown] = useState(0); // State to track the countdown
   const pollingRef = useRef(null);
-  const roomPollingRef = useRef(null);  // Ref to store the room polling interval
+  const roomPollingRef = useRef(null);
+  const choiceTimeoutRef = useRef(null);
   const { initDataRaw, initData } = retrieveLaunchParams();
 
   useEffect(() => {
-    console.log("initDataRaw:", initDataRaw);
-    console.log("initData:", initData);
     const retrievedUsername = initData.user.username || "Unknown Username";
     const retrievedUserID = initData.user.id || "Unknown UserID";
 
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);
-    startPollingRooms(); // Start polling rooms when component mounts
+    startPollingRooms();
 
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       leaveGame();
-      clearInterval(roomPollingRef.current); // Clear room polling on unmount
+      clearInterval(roomPollingRef.current);
+      clearInterval(pollingRef.current);
+      clearTimeout(choiceTimeoutRef.current);
     };
   }, [selectedRoom]);
 
@@ -46,14 +48,12 @@ function App() {
       });
       const data = await response.json();
       setRooms(data);
-      console.log('Rooms fetched:', data);
     } catch (error) {
       console.error('Error fetching rooms:', error);
     }
   };
 
   const startPollingRooms = () => {
-    // Poll the rooms every 5 seconds
     roomPollingRef.current = setInterval(fetchRooms, 5000);
   };
 
@@ -67,7 +67,6 @@ function App() {
         });
 
         if (response.status === 404) {
-          console.log("Error polling game status: Game not found");
           clearInterval(pollingRef.current);
           setTimeout(() => {
             setSelectedRoom(null);
@@ -80,16 +79,12 @@ function App() {
         setGameStatus(data);
 
         if (data.status === "completed") {
-          console.log("Game completed, stopping polling.");
           clearInterval(pollingRef.current);
         } else if (!data.player1_choice || !data.player2_choice) {
           console.log("Waiting for players to make their choices...");
         } else {
-          console.log("Both players have made their choices. Determining the result...");
           clearInterval(pollingRef.current);
         }
-
-        console.log("Game status updated:", data);
       } catch (error) {
         console.error("Error during polling:", error);
         clearInterval(pollingRef.current);
@@ -99,6 +94,19 @@ function App() {
     };
 
     pollingRef.current = setInterval(pollGameStatus, 3000);
+  };
+
+  const startChoiceCountdown = () => {
+    setCountdown(10); // Start a 10-second countdown
+    const intervalId = setInterval(() => {
+      setCountdown(prevCountdown => {
+        if (prevCountdown === 1) {
+          clearInterval(intervalId);
+          leaveGame(); // Kick the player out if no choice is made within the time limit
+        }
+        return prevCountdown - 1;
+      });
+    }, 1000);
   };
 
   const createRoom = async () => {
@@ -117,14 +125,21 @@ function App() {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
-          userid: userID,     // Ensure this is the correct variable
-          username: username, // Ensure this is the correct variable
+          userid: userID,
+          username: username,
         }),
       });
 
       const data = await response.json();
       setSelectedRoom(data.room_id);
-      console.log(`${username} created room:`, data.room_id);
+
+      // Set a timeout for player 1 to make a choice within 60 seconds
+      choiceTimeoutRef.current = setTimeout(() => {
+        if (!userChoice) {
+          console.log("Player 1 did not make a choice within 60 seconds, leaving the game.");
+          leaveGame();
+        }
+      }, 60000);
 
       startPollingChoices(data.room_id);
     } catch (error) {
@@ -150,7 +165,7 @@ function App() {
 
       if (data && data.room_id) {
         setSelectedRoom(data.room_id);
-        console.log(`${username} joined room:`, data.room_id);
+        startChoiceCountdown(); // Start the countdown for both players
         startPollingChoices(data.room_id);
       } else {
         console.error("Unexpected response data:", data);
@@ -162,7 +177,6 @@ function App() {
 
   const handleChoice = async (choice) => {
     setUserChoice(choice);
-    console.log(`${username} selected:`, choice);
 
     try {
       const response = await fetch('https://bf624dc291e08644f85d1314883bcc30.serveo.net/webhook', {
@@ -180,11 +194,12 @@ function App() {
 
       const data = await response.json();
       setGameStatus(data);
-      console.log("Game status updated:", data);
 
       if (data.status !== "completed") {
         startPollingChoices(selectedRoom);
       }
+
+      clearTimeout(choiceTimeoutRef.current); // Clear the timeout if the choice is made
     } catch (error) {
       console.error("Error in handleChoice:", error);
     }
@@ -204,23 +219,24 @@ function App() {
           room_id: selectedRoom,
         }),
       });
-      console.log(`${username} left room:`, selectedRoom);
 
       setSelectedRoom(null);
       setGameStatus(null);
       setUserChoice('');
+
+      clearTimeout(choiceTimeoutRef.current); // Clear the timeout on leave
     }
   };
 
   useEffect(() => {
     return () => {
       clearInterval(pollingRef.current);
-      clearInterval(roomPollingRef.current);  // Clear room polling interval on component unmount
+      clearInterval(roomPollingRef.current);
+      clearTimeout(choiceTimeoutRef.current);
     };
   }, []);
 
   if (selectedRoom) {
-    console.log("Rendering game screen. Current gameStatus:", gameStatus);
     return (
       <div className="App">
         <h1 className="welcome-message2">Room: {selectedRoom}</h1>
@@ -248,7 +264,14 @@ function App() {
             )}
 
             {gameStatus.status !== 'completed' && (
-              <p>Waiting for opponent...</p>
+              <>
+                <p>Waiting for opponent...</p>
+                {!gameStatus.player2 && (
+                  <button className="return-button" onClick={leaveGame}>
+                    Return to Lobby
+                  </button>
+                )}
+              </>
             )}
 
             {gameStatus.status === 'completed' && (
@@ -288,6 +311,7 @@ function App() {
                 </button>
               ))}
             </div>
+            <p>Time left: {countdown} seconds</p> {/* Display countdown */}
           </>
         )}
       </div>
@@ -296,11 +320,11 @@ function App() {
 
   return (
     <div className="App">
-      <div className="container">
+      <div class="container">
         <h1 className="welcome-message">Welcome, {username}</h1>
-        <div className="header-row">
-          <button className="pixel-button create-button" onClick={createRoom}>Create Room</button>
-          <button className="pixel-button refresh-button" onClick={fetchRooms}>↻</button>
+        <div class="header-row">
+          <button class="pixel-button create-button" onClick={createRoom}>Create Room</button>
+          <button class="pixel-button refresh-button" onClick={fetchRooms}>↻</button>
         </div>
         <div className="room-list">
           {Object.values(rooms).map((room) => (
