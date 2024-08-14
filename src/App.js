@@ -259,7 +259,7 @@ function App() {
 
   const WalletDisplay = ({ walletAddress }) => {
     const truncatedAddress = `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`;
-
+  
     const copyToClipboard = () => {
       navigator.clipboard.writeText(walletAddress).then(() => {
         alert('Wallet address copied to clipboard!');
@@ -267,11 +267,23 @@ function App() {
         console.error('Failed to copy text: ', err);
       });
     };
-
+  
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
-        <span style={{ fontFamily: 'monospace' }}>{truncatedAddress}</span>
-        <button onClick={copyToClipboard} style={{ marginLeft: '10px', cursor: 'pointer' }}>
+      <div style={{ display: 'inline-flex', alignItems: 'center', marginLeft: '5px' }}>
+        <span style={{ fontFamily: 'monospace', fontSize: '14px', color: '#FFD700' }}>{truncatedAddress}</span>
+        <button 
+          onClick={copyToClipboard} 
+          style={{
+            marginLeft: '10px', 
+            padding: '5px 10px', 
+            backgroundColor: '#4CAF50', 
+            border: 'none', 
+            color: 'white', 
+            cursor: 'pointer', 
+            fontSize: '12px',
+            borderRadius: '4px'
+          }}
+        >
           Copy
         </button>
       </div>
@@ -357,7 +369,7 @@ function App() {
     <div className="App">
       <div className="container">
         <h1 className="welcome-message">Welcome, {username}</h1>
-        <p>Wallet Address: <WalletDisplay walletAddress={walletAddress} /></p>
+        <p>Wallet: <WalletDisplay walletAddress={walletAddress} /></p>
         <div className="header-row">
           <button className="pixel-button create-button" onClick={createRoom}>Create Room</button>
           <button className="pixel-button refresh-button" onClick={fetchRooms}>↻</button>
