@@ -270,21 +270,21 @@ function App() {
     };
   
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
-        <span style={{ fontFamily: 'monospace', fontSize: '14px', color: '#FFD700', marginRight: '10px' }}>
+      <div style={{ display: 'inline-flex', alignItems: 'center', marginLeft: '10px' }}>
+        <span style={{ fontFamily: 'monospace', fontSize: '14px', color: '#FFD700', marginRight: '8px' }}>
           {truncatedAddress}
         </span>
         <button 
           onClick={copyToClipboard} 
           style={{
-            padding: '5px 10px', 
+            padding: '5px 8px', 
             backgroundColor: '#0044ff', 
             border: 'none', 
             color: 'white', 
             cursor: 'pointer', 
             fontSize: '12px',
             borderRadius: '4px',
-            marginRight: '20px' // Space after the button
+            whiteSpace: 'nowrap' // Prevents the button text from wrapping
           }}
         >
           {copyStatus}
@@ -292,6 +292,7 @@ function App() {
       </div>
     );
   };
+  
   
   if (selectedRoom) {
     return (
