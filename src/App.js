@@ -119,7 +119,8 @@ function App() {
     setUserChoice('');
   
     try {
-      const response = await fetch('https://4e3649c90ab2954896ec7e6608929427.serveo.net/create_room', {
+      console.log("Sending request to create room..."); // Log before request
+      const response = await fetch('https://6e0c756a7c42b442cca6ffd37f902c1f.serveo.net/create_room', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -131,13 +132,20 @@ function App() {
       });
   
       const data = await response.json();
+      console.log("Room created:", data.room_id); // Log after room creation
       setSelectedRoom(data.room_id);
-      setGameStatus({ status: 'waiting' });
+      console.log("Starting polling for room:", data.room_id); // Log before starting polling
+  
       startPollingChoices(data.room_id);
+      
+      // Manually poll once to get the immediate status after room creation
+      await pollGameStatus(data.room_id);
+  
     } catch (error) {
       console.error("Error creating room:", error);
     }
   };
+  
   
   const joinRoom = async (roomId) => {
     try {
