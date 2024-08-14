@@ -55,49 +55,56 @@ function App() {
   };
 
   const startPollingChoices = (roomId) => {
-    console.log("Polling choices for room:", roomId); // Log at the start of polling
+    try {
+      console.log("startPollingChoices called with roomId:", roomId); // Log at the start of the function
   
-    const pollGameStatus = async () => {
-      console.log("Polling game status for room:", roomId); // Log before making the fetch request
+      const pollGameStatus = async () => {
+        console.log("Polling game status for room:", roomId); // Log before making the fetch request
   
-      try {
-        const response = await fetch(`https://6e0c756a7c42b442cca6ffd37f902c1f.serveo.net/game_status?room_id=${roomId}`, {
-          headers: {
-            'ngrok-skip-browser-warning': 'true'
+        try {
+          const response = await fetch(`https://6e0c756a7c42b442cca6ffd37f902c1f.serveo.net/game_status?room_id=${roomId}`, {
+            headers: {
+              'ngrok-skip-browser-warning': 'true'
+            }
+          });
+  
+          console.log("Received response:", response.status); // Log the response status
+  
+          if (response.status === 404) {
+            console.log("Room not found, stopping polling.");
+            clearInterval(pollingRef.current);
+            setTimeout(() => {
+              setSelectedRoom(null);
+              setGameStatus(null);
+            }, 5000);
+            return;
           }
-        });
   
-        console.log("Received response:", response.status); // Log the response status
+          const data = await response.json();
+          console.log("Game status:", data); // Log game status
+          setGameStatus(data);
   
-        if (response.status === 404) {
-          console.log("Room not found, stopping polling.");
+          if (data.status === "completed") {
+            console.log("Game completed, stopping polling.");
+            clearInterval(pollingRef.current);
+          }
+        } catch (error) {
+          console.error("Error during polling:", error);
           clearInterval(pollingRef.current);
-          setTimeout(() => {
-            setSelectedRoom(null);
-            setGameStatus(null);
-          }, 5000);
-          return;
+          setSelectedRoom(null);
+          setGameStatus(null);
         }
+      };
   
-        const data = await response.json();
-        console.log("Game status:", data); // Log game status
-        setGameStatus(data);
+      console.log("Setting up polling interval..."); // Log before setting up the interval
+      pollingRef.current = setInterval(pollGameStatus, 3000);
+      console.log("Polling interval set for room:", roomId); // Log after setting the interval
   
-        if (data.status === "completed") {
-          console.log("Game completed, stopping polling.");
-          clearInterval(pollingRef.current);
-        }
-      } catch (error) {
-        console.error("Error during polling:", error);
-        clearInterval(pollingRef.current);
-        setSelectedRoom(null);
-        setGameStatus(null);
-      }
-    };
-  
-    console.log("Setting up polling interval..."); // Log before setting up the interval
-    pollingRef.current = setInterval(pollGameStatus, 3000);
+    } catch (error) {
+      console.error("Error in startPollingChoices:", error); // Catch any unexpected errors
+    }
   };
+  
   
 
   const createRoom = async () => {
