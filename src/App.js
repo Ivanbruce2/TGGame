@@ -96,12 +96,15 @@ function App() {
         }
       };
   
-      console.log("Setting up polling interval..."); // Log before setting up the interval
-      pollingRef.current = setInterval(pollGameStatus, 3000);
-      console.log("Polling interval set for room:", roomId); // Log after setting the interval
+      console.log("Setting up polling interval...");
+      pollingRef.current = setInterval(() => {
+        console.log("Interval triggered for polling status.");
+        pollGameStatus(); // Call the function here
+      }, 3000);
   
+      console.log("Polling interval set for room:", roomId);
     } catch (error) {
-      console.error("Error in startPollingChoices:", error); // Catch any unexpected errors
+      console.error("Error in startPollingChoices:", error);
     }
   };
   
