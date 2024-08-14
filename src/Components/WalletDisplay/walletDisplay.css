@@ -13,7 +13,7 @@
   .copy-button {
     margin-left: 10px;
     padding: 5px 10px;
-    background-color: #4CAF50;
+    background-color: #0a0dd1;
     border: none;
     color: white;
     cursor: pointer;
@@ -23,7 +23,7 @@
   }
   
   .copy-button:hover {
-    background-color: #45a049;
+    background-color: #000000;
   }
   
   .copy-button:active {
