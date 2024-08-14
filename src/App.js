@@ -2,9 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
 import './App.css';
 
+
 function App() {
   const [userID, setUserID] = useState('');
   const [username, setUsername] = useState('');
+  const [walletAddress, setWalletAddress] = useState('');
   const [rooms, setRooms] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [gameStatus, setGameStatus] = useState(null);
@@ -20,7 +22,7 @@ function App() {
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);
 
-
+    initializeUser(retrievedUserID, retrievedUsername);
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
@@ -52,6 +54,26 @@ function App() {
 
   const startPollingRooms = () => {
     roomPollingRef.current = setInterval(fetchRooms, 5000);
+  };
+
+  const initializeUser = async (userID, username) => {
+    try {
+      const response = await fetch('https://f41565fe508e58ee8dd59a38081b8ac9.serveo.net/initialize_user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          userid: userID,
+          username: username,
+        }),
+      });
+
+      const data = await response.json();
+      setWalletAddress(data.wallet_address);
+    } catch (error) {
+      console.error('Error initializing user:', error);
+    }
   };
 
   const startPollingChoices = (roomId) => {
@@ -324,6 +346,7 @@ function App() {
     <div className="App">
       <div className="container">
         <h1 className="welcome-message">Welcome, {username}</h1>
+        <p>Wallet Address: {walletAddress}</p>
         <div className="header-row">
           <button className="pixel-button create-button" onClick={createRoom}>Create Room</button>
           <button className="pixel-button refresh-button" onClick={fetchRooms}>↻</button>
