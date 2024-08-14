@@ -54,32 +54,31 @@ function App() {
 
   const initializeUser = async (userID, username) => {
     try {
-        const response = await fetch('/initialize_user', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                userid: userID,
-                username: username,
-            }),
-        });
-
-        const data = await response.json();
-
-        // Handle user initialization
-        setWalletAddress(data.user.walletAddress);
-
-        // Check if room_id is present and redirect the user to that room
-        if (data.room_id) {
-            setSelectedRoom(data.room_id);
-            startPollingChoices(data.room_id);
-        }
+      const response = await fetch('https://afdca9bb4d238d2b3a38c1b714ba2e00.serveo.net/initialize_user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          userid: userID,
+          username: username,
+        }),
+      });
+  
+      const rawData = await response.text();
+      console.log('Raw response data:', rawData);
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
+      const data = JSON.parse(rawData);
+      setWalletAddress(data.wallet_address);
+      console.log(data.wallet_address);
     } catch (error) {
-        console.error('Error initializing user:', error);
+      console.error('Error initializing user:', error);
     }
-};
-
+  };
 
   const startPollingChoices = (roomId) => {
     try {
@@ -276,7 +275,7 @@ function App() {
         <button 
           onClick={copyToClipboard} 
           style={{
-            marginLeft: '10px', 
+            marginLeft: '0px', 
             padding: '5px 10px', 
             backgroundColor: '#0044ff', 
             border: 'none', 
@@ -371,7 +370,7 @@ function App() {
     <div className="App">
       <div className="container">
         <h1 className="welcome-message">Welcome, {username}</h1>
-        <p>Wallet: <WalletDisplay walletAddress={walletAddress} /></p>
+        <p><b>Wallet: </b><WalletDisplay walletAddress={walletAddress} /></p>
         <div className="header-row">
           <button className="pixel-button create-button" onClick={createRoom}>Create Room</button>
           <button className="pixel-button refresh-button" onClick={fetchRooms}>↻</button>
