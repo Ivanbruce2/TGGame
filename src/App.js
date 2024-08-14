@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
 import './App.css';
-import WalletDisplay from './Components/WalletDisplay/WalletDisplay';
+import WalletDisplay from './components/WalletDisplay/WalletDisplay';
 
 function App() {
   const [userID, setUserID] = useState('');
@@ -359,11 +359,12 @@ function App() {
     );
   }
 
+
   return (
     <div className="App">
       <div className="container">
         <h1 className="welcome-message">Welcome, {username}</h1>
-        <p>Wallet: <WalletDisplay walletAddress={walletAddress} /></p>
+        <p>Wallet: <WalletDisplay walletAddress={walletAddress} /></p> {/* Using WalletDisplay */}
         <div className="header-row">
           <button className="pixel-button create-button" onClick={createRoom}>Create Room</button>
           <button className="pixel-button refresh-button" onClick={fetchRooms}>↻</button>
