@@ -74,8 +74,8 @@ function App() {
       }
   
       const data = await response.json();
-      setWalletAddress(data.walletaddress); // Adjusted to match backend response key
-      console.log(data.walletaddress)
+      setWalletAddress(data.walletAddress); // Adjusted to match backend response key
+      console.log(data.walletAddress)
       // Optionally, handle `userid` and `username` if needed
     } catch (error) {
       console.error('Error initializing user:', error);
