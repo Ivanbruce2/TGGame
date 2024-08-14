@@ -363,7 +363,9 @@ function App() {
     <div className="App">
       <div className="container">
         <h1 className="welcome-message">Welcome, {username}</h1>
-        <p>Wallet: <WalletDisplay walletAddress={walletAddress} /></p>
+        <p>
+        Wallet: <WalletDisplay walletAddress={walletAddress} />
+      </p>
         <div className="header-row">
           <button className="pixel-button create-button" onClick={createRoom}>Create Room</button>
           <button className="pixel-button refresh-button" onClick={fetchRooms}>↻</button>
