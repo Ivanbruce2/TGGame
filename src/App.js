@@ -68,19 +68,25 @@ function App() {
           username: username,
         }),
       });
-
+  
+      // Log the raw response text before parsing
+      const rawData = await response.text();
+      console.log('Raw response data:', rawData);
+  
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
   
-      const data = await response.json();
+      // Now parse the raw data as JSON
+      const data = JSON.parse(rawData);
       setWalletAddress(data.walletAddress); // Adjusted to match backend response key
-      console.log(data.walletAddress)
+      console.log(data.walletAddress);
       // Optionally, handle `userid` and `username` if needed
     } catch (error) {
       console.error('Error initializing user:', error);
     }
   };
+  
   
 
   const startPollingChoices = (roomId) => {
