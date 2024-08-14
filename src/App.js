@@ -54,8 +54,6 @@ function App() {
     roomPollingRef.current = setInterval(fetchRooms, 5000);
   };
 
-  
-
   const startPollingChoices = (roomId) => {
     try {
       console.log("startPollingChoices called with roomId:", roomId); // Log at the start of the function
@@ -121,7 +119,6 @@ function App() {
     setUserChoice('');
   
     try {
-      console.log("Sending request to create room..."); // Log before request
       const response = await fetch('https://4e3649c90ab2954896ec7e6608929427.serveo.net/create_room', {
         method: 'POST',
         headers: {
@@ -134,17 +131,13 @@ function App() {
       });
   
       const data = await response.json();
-      console.log("Room created:", data.room_id); // Log after room creation
       setSelectedRoom(data.room_id);
-      console.log("Starting polling for room:", data.room_id); // Log before starting polling
-  
+      setGameStatus({ status: 'waiting' });
       startPollingChoices(data.room_id);
-  
     } catch (error) {
       console.error("Error creating room:", error);
     }
   };
-  
   
   const joinRoom = async (roomId) => {
     try {
