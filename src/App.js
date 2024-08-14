@@ -40,7 +40,7 @@ function App() {
     try {
       const response = await fetch(`https://f41565fe508e58ee8dd59a38081b8ac9.serveo.net/list_rooms`, {
         headers: {
-          'ngrok-skip-browser-warning': 'true'
+        
         }
       });
       const data = await response.json();
@@ -65,7 +65,7 @@ function App() {
       
           const response = await fetch(`https://f41565fe508e58ee8dd59a38081b8ac9.serveo.net/game_status?room_id=${roomId}`, {
             headers: {
-              'ngrok-skip-browser-warning': 'true'
+           
             }
           });
       
@@ -214,7 +214,7 @@ function App() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          'ngrok-skip-browser-warning': 'true',
+          
         },
         body: new URLSearchParams({
           userid: userID,
