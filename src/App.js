@@ -26,7 +26,7 @@ function App() {
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       leaveGame();
-      clearInterval(roomPollingRef.current);
+      // clearInterval(roomPollingRef.current);
       clearInterval(pollingRef.current);
     };
   }, [selectedRoom]);
