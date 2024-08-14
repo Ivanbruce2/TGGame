@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
 import './App.css';
-import WalletDisplay from './Components/WalletDisplay/WalletDisplay';
+import WalletDisplay from './Components/WalletDisplay/WalletDisplay.js';
 
 function App() {
   const [userID, setUserID] = useState('');
