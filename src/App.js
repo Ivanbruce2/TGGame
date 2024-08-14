@@ -59,7 +59,7 @@ function App() {
       console.log("startPollingChoices called with roomId:", roomId); // Log at the start of the function
   
       const pollGameStatus = async () => {
-        try {
+        
           console.log("pollGameStatus function is being called");
       
           const response = await fetch(`https://4e3649c90ab2954896ec7e6608929427.serveo.net/game_status?room_id=${roomId}`, {
@@ -88,12 +88,7 @@ function App() {
             console.log("Game completed, stopping polling.");
             clearInterval(pollingRef.current);
           }
-        } catch (error) {
-          console.error("Error during polling:", error);
-          clearInterval(pollingRef.current);
-          setSelectedRoom(null);
-          setGameStatus(null);
-        }
+        
       };
       
   
