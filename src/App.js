@@ -270,7 +270,7 @@ function App() {
     };
   
     return (
-      <div style={{ display: 'inline-flex', alignItems: 'center', marginLeft: '10px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', marginLeft: '0px', width: '100%' }}>
         <span style={{ fontFamily: 'monospace', fontSize: '14px', color: '#FFD700', marginRight: '8px' }}>
           {truncatedAddress}
         </span>
