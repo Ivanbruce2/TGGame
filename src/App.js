@@ -212,7 +212,7 @@ function App() {
               {' vs '}
               {gameStatus.player2 ? `${gameStatus.player2} ${gameStatus.player2_choice ? '✔️' : '❓'}` : '[Pending]'}
             </h2>
-  
+
             {gameStatus.status !== 'completed' && (
               <>
                 <div className="choices">
@@ -227,16 +227,16 @@ function App() {
                     </button>
                   ))}
                 </div>
-  
+
                 <p>Waiting for opponent...</p>
               </>
             )}
-  
+
             {/* The Return to Lobby button should always be visible when the game is in waiting or in progress */}
             <button className="return-button" onClick={leaveGame}>
               Return to Lobby
             </button>
-  
+
             {gameStatus.status === 'completed' && (
               <div>
                 {gameStatus.result?.includes('draw') ? (
@@ -279,15 +279,14 @@ function App() {
       </div>
     );
   }
-  
 
   return (
     <div className="App">
-      <div class="container">
+      <div className="container">
         <h1 className="welcome-message">Welcome, {username}</h1>
-        <div class="header-row">
-          <button class="pixel-button create-button" onClick={createRoom}>Create Room</button>
-          <button class="pixel-button refresh-button" onClick={fetchRooms}>↻</button>
+        <div className="header-row">
+          <button className="pixel-button create-button" onClick={createRoom}>Create Room</button>
+          <button className="pixel-button refresh-button" onClick={fetchRooms}>↻</button>
         </div>
         <div className="room-list">
           {Object.values(rooms).map((room) => (
