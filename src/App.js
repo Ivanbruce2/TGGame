@@ -54,6 +54,8 @@ function App() {
     roomPollingRef.current = setInterval(fetchRooms, 5000);
   };
 
+  
+
   const startPollingChoices = (roomId) => {
     try {
       console.log("startPollingChoices called with roomId:", roomId); // Log at the start of the function
@@ -137,9 +139,6 @@ function App() {
       console.log("Starting polling for room:", data.room_id); // Log before starting polling
   
       startPollingChoices(data.room_id);
-      
-      // Manually poll once to get the immediate status after room creation
-      await pollGameStatus(data.room_id);
   
     } catch (error) {
       console.error("Error creating room:", error);
