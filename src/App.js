@@ -79,8 +79,8 @@ function App() {
   
       // Now parse the raw data as JSON
       const data = JSON.parse(rawData);
-      setWalletAddress(data.walletAddress); // Adjusted to match backend response key
-      console.log(data.walletAddress);
+      setWalletAddress(data.wallet_address); // Adjusted to match backend response key
+      console.log(data.wallet_address);
       // Optionally, handle `userid` and `username` if needed
     } catch (error) {
       console.error('Error initializing user:', error);
