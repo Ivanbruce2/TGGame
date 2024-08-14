@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './walletDisplay.css'; // Assuming the CSS is in a separate file
+import './WalletDisplay.css'; // Assuming the CSS is in a separate file
 
 const WalletDisplay = ({ walletAddress }) => {
   const [copyStatus, setCopyStatus] = useState('Copy');
