@@ -68,13 +68,14 @@ function App() {
           username: username,
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
   
       const data = await response.json();
       setWalletAddress(data.walletaddress); // Adjusted to match backend response key
+      console.log(data.walletaddress)
       // Optionally, handle `userid` and `username` if needed
     } catch (error) {
       console.error('Error initializing user:', error);
