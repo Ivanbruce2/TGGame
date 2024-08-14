@@ -19,7 +19,7 @@ function App() {
 
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);
-    // startPollingRooms();
+
 
     window.addEventListener('beforeunload', handleBeforeUnload);
 
@@ -269,9 +269,13 @@ function App() {
             )}
 
             {/* The Return to Lobby button should always be visible when the game is in waiting or in progress */}
-            <button className="return-button" onClick={leaveGame}>
-              Return to Lobby
-            </button>
+            <button className="return-button" onClick={() => {
+                  setSelectedRoom(null);
+                  setGameStatus(null);
+                  setUserChoice('');
+                }}>
+                  Return to Lobby
+                </button>
 
             {gameStatus.status === 'completed' && (
               <div>
@@ -285,13 +289,13 @@ function App() {
                     </h2>
                   </>
                 )}
-                <button className="return-button" onClick={() => {
+                {/* <button className="return-button" onClick={() => {
                   setSelectedRoom(null);
                   setGameStatus(null);
                   setUserChoice('');
                 }}>
                   Return to Lobby
-                </button>
+                </button> */}
               </div>
             )}
           </>
