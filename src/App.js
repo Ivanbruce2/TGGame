@@ -99,9 +99,9 @@ function App() {
   
       console.log("Setting up polling interval...");
       pollingRef.current = setInterval(() => {
-        console.log("This is a test message to see if setInterval works.");
+        console.log("Interval triggered for polling status.");
+        pollGameStatus(); // Call the function here
       }, 3000);
-      
   
       console.log("Polling interval set for room:", roomId);
     } catch (error) {
