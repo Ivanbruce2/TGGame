@@ -19,7 +19,7 @@ function App() {
 
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);
-    startPollingRooms();
+    // startPollingRooms();
 
     window.addEventListener('beforeunload', handleBeforeUnload);
 
