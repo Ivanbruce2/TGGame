@@ -65,7 +65,6 @@ function App() {
         }),
       });
   
-      // Log the raw response text before parsing
       const rawData = await response.text();
       console.log('Raw response data:', rawData);
   
@@ -73,9 +72,8 @@ function App() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
   
-      // Now parse the raw data as JSON
       const data = JSON.parse(rawData);
-      setWalletAddress(data.wallet_address); // Adjusted to match backend response key
+      setWalletAddress(data.wallet_address);
       console.log(data.wallet_address);
     } catch (error) {
       console.error('Error initializing user:', error);
@@ -257,6 +255,7 @@ function App() {
     };
   }, []);
 
+  // Inline WalletDisplay component
   const WalletDisplay = ({ walletAddress }) => {
     const [copyStatus, setCopyStatus] = useState('Copy');
     const truncatedAddress = `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`;
@@ -264,18 +263,27 @@ function App() {
     const copyToClipboard = () => {
       navigator.clipboard.writeText(walletAddress).then(() => {
         setCopyStatus('Copied!');
-        setTimeout(() => setCopyStatus('Copy'), 2000); // Reset the button text after 2 seconds
+        setTimeout(() => setCopyStatus('Copy'), 2000);
       }, (err) => {
         console.error('Failed to copy text: ', err);
       });
     };
   
     return (
-      <div className="wallet-display-container">
-        <span className="wallet-address">{truncatedAddress}</span>
+      <div style={{ display: 'inline-flex', alignItems: 'center', marginLeft: '10px' }}>
+        <span style={{ fontFamily: 'monospace', fontSize: '14px', color: '#FFD700' }}>{truncatedAddress}</span>
         <button 
           onClick={copyToClipboard} 
-          className="copy-button"
+          style={{
+            marginLeft: '10px', 
+            padding: '5px 10px', 
+            backgroundColor: '#0044ff', 
+            border: 'none', 
+            color: 'white', 
+            cursor: 'pointer', 
+            fontSize: '12px',
+            borderRadius: '4px'
+          }}
         >
           {copyStatus}
         </button>
@@ -358,14 +366,11 @@ function App() {
     );
   }
 
-
   return (
     <div className="App">
       <div className="container">
         <h1 className="welcome-message">Welcome, {username}</h1>
-        <p>
-        Wallet: <WalletDisplay walletAddress={walletAddress} />
-      </p>
+        <p>Wallet: <WalletDisplay walletAddress={walletAddress} /></p>
         <div className="header-row">
           <button className="pixel-button create-button" onClick={createRoom}>Create Room</button>
           <button className="pixel-button refresh-button" onClick={fetchRooms}>↻</button>
