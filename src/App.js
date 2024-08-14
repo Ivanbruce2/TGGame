@@ -122,7 +122,7 @@ function App() {
   
     try {
       console.log("Sending request to create room..."); // Log before request
-      const response = await fetch('https://6e0c756a7c42b442cca6ffd37f902c1f.serveo.net/create_room', {
+      const response = await fetch('https://4e3649c90ab2954896ec7e6608929427.serveo.net/create_room', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
