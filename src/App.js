@@ -19,7 +19,7 @@ function App() {
 
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);
-    startPollingRooms();
+    // startPollingRooms();
 
     window.addEventListener('beforeunload', handleBeforeUnload);
 
@@ -55,7 +55,7 @@ function App() {
   };
 
   const startPollingChoices = (roomId) => {
-    clearInterval(pollingRef.current);
+   
     try {
       console.log("startPollingChoices called with roomId:", roomId); // Log at the start of the function
   
