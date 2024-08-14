@@ -27,7 +27,7 @@ function App() {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       leaveGame();
       clearInterval(roomPollingRef.current);
-      clearInterval(pollingRef.current);
+      // clearInterval(pollingRef.current);
     };
   }, [selectedRoom]);
 
@@ -55,12 +55,61 @@ function App() {
   };
 
   const startPollingChoices = (roomId) => {
-    clearInterval(pollingRef.current);
-    pollingRef.current = setInterval(() => {
-      console.log("Simple interval test. Room ID:", roomId);
-    }, 3000);
-  };
+   
+    try {
+      console.log("startPollingChoices called with roomId:", roomId); // Log at the start of the function
   
+      const pollGameStatus = async () => {
+        try {
+          console.log("pollGameStatus function is being called");
+      
+          const response = await fetch(`https://f41565fe508e58ee8dd59a38081b8ac9.serveo.net/game_status?room_id=${roomId}`, {
+            headers: {
+           
+            }
+          });
+      
+          console.log("Received response:", response.status); // Log the response status
+          
+          if (response.status === 404) {
+            console.log("Room not found, stopping polling.");
+            clearInterval(pollingRef.current);
+            setTimeout(() => {
+              setSelectedRoom(null);
+              setGameStatus(null);
+            }, 5000);
+            return;
+          }
+      
+          const data = await response.json();
+          console.log("Game status:", data); // Log game status
+          setGameStatus(data);
+      
+          if (data.status === "completed") {
+            console.log("Game completed, stopping polling.");
+            clearInterval(pollingRef.current);
+          }
+        } catch (error) {
+          console.error("Error during polling:", error);
+          clearInterval(pollingRef.current);
+          setSelectedRoom(null);
+          setGameStatus(null);
+        }
+      };
+      
+  
+      console.log("Setting up polling interval...");
+      clearInterval(pollingRef.current);
+      pollingRef.current = setInterval(() => {
+        console.log("Interval triggered for polling status.");
+        pollGameStatus(); // Call the function here
+      }, 3000);
+  
+      console.log("Polling interval set for room:", roomId);
+    } catch (error) {
+      console.error("Error in startPollingChoices:", error);
+    }
+  };
   
   const createRoom = async () => {
     if (!userID) {
