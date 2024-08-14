@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
 import './App.css';
 
-
 function App() {
   const [userID, setUserID] = useState('');
   const [username, setUsername] = useState('');
@@ -29,7 +28,6 @@ function App() {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       leaveGame();
       clearInterval(roomPollingRef.current);
-      // clearInterval(pollingRef.current);
     };
   }, [selectedRoom]);
 
@@ -41,9 +39,7 @@ function App() {
   const fetchRooms = async () => {
     try {
       const response = await fetch(`https://afdca9bb4d238d2b3a38c1b714ba2e00.serveo.net/list_rooms`, {
-        headers: {
-        
-        }
+        headers: {}
       });
       const data = await response.json();
       setRooms(data);
@@ -81,30 +77,24 @@ function App() {
       const data = JSON.parse(rawData);
       setWalletAddress(data.wallet_address); // Adjusted to match backend response key
       console.log(data.wallet_address);
-      // Optionally, handle `userid` and `username` if needed
     } catch (error) {
       console.error('Error initializing user:', error);
     }
   };
-  
-  
 
   const startPollingChoices = (roomId) => {
-   
     try {
-      console.log("startPollingChoices called with roomId:", roomId); // Log at the start of the function
-  
+      console.log("startPollingChoices called with roomId:", roomId);
+
       const pollGameStatus = async () => {
         try {
           console.log("pollGameStatus function is being called");
       
           const response = await fetch(`https://afdca9bb4d238d2b3a38c1b714ba2e00.serveo.net/game_status?room_id=${roomId}`, {
-            headers: {
-           
-            }
+            headers: {}
           });
       
-          console.log("Received response:", response.status); // Log the response status
+          console.log("Received response:", response.status);
           
           if (response.status === 404) {
             console.log("Room not found, stopping polling.");
@@ -117,7 +107,7 @@ function App() {
           }
       
           const data = await response.json();
-          console.log("Game status:", data); // Log game status
+          console.log("Game status:", data);
           setGameStatus(data);
       
           if (data.status === "completed") {
@@ -132,12 +122,11 @@ function App() {
         }
       };
       
-  
       console.log("Setting up polling interval...");
       clearInterval(pollingRef.current);
       pollingRef.current = setInterval(() => {
         console.log("Interval triggered for polling status.");
-        pollGameStatus(); // Call the function here
+        pollGameStatus();
       }, 1000);
   
       console.log("Polling interval set for room:", roomId);
@@ -177,14 +166,12 @@ function App() {
   
       const data = await response.json();
       setSelectedRoom(data.room_id);
-      startPollingChoices(data.room_id);  // Pass room_id directly
+      startPollingChoices(data.room_id);
     } catch (error) {
       console.error("Error creating room:", error);
     }
   };
-  
-  
-  
+
   const joinRoom = async (roomId) => {
     try {
       const response = await fetch('https://afdca9bb4d238d2b3a38c1b714ba2e00.serveo.net/join_room', {
@@ -211,7 +198,6 @@ function App() {
       console.error("Error in joinRoom:", error);
     }
   };
-  
 
   const handleChoice = async (choice) => {
     setUserChoice(choice);
@@ -243,14 +229,13 @@ function App() {
 
   const leaveGame = async () => {
     if (selectedRoom) {
-      console.log(selectedRoom)
-      console.log(username)
-      console.log(userID)
+      console.log(selectedRoom);
+      console.log(username);
+      console.log(userID);
       await fetch('https://afdca9bb4d238d2b3a38c1b714ba2e00.serveo.net/leave_room', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          
         },
         body: new URLSearchParams({
           userid: userID,
@@ -271,6 +256,27 @@ function App() {
       clearInterval(roomPollingRef.current);
     };
   }, []);
+
+  const WalletDisplay = ({ walletAddress }) => {
+    const truncatedAddress = `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`;
+
+    const copyToClipboard = () => {
+      navigator.clipboard.writeText(walletAddress).then(() => {
+        alert('Wallet address copied to clipboard!');
+      }, (err) => {
+        console.error('Failed to copy text: ', err);
+      });
+    };
+
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+        <span style={{ fontFamily: 'monospace' }}>{truncatedAddress}</span>
+        <button onClick={copyToClipboard} style={{ marginLeft: '10px', cursor: 'pointer' }}>
+          Copy
+        </button>
+      </div>
+    );
+  };
 
   if (selectedRoom) {
     return (
@@ -303,7 +309,6 @@ function App() {
               </>
             )}
 
-            {/* The Return to Lobby button should always be visible when the game is in waiting or in progress */}
             <button className="return-button" onClick={() => {
                   setSelectedRoom(null);
                   setGameStatus(null);
@@ -324,13 +329,6 @@ function App() {
                     </h2>
                   </>
                 )}
-                {/* <button className="return-button" onClick={() => {
-                  setSelectedRoom(null);
-                  setGameStatus(null);
-                  setUserChoice('');
-                }}>
-                  Return to Lobby
-                </button> */}
               </div>
             )}
           </>
@@ -359,7 +357,7 @@ function App() {
     <div className="App">
       <div className="container">
         <h1 className="welcome-message">Welcome, {username}</h1>
-        <p>Wallet Address: {walletAddress}</p>
+        <p>Wallet Address: <WalletDisplay walletAddress={walletAddress} /></p>
         <div className="header-row">
           <button className="pixel-button create-button" onClick={createRoom}>Create Room</button>
           <button className="pixel-button refresh-button" onClick={fetchRooms}>↻</button>
