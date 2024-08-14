@@ -95,11 +95,12 @@ function App() {
       console.error("UserID is empty. Cannot create room.");
       return;
     }
-
+  
     setGameStatus(null);
     setUserChoice('');
-
+  
     try {
+      console.log("Sending request to create room..."); // Log before request
       const response = await fetch('https://6e0c756a7c42b442cca6ffd37f902c1f.serveo.net/create_room', {
         method: 'POST',
         headers: {
@@ -110,14 +111,17 @@ function App() {
           username: username,
         }),
       });
-
+  
       const data = await response.json();
+      console.log("Room created:", data.room_id); // Log after room creation
       setSelectedRoom(data.room_id);
+      console.log("Starting polling for room:", data.room_id); // Log before starting polling
       startPollingChoices(data.room_id);
     } catch (error) {
       console.error("Error creating room:", error);
     }
   };
+  
 
   const joinRoom = async (roomId) => {
     try {
