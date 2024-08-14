@@ -19,14 +19,14 @@ function App() {
 
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);
-    // startPollingRooms();
+    startPollingRooms();
 
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       leaveGame();
-      // clearInterval(roomPollingRef.current);
+      clearInterval(roomPollingRef.current);
       clearInterval(pollingRef.current);
     };
   }, [selectedRoom]);
@@ -99,6 +99,7 @@ function App() {
       
   
       console.log("Setting up polling interval...");
+      clearInterval(pollingRef.current);
       pollingRef.current = setInterval(() => {
         console.log("Interval triggered for polling status.");
         pollGameStatus(); // Call the function here
