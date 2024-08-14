@@ -208,6 +208,8 @@ function App() {
   const leaveGame = async () => {
     if (selectedRoom) {
       console.log(selectedRoom)
+      console.log(username)
+      console.log(userID)
       await fetch('https://4e3649c90ab2954896ec7e6608929427.serveo.net/leave_room', {
         method: 'POST',
         headers: {
