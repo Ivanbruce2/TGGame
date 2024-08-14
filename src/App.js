@@ -276,7 +276,7 @@ function App() {
         <button 
           onClick={copyToClipboard} 
           style={{
-            marginLeft: '0px', 
+            marginLeft: '15px', 
             padding: '5px 10px', 
             backgroundColor: '#0044ff', 
             border: 'none', 
