@@ -40,7 +40,7 @@ function App() {
 
   const fetchRooms = async () => {
     try {
-      const response = await fetch(`https://f41565fe508e58ee8dd59a38081b8ac9.serveo.net/list_rooms`, {
+      const response = await fetch(`https://afdca9bb4d238d2b3a38c1b714ba2e00.serveo.net/list_rooms`, {
         headers: {
         
         }
@@ -58,7 +58,7 @@ function App() {
 
   const initializeUser = async (userID, username) => {
     try {
-      const response = await fetch('https://f41565fe508e58ee8dd59a38081b8ac9.serveo.net/initialize_user', {
+      const response = await fetch('https://afdca9bb4d238d2b3a38c1b714ba2e00.serveo.net/initialize_user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -68,13 +68,19 @@ function App() {
           username: username,
         }),
       });
-
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
       const data = await response.json();
-      setWalletAddress(data.wallet_address);
+      setWalletAddress(data.walletaddress); // Adjusted to match backend response key
+      // Optionally, handle `userid` and `username` if needed
     } catch (error) {
       console.error('Error initializing user:', error);
     }
   };
+  
 
   const startPollingChoices = (roomId) => {
    
@@ -85,7 +91,7 @@ function App() {
         try {
           console.log("pollGameStatus function is being called");
       
-          const response = await fetch(`https://f41565fe508e58ee8dd59a38081b8ac9.serveo.net/game_status?room_id=${roomId}`, {
+          const response = await fetch(`https://afdca9bb4d238d2b3a38c1b714ba2e00.serveo.net/game_status?room_id=${roomId}`, {
             headers: {
            
             }
@@ -151,7 +157,7 @@ function App() {
     setUserChoice('');
   
     try {
-      const response = await fetch('https://f41565fe508e58ee8dd59a38081b8ac9.serveo.net/create_room', {
+      const response = await fetch('https://afdca9bb4d238d2b3a38c1b714ba2e00.serveo.net/create_room', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -174,7 +180,7 @@ function App() {
   
   const joinRoom = async (roomId) => {
     try {
-      const response = await fetch('https://f41565fe508e58ee8dd59a38081b8ac9.serveo.net/join_room', {
+      const response = await fetch('https://afdca9bb4d238d2b3a38c1b714ba2e00.serveo.net/join_room', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -204,7 +210,7 @@ function App() {
     setUserChoice(choice);
 
     try {
-      const response = await fetch('https://f41565fe508e58ee8dd59a38081b8ac9.serveo.net/webhook', {
+      const response = await fetch('https://afdca9bb4d238d2b3a38c1b714ba2e00.serveo.net/webhook', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -233,7 +239,7 @@ function App() {
       console.log(selectedRoom)
       console.log(username)
       console.log(userID)
-      await fetch('https://f41565fe508e58ee8dd59a38081b8ac9.serveo.net/leave_room', {
+      await fetch('https://afdca9bb4d238d2b3a38c1b714ba2e00.serveo.net/leave_room', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
