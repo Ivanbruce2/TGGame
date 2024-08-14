@@ -57,6 +57,7 @@ function App() {
   const startPollingChoices = (roomId) => {
     const pollGameStatus = async () => {
       try {
+        console.log(`Polling game status for room: ${roomId}`); 
         const response = await fetch(`https://6e0c756a7c42b442cca6ffd37f902c1f.serveo.net/game_status?room_id=${roomId}`, {
           headers: {
             'ngrok-skip-browser-warning': 'true'
