@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
 import './App.css';
+import WalletDisplay from './components/walletDisplay/walletDisplay'; // Import the WalletDisplay component
+
 
 function App() {
   const [userID, setUserID] = useState('');
@@ -258,33 +260,26 @@ function App() {
   }, []);
 
   const WalletDisplay = ({ walletAddress }) => {
+    const [copyStatus, setCopyStatus] = useState('Copy');
     const truncatedAddress = `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`;
   
     const copyToClipboard = () => {
       navigator.clipboard.writeText(walletAddress).then(() => {
-        alert('Wallet address copied to clipboard!');
+        setCopyStatus('Copied!');
+        setTimeout(() => setCopyStatus('Copy'), 2000); // Reset the button text after 2 seconds
       }, (err) => {
         console.error('Failed to copy text: ', err);
       });
     };
   
     return (
-      <div style={{ display: 'inline-flex', alignItems: 'center', marginLeft: '5px' }}>
-        <span style={{ fontFamily: 'monospace', fontSize: '14px', color: '#FFD700' }}>{truncatedAddress}</span>
+      <div className="wallet-display-container">
+        <span className="wallet-address">{truncatedAddress}</span>
         <button 
           onClick={copyToClipboard} 
-          style={{
-            marginLeft: '10px', 
-            padding: '5px 10px', 
-            backgroundColor: '#4CAF50', 
-            border: 'none', 
-            color: 'white', 
-            cursor: 'pointer', 
-            fontSize: '12px',
-            borderRadius: '4px'
-          }}
+          className="copy-button"
         >
-          Copy
+          {copyStatus}
         </button>
       </div>
     );

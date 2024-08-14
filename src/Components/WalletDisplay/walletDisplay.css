@@ -1,0 +1,32 @@
+.wallet-display-container {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 5px;
+  }
+  
+  .wallet-address {
+    font-family: 'monospace';
+    font-size: 14px;
+    color: #FFD700;
+  }
+  
+  .copy-button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .copy-button:hover {
+    background-color: #45a049;
+  }
+  
+  .copy-button:active {
+    background-color: #3e8e41;
+  }
+  
