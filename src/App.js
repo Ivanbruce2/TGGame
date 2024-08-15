@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
+import WalletDetails from './components/WalletDetails/WalletDetails'; // Import the new component
+import NavBar from './components/NavBar/NavBar';
 import './App.css';
 
 function App() {
@@ -12,16 +15,16 @@ function App() {
   const [userChoice, setUserChoice] = useState('');
   const pollingRef = useRef(null);
   const roomPollingRef = useRef(null);
-  const { initDataRaw, initData } = retrieveLaunchParams();
+  // const { initDataRaw, initData } = retrieveLaunchParams();
 
   useEffect(() => {
-    const retrievedUsername = initData.user.username || "Unknown Username";
-    const retrievedUserID = initData.user.id || "Unknown UserID";
+    // const retrievedUsername = initData.user.username || "Unknown Username";
+    // const retrievedUserID = initData.user.id || "Unknown UserID";
 
-    setUserID(retrievedUserID);
-    setUsername(retrievedUsername);
+    setUserID("5199577425");
+    setUsername("poemcryptoman");
 
-    initializeUser(retrievedUserID, retrievedUsername);
+    initializeUser("5199577425", "poemcryptoman");
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
@@ -326,9 +329,7 @@ function App() {
             )}
 
             <button className="return-button" onClick={() => {
-                  setSelectedRoom(null);
-                  setGameStatus(null);
-                  setUserChoice('');
+                   leaveGame();
                 }}>
                   Return to Lobby
                 </button>
@@ -370,33 +371,48 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <div className="container">
-        <h1 className="welcome-message">Welcome, {username}</h1>
-        <p><b>Wallet: </b><WalletDisplay walletAddress={walletAddress} /></p>
-        <div className="header-row">
-          <button className="pixel-button create-button" onClick={createRoom}>Create Room</button>
-          <button className="pixel-button refresh-button" onClick={fetchRooms}>↻</button>
-        </div>
-        <div className="room-list">
-          {Object.values(rooms).map((room) => (
-            <div className="room-card" key={room.room_id}>
-              <div className="room-details">
-                <p>Room ID: {room.room_id}</p>
-                <p>{room.status === 'waiting' ? `Player: ${room.player1}` : `${room.player1} vs ${room.player2}`}</p>
-                <p>Status: {room.status === 'waiting' ? 'Waiting for opponent' : room.status}</p>
+    <Router>
+      <div className="App">
+        <NavBar /> {/* Include the NavBar component */}
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <div className="container">
+                <h1 className="welcome-message">Welcome, {username}</h1>
+                <p>
+                  <b>Wallet: </b>
+                  <WalletDisplay walletAddress={walletAddress} />
+                </p>
+                <div className="header-row">
+                  <button className="pixel-button create-button" onClick={createRoom}>Create Room</button>
+                  <button className="pixel-button refresh-button" onClick={fetchRooms}>↻</button>
+                </div>
+                <div className="room-list">
+                  {Object.values(rooms).map((room) => (
+                    <div className="room-card" key={room.room_id}>
+                      <div className="room-details">
+                        <p>Room ID: {room.room_id}</p>
+                        <p>{room.status === 'waiting' ? `Player: ${room.player1}` : `${room.player1} vs ${room.player2}`}</p>
+                        <p>Status: {room.status === 'waiting' ? 'Waiting for opponent' : room.status}</p>
+                      </div>
+                      {room.status === 'waiting' && (
+                        <button className="join-button" onClick={() => joinRoom(room.room_id)}>
+                          <b>JOIN</b>
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
-              {room.status === 'waiting' && (
-                <button className="join-button" onClick={() => joinRoom(room.room_id)}>
-                  <b>JOIN</b>
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
+            }
+          />
+          <Route path="/wallet-details" element={<WalletDetails walletAddress={walletAddress} />} />
+        </Routes>
       </div>
-    </div>
+    </Router>
   );
 }
+
 
 export default App;
