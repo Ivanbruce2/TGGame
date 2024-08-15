@@ -1,11 +1,11 @@
 /* NavBar.css */
 .navbar {
-  background-color: #444; /* Darker shade for a modern look */
-  padding: 0.5rem; /* Less padding to reduce height */
-  position: fixed; /* Fixing it to the top */
-  width: 100%; /* Spans across the full width */
-  top: 0; /* Positioned at the top */
-  z-index: 1000; /* Ensures it stays on top */
+  background-color: #333; /* Improved color */
+  padding: 0.5rem 1rem; /* Smaller padding for a compact design */
+  position: fixed; /* Stick to the top */
+  width: 100%; /* Cover full width */
+  top: 0;
+  z-index: 1000;
 }
 
 .navbar ul {
@@ -13,23 +13,28 @@
   margin: 0;
   padding: 0;
   display: flex;
-  justify-content: center; /* Align links to the center */
+  justify-content: space-between;
+  align-items: center; /* Ensures proper alignment vertically */
 }
 
 .navbar ul li {
-  margin: 0 10px; /* Space between each link */
+  margin: 0 8px; /* Space between links */
 }
 
 .navbar ul li a {
-  color: #e0e0e0; /* Softer white */
+  color: #fff;
   text-decoration: none;
-  padding: 6px 14px; /* Adjusted padding for reduced height */
-  display: inline-block;
-  font-weight: bold; /* Makes the text more prominent */
-  transition: background-color 0.3s ease; /* Smooth hover effect */
+  padding: 6px 12px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
 }
 
 .navbar ul li a:hover {
-  background-color: #5c5c5c; /* Slightly different color for hover */
+  background-color: #575757;
   border-radius: 4px;
+}
+
+/* To make sure the content below doesn’t get hidden behind the navbar */
+.container {
+  padding-top: 3rem; /* Adds space equivalent to the navbar height */
 }

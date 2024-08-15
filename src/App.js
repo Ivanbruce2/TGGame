@@ -374,41 +374,51 @@ function App() {
     <Router>
       <div className="App">
         <NavBar /> {/* Include the NavBar component */}
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <div className="container">
-                <h1 className="welcome-message">Welcome, {username}</h1>
-                <p>
-                  <b>Wallet: </b>
-                  <WalletDisplay walletAddress={walletAddress} />
-                </p>
-                <div className="header-row">
-                  <button className="pixel-button create-button" onClick={createRoom}>Create Room</button>
-                  <button className="pixel-button refresh-button" onClick={fetchRooms}>↻</button>
-                </div>
-                <div className="room-list">
-                  {Object.values(rooms).map((room) => (
-                    <div className="room-card" key={room.room_id}>
-                      <div className="room-details">
-                        <p>Room ID: {room.room_id}</p>
-                        <p>{room.status === 'waiting' ? `Player: ${room.player1}` : `${room.player1} vs ${room.player2}`}</p>
-                        <p>Status: {room.status === 'waiting' ? 'Waiting for opponent' : room.status}</p>
+        <div className="container"> {/* Adjust container to ensure spacing below the navbar */}
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <div>
+                  <h1 className="welcome-message">Welcome, {username}</h1>
+                  <p>
+                    <b>Wallet: </b>
+                    <WalletDisplay walletAddress={walletAddress} />
+                  </p>
+                  <div className="header-row">
+                    <button className="pixel-button create-button" onClick={createRoom}>
+                      Create Room
+                    </button>
+                    <button className="pixel-button refresh-button" onClick={fetchRooms}>
+                      ↻
+                    </button>
+                  </div>
+                  <div className="room-list">
+                    {Object.values(rooms).map((room) => (
+                      <div className="room-card" key={room.room_id}>
+                        <div className="room-details">
+                          <p>Room ID: {room.room_id}</p>
+                          <p>
+                            {room.status === 'waiting'
+                              ? `Player: ${room.player1}`
+                              : `${room.player1} vs ${room.player2}`}
+                          </p>
+                          <p>Status: {room.status === 'waiting' ? 'Waiting for opponent' : room.status}</p>
+                        </div>
+                        {room.status === 'waiting' && (
+                          <button className="join-button" onClick={() => joinRoom(room.room_id)}>
+                            <b>JOIN</b>
+                          </button>
+                        )}
                       </div>
-                      {room.status === 'waiting' && (
-                        <button className="join-button" onClick={() => joinRoom(room.room_id)}>
-                          <b>JOIN</b>
-                        </button>
-                      )}
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            }
-          />
-          <Route path="/wallet-details" element={<WalletDetails walletAddress={walletAddress} />} />
-        </Routes>
+              }
+            />
+            <Route path="/wallet-details" element={<WalletDetails walletAddress={walletAddress} />} />
+          </Routes>
+        </div>
       </div>
     </Router>
   );
