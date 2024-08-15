@@ -38,7 +38,7 @@ function App() {
 
   const fetchRooms = async () => {
     try {
-      const response = await fetch(`https://afdca9bb4d238d2b3a38c1b714ba2e00.serveo.net/list_rooms`, {
+      const response = await fetch(`https://b0e804af9b97159966bd365b9c66b07e.serveo.net/list_rooms`, {
         headers: {}
       });
       const data = await response.json();
@@ -54,7 +54,7 @@ function App() {
 
   const initializeUser = async (userID, username) => {
     try {
-      const response = await fetch('https://afdca9bb4d238d2b3a38c1b714ba2e00.serveo.net/initialize_user', {
+      const response = await fetch('https://b0e804af9b97159966bd365b9c66b07e.serveo.net/initialize_user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -88,7 +88,7 @@ function App() {
         try {
           console.log("pollGameStatus function is being called");
       
-          const response = await fetch(`https://afdca9bb4d238d2b3a38c1b714ba2e00.serveo.net/game_status?room_id=${roomId}`, {
+          const response = await fetch(`https://b0e804af9b97159966bd365b9c66b07e.serveo.net/game_status?room_id=${roomId}`, {
             headers: {}
           });
       
@@ -151,7 +151,7 @@ function App() {
     setUserChoice('');
   
     try {
-      const response = await fetch('https://afdca9bb4d238d2b3a38c1b714ba2e00.serveo.net/create_room', {
+      const response = await fetch('https://b0e804af9b97159966bd365b9c66b07e.serveo.net/create_room', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -172,7 +172,7 @@ function App() {
 
   const joinRoom = async (roomId) => {
     try {
-      const response = await fetch('https://afdca9bb4d238d2b3a38c1b714ba2e00.serveo.net/join_room', {
+      const response = await fetch('https://b0e804af9b97159966bd365b9c66b07e.serveo.net/join_room', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -201,7 +201,7 @@ function App() {
     setUserChoice(choice);
 
     try {
-      const response = await fetch('https://afdca9bb4d238d2b3a38c1b714ba2e00.serveo.net/webhook', {
+      const response = await fetch('https://b0e804af9b97159966bd365b9c66b07e.serveo.net/webhook', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -230,7 +230,7 @@ function App() {
       console.log(selectedRoom);
       console.log(username);
       console.log(userID);
-      await fetch('https://afdca9bb4d238d2b3a38c1b714ba2e00.serveo.net/leave_room', {
+      await fetch('https://b0e804af9b97159966bd365b9c66b07e.serveo.net/leave_room', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
