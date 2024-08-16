@@ -1,70 +1,91 @@
-/* TokenCard.css */
 .token-card {
-    display: grid;
-    grid-template-columns: 1.5fr 1.5fr 1.8fr 1fr; /* Adjusted column sizes */
-    align-items: center;
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 8px;
-    margin-bottom: 0px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    max-width: 550px; /* Further reduced max-width */
-    width: 100%;
-  }
-  
-  .token-column {
-    padding: 0 8px;
-    text-align: left;
-  }
-  
-  .token-symbol {
-    font-weight: bold;
-    color: #333333;
-    font-size: 16px; /* Slightly larger font for the symbol */
-  }
-  
-  .token-amount {
-    font-family: monospace;
-    color: #4caf50;
-  }
-  
-  .token-address {
-    font-family: monospace;
-    color: #555555;
-    cursor: pointer;
-    position: relative;
-  }
-  
-  .token-address:hover .copy-status {
-    visibility: visible;
-    opacity: 1;
-  }
-  
-  .copy-status {
-    font-size: 12px;
-    color: #007bff;
-    margin-left: 4px;
-    visibility: hidden;
-    opacity: 0;
-    transition: visibility 0s, opacity 0.2s linear;
-  }
-  
-  .token-action {
-    text-align: left;
-  }
-  
-  .action-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-  }
-  
-  .action-button:hover {
-    background-color: #0056b3;
-  }
-  
+  display: grid;
+  grid-template-columns: 3fr auto; /* Two-column layout */
+  align-items: start; /* Align everything to the top */
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 4px 8px;
+  margin-bottom: 2px; /* Reduced space between cards */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  max-width: 340px;
+  width: 100%;
+}
+
+
+.token-column {
+  padding: 0;
+  text-align: left;
+}
+
+.token-symbol {
+  font-weight: bold;
+  color: #333333;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 0; /* Removed margin */
+  line-height: 1; /* Tighter line-height */
+}
+
+.token-symbol:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  width: 140px;
+  background-color: #333333;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* Position above the text */
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  transition: visibility 0s, opacity 0.2s linear;
+}
+
+.tooltip-text::after {
+  content: '';
+  position: absolute;
+  top: 100%; /* Position arrow at the bottom */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333333 transparent transparent transparent;
+}
+
+.token-amount {
+  font-family: monospace;
+  color: #4caf50;
+  margin: 0; /* Removed margin */
+  padding-top: 2px; /* Slight padding for spacing between symbol and amount */
+  line-height: 1.2;
+}
+
+.token-action {
+  text-align: left;
+  display: flex;
+  align-items: center; /* Ensure button aligns vertically with the symbol */
+}
+
+.action-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  margin: 0;
+}
+
+.action-button:hover {
+  background-color: #0056b3;
+}

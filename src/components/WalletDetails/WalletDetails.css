@@ -33,7 +33,7 @@
 /* WalletDetails.css */
 
 .token-list-container {
-  max-height: 600px; /* Set the maximum height for the scrollable area */
+  max-height: 380px; /* Set the maximum height for the scrollable area */
   overflow-y: auto; /* Enable vertical scrolling */
   border: 1px solid #e0e0e0; /* Optional: Add a border for separation */
   padding: 8px; /* Optional: Add padding inside the container */
