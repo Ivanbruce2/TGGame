@@ -1,46 +1,64 @@
-.wallet-display-container {
-  display: inline-flex; /* Ensure the container is inline */
-  align-items: center; /* Align items in the center vertically */
-  margin-left: 10px; /* Some margin to the left for spacing */
+/* Ensure a consistent font across all elements */
+.wallet-container {
+  font-family: 'Poppins', sans-serif; /* Use a clean, modern sans-serif font */
+  color: #ffffff;
 }
 
+.welcome-message {
+  text-transform: uppercase;
+  text-align: center;
+  width: 100%;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  color: #ffd700; /* Base color */
+  font-family: 'Press Start 2P', cursive;
+  position: relative;
+  text-shadow: 
+    1px 1px 0 #ff0047,   /* red shadow */
+    2px 2px 0 #ff8a00,   /* orange shadow */
+    3px 3px 0 #fcdc4d,   /* yellow shadow */
+    4px 4px 0 #28e0ae,   /* green shadow */
+    5px 5px 0 #0044ff;   /* blue shadow */
+}
+
+/* Title styling */
+.wallet-container h2 {
+  margin-bottom: 8px; /* Reduce space between title and the address */
+  font-size: 22px; /* Adjust the font size if needed */
+  font-weight: 600; /* Slightly bolder for emphasis */
+}
+
+/* Address styling */
 .wallet-address {
-  font-family: 'monospace';
-  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-left: 5px;
+  font-size: 16px; /* Adjust the size for a clean look */
+  transition: color 0.3s ease; /* Smooth color transition */
+}
+
+.bone-amount {
+  margin-left: 5px;
   color: #ffffff; /* Gold color */
 }
 
-.copy-button {
-  margin-left: 10px; 
-  padding: 5px 10px; 
-  background-color: #011002; 
-  border: none; 
-  color: white; 
-  cursor: pointer; 
-  font-size: 12px;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+/* Hover effect for wallet address */
+.wallet-address:hover {
+  color: #1aa6e7; /* Gold color on hover */
 }
 
-.copy-button:hover {
-  background-color: #011702; /* Slightly darker green on hover */
-}
-
-.copy-button:active {
-  background-color: #123313; /* Even darker green on click */
-}
-
-/* WalletDetails.css */
-
+/* Token list container */
 .token-list-container {
-  max-height: 380px; /* Set the maximum height for the scrollable area */
-  overflow-y: auto; /* Enable vertical scrolling */
-  border: 1px solid #e0e0e0; /* Optional: Add a border for separation */
-  padding: 8px; /* Optional: Add padding inside the container */
+  max-height: 380px;
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  padding: 8px;
+  margin-top: 12px; /* Slight margin to create separation from the BONE balance */
 }
 
+/* Token list styling */
 .token-list {
   display: flex;
-  flex-direction: column; /* Stack cards vertically */
-  gap: 12px; /* Add space between cards */
+  flex-direction: column;
+  gap: 12px;
 }

@@ -1,11 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import { retrieveLaunchParams } from '@telegram-apps/sdk';
-import WalletDetails from './components/WalletDetails/WalletDetails'; // Import the new component
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import WalletDetails from './components/WalletDetails/WalletDetails';
 import NavBar from './components/NavBar/NavBar';
+import WagerModal from './components/WagerModal/WagerModal';
+import Toast from './components/Toast/Toast';
 import './App.css';
+import { retrieveLaunchParams } from '@telegram-apps/sdk';
+
+
+// Define the backend URL once in a central location
+const backendURL = 'https://76eaff56175c51682d6263070663330b.serveo.net';
 
 function App() {
+  const { initDataRaw, initData } = retrieveLaunchParams();
   const [userID, setUserID] = useState('');
   const [username, setUsername] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
@@ -13,20 +20,27 @@ function App() {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [gameStatus, setGameStatus] = useState(null);
   const [userChoice, setUserChoice] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState(''); // New state for toast messages
+const [toastLink, setToastLink] = useState(''); // State for an optional link in the toast
+const [toastVisible, setToastVisible] = useState(false); // State to control the visibility of the toast
+
   const pollingRef = useRef(null);
   const roomPollingRef = useRef(null);
-  // const { initDataRaw, initData } = retrieveLaunchParams();
+  const contractAddresses = [
+    { address: '0xC0deBA91b9f5550B927BD4E4Ff5179148450C457', name: 'Shib King', symbol: 'ShibKing', decimals: 18 },
+    { address: '0x43AB6e79a0ee99e6cF4eF9e70b4C0c2DF5A4d0Fb', name: 'CRYPTIQ', symbol: 'CTQ', decimals: 18 },
+  ];
 
   useEffect(() => {
-    // const retrievedUsername = initData.user.username || "Unknown Username";
-    // const retrievedUserID = initData.user.id || "Unknown UserID";
+    const retrievedUsername = initData.user.username || "Unknown Username";
+    const retrievedUserID = initData.user.id || "Unknown UserID";
+    setUserID(retrievedUserID);
+    setUsername(retrievedUsername);
 
-    setUserID("5199577425");
-    setUsername("poemcryptoman");
-
-    initializeUser("5199577425", "poemcryptoman");
+    initializeUser(retrievedUserID, retrievedUsername);
     window.addEventListener('beforeunload', handleBeforeUnload);
-
+fetchRooms()
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       leaveGame();
@@ -39,12 +53,23 @@ function App() {
     event.returnValue = '';
   };
 
+  const performFetch = async (endpoint, options = {}) => {
+    try {
+      const response = await fetch(`${backendURL}${endpoint}`, options);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(`Error fetching ${endpoint}:`, error);
+      throw error; // Re-throw the error to be handled by the caller
+    }
+  };
+
   const fetchRooms = async () => {
     try {
-      const response = await fetch(`https://7c107fde26ce05ee94a407f331408fce.serveo.net/list_rooms`, {
-        headers: {}
-      });
-      const data = await response.json();
+      const data = await performFetch('/list_rooms');
       setRooms(data);
     } catch (error) {
       console.error('Error fetching rooms:', error);
@@ -57,7 +82,7 @@ function App() {
 
   const initializeUser = async (userID, username) => {
     try {
-      const response = await fetch('https://7c107fde26ce05ee94a407f331408fce.serveo.net/initialize_user', {
+      const data = await performFetch('/initialize_user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -67,15 +92,6 @@ function App() {
           username: username,
         }),
       });
-  
-      const rawData = await response.text();
-      console.log('Raw response data:', rawData);
-  
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-  
-      const data = JSON.parse(rawData);
       setWalletAddress(data.wallet_address);
       console.log(data.wallet_address);
     } catch (error) {
@@ -85,76 +101,43 @@ function App() {
 
   const startPollingChoices = (roomId) => {
     try {
-      console.log("startPollingChoices called with roomId:", roomId);
-
       const pollGameStatus = async () => {
         try {
-          console.log("pollGameStatus function is being called");
-      
-          const response = await fetch(`https://7c107fde26ce05ee94a407f331408fce.serveo.net/game_status?room_id=${roomId}`, {
-            headers: {}
-          });
-      
-          console.log("Received response:", response.status);
-          
-          if (response.status === 404) {
-            console.log("Room not found, stopping polling.");
-            clearInterval(pollingRef.current);
-            setTimeout(() => {
-              setSelectedRoom(null);
-              setGameStatus(null);
-            }, 5000);
-            return;
-          }
-      
-          const data = await response.json();
-          console.log("Game status:", data);
+          const data = await performFetch(`/game_status?room_id=${roomId}`);
           setGameStatus(data);
-      
+          console.log(data)
+  
           if (data.status === "completed") {
-            console.log("Game completed, stopping polling.");
             clearInterval(pollingRef.current);
+            
+            // Check if there's a transaction hash included in the response
+            if (data.txHash) {
+              setToastMessage('Game completed! Tokens have been transferred.');
+              setToastLink(`https://shibariumscan.io/tx/${data.txHash}`); // Update with the actual transaction link
+              setToastVisible(true);
+            } else {
+              setToastMessage('Game completed!');
+              setToastLink(''); // No link if there's no transaction
+              setToastVisible(true);
+            }
           }
         } catch (error) {
-          console.error("Error during polling:", error);
           clearInterval(pollingRef.current);
           setSelectedRoom(null);
           setGameStatus(null);
         }
       };
-      
-      console.log("Setting up polling interval...");
-      clearInterval(pollingRef.current);
-      pollingRef.current = setInterval(() => {
-        console.log("Interval triggered for polling status.");
-        pollGameStatus();
-      }, 1000);
   
-      console.log("Polling interval set for room:", roomId);
+      clearInterval(pollingRef.current);
+      pollingRef.current = setInterval(pollGameStatus, 1000);
     } catch (error) {
       console.error("Error in startPollingChoices:", error);
     }
   };
   
-  const createRoom = async () => {
-    if (!userID) {
-      console.error("UserID is empty. Cannot create room.");
-      return;
-    }
-  
-    setGameStatus({
-      status: 'waiting',
-      player1: username,
-      player1_choice: null,
-      player2: null,
-      player2_choice: null,
-      result: null
-    });
-  
-    setUserChoice('');
-  
+  const createRoom = async (contractAddress, wagerAmount) => {
     try {
-      const response = await fetch('https://7c107fde26ce05ee94a407f331408fce.serveo.net/create_room', {
+      const data = await performFetch('/create_room', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -162,20 +145,33 @@ function App() {
         body: new URLSearchParams({
           userid: userID,
           username: username,
+          contract_address: contractAddress,
+          wager_amount: wagerAmount,
         }),
       });
-  
-      const data = await response.json();
       setSelectedRoom(data.room_id);
       startPollingChoices(data.room_id);
     } catch (error) {
-      console.error("Error creating room:", error);
+      console.error('Error creating room:', error);
     }
+  };
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleSaveModal = (contractAddress, wagerAmount) => {
+    setIsModalOpen(false);
+    createRoom(contractAddress, wagerAmount); // Pass the contract address and wager amount to the createRoom function
+  };
+
+  const handleCancelModal = () => {
+    setIsModalOpen(false);
   };
 
   const joinRoom = async (roomId) => {
     try {
-      const response = await fetch('https://7c107fde26ce05ee94a407f331408fce.serveo.net/join_room', {
+      const data = await performFetch('/join_room', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -184,27 +180,35 @@ function App() {
           userid: userID,
           username: username,
           room_id: roomId,
+          wallet_address: walletAddress, // Send wallet address
         }),
       });
-  
-      const data = await response.json();
   
       if (data && data.room_id) {
         setSelectedRoom(data.room_id);
         startPollingChoices(data.room_id);
-      } else {
-        console.error("Unexpected response data:", data);
+      } else if (data && data.error) {
+        // Set the toast message with the error
+        setToastMessage(data.error);
+        setToastLink(''); // No link needed for errors
+        setToastVisible(true); // Show the toast
       }
     } catch (error) {
       console.error("Error in joinRoom:", error);
+      setToastMessage('Failed to join the room due to an error.');
+      setToastLink(''); // No link needed for errors
+      setToastVisible(true); // Show the toast
     }
   };
+  
+  
+  
 
   const handleChoice = async (choice) => {
     setUserChoice(choice);
-
+  
     try {
-      const response = await fetch('https://7c107fde26ce05ee94a407f331408fce.serveo.net/webhook', {
+      const data = await performFetch('/webhook', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -216,24 +220,31 @@ function App() {
           room_id: selectedRoom,
         }),
       });
-
-      const data = await response.json();
+  
       setGameStatus(data);
-
-      if (data.status !== "completed") {
+  
+      if (data.status === "completed") {
+        if (data.txHash) {
+          setToastMessage('Game completed! Tokens have been transferred.');
+          setToastLink(`https://shibariumscan.io/tx/${data.txHash}`);
+          setToastVisible(true);
+        } else {
+          setToastMessage('Game completed!');
+          setToastLink(''); // No link if there's no transaction
+          setToastVisible(true);
+        }
+      } else {
         startPollingChoices(selectedRoom);
       }
     } catch (error) {
       console.error("Error in handleChoice:", error);
     }
   };
+  
 
   const leaveGame = async () => {
     if (selectedRoom) {
-      console.log(selectedRoom);
-      console.log(username);
-      console.log(userID);
-      await fetch('https://7c107fde26ce05ee94a407f331408fce.serveo.net/leave_room', {
+      await performFetch('/leave_room', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -258,45 +269,26 @@ function App() {
     };
   }, []);
 
-  // Inline WalletDisplay component
   const WalletDisplay = ({ walletAddress }) => {
-    const [copyStatus, setCopyStatus] = useState('Copy');
     const truncatedAddress = `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`;
-  
+
     const copyToClipboard = () => {
       navigator.clipboard.writeText(walletAddress).then(() => {
-        setCopyStatus('Copied!');
-        setTimeout(() => setCopyStatus('Copy'), 2000);
+        setToastMessage('Wallet address copied to clipboard!'); // Trigger toast message
       }, (err) => {
         console.error('Failed to copy text: ', err);
       });
     };
-  
+
     return (
-      <div style={{ display: 'inline-flex', alignItems: 'center', marginLeft: '10px' }}>
+      <div style={{ display: 'inline-flex', alignItems: 'center', marginLeft: '10px', cursor: 'pointer' }} onClick={copyToClipboard}>
         <span style={{ fontFamily: 'monospace', fontSize: '14px', color: '#FFD700', marginRight: '8px' }}>
           {truncatedAddress}
         </span>
-        <button 
-          onClick={copyToClipboard} 
-          style={{
-            padding: '5px 8px', 
-            backgroundColor: '#0044ff', 
-            border: 'none', 
-            color: 'white', 
-            cursor: 'pointer', 
-            fontSize: '12px',
-            borderRadius: '4px',
-            whiteSpace: 'nowrap' // Prevents the button text from wrapping
-          }}
-        >
-          {copyStatus}
-        </button>
       </div>
     );
   };
-  
-  
+
   if (selectedRoom) {
     return (
       <div className="App">
@@ -304,11 +296,14 @@ function App() {
         {gameStatus ? (
           <>
             <h2 className="game-status">
-              {gameStatus.player1 ? `${gameStatus.player1} ${gameStatus.player1_choice ? '✔️' : '❓'}` : '[Pending]'}
+              {/* Check if player1 details are available and display them */}
+              {gameStatus.player1_username ? `${gameStatus.player1_username} ${gameStatus.player1_choice ? '✔️' : '❓'}` : '[Pending]'}
               {' vs '}
-              {gameStatus.player2 ? `${gameStatus.player2} ${gameStatus.player2_choice ? '✔️' : '❓'}` : '[Pending]'}
+              {/* Check if player2 details are available and display them */}
+              {gameStatus.player2_username ? `${gameStatus.player2_username} ${gameStatus.player2_choice ? '✔️' : '❓'}` : '[Pending]'}
             </h2>
-
+  
+            {/* If the game is not completed, show the choice buttons */}
             {gameStatus.status !== 'completed' && (
               <>
                 <div className="choices">
@@ -323,17 +318,16 @@ function App() {
                     </button>
                   ))}
                 </div>
-
+  
                 <p>Waiting for opponent...</p>
               </>
             )}
-
-            <button className="return-button" onClick={() => {
-                   leaveGame();
-                }}>
-                  Return to Lobby
-                </button>
-
+  
+            <button className="return-button" onClick={leaveGame}>
+              Return to Lobby
+            </button>
+  
+            {/* Display the game result when the status is completed */}
             {gameStatus.status === 'completed' && (
               <div>
                 {gameStatus.result?.includes('draw') ? (
@@ -369,12 +363,13 @@ function App() {
       </div>
     );
   }
+  
 
   return (
     <Router>
       <div className="App">
-        <NavBar /> {/* Include the NavBar component */}
-        <div className="container"> {/* Adjust container to ensure spacing below the navbar */}
+        <NavBar />
+        <div className="container">
           <Routes>
             <Route
               path="/"
@@ -386,7 +381,7 @@ function App() {
                     <WalletDisplay walletAddress={walletAddress} />
                   </p>
                   <div className="header-row">
-                    <button className="pixel-button create-button" onClick={createRoom}>
+                    <button className="pixel-button create-button" onClick={handleOpenModal}>
                       Create Room
                     </button>
                     <button className="pixel-button refresh-button" onClick={fetchRooms}>
@@ -394,35 +389,62 @@ function App() {
                     </button>
                   </div>
                   <div className="room-list">
-                    {Object.values(rooms).map((room) => (
-                      <div className="room-card" key={room.room_id}>
-                        <div className="room-details">
-                          <p>Room ID: {room.room_id}</p>
-                          <p>
-                            {room.status === 'waiting'
-                              ? `Player: ${room.player1}`
-                              : `${room.player1} vs ${room.player2}`}
-                          </p>
-                          <p>Status: {room.status === 'waiting' ? 'Waiting for opponent' : room.status}</p>
+                    {Object.values(rooms).map((room) => {
+                      // Find the corresponding contract info
+                      const contract = contractAddresses.find(
+                        (c) => c.address === room.contract_address
+                      );
+                      // Determine decimals, fallback to 1 if not found
+                      const decimals = contract ? contract.decimals : 1;
+                      // Convert the wager amount by dividing by 10^decimals
+                      const formattedWagerAmount = room.wager_amount
+                        ? (parseFloat(room.wager_amount) / Math.pow(10, decimals)).toFixed(3)
+                        : 'N/A';
+
+                      return (
+                        <div className="room-card" key={room.room_id}>
+                          <div className="room-details">
+                            <p>Room ID: {room.room_id} | {room.status === 'waiting'
+                                ? `Player: ${room.player1}`
+                                : `${room.player1} vs ${room.player2}`}</p>                          
+                            
+                            <p>Wager: {contract ? `(${contract.symbol})` : 'N/A'} | {formattedWagerAmount}</p> {/* Display the token name and symbol */}
+                          
+                            {/* <p>Status: {room.status === 'waiting' ? 'Waiting for opponent' : room.status}</p> */}
+                          </div>
+                          {room.status === 'waiting' && (
+                            <button className="join-button" onClick={() => joinRoom(room.room_id)}>
+                              <b>JOIN</b>
+                            </button>
+                          )}
                         </div>
-                        {room.status === 'waiting' && (
-                          <button className="join-button" onClick={() => joinRoom(room.room_id)}>
-                            <b>JOIN</b>
-                          </button>
-                        )}
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               }
             />
-            <Route path="/wallet-details" element={<WalletDetails walletAddress={walletAddress} />} />
+            <Route
+              path="/wallet-details"
+              element={<WalletDetails walletAddress={walletAddress} backendURL={backendURL} userID={userID} />}
+            />
           </Routes>
         </div>
+
+        {isModalOpen && (
+          <WagerModal
+            contracts={contractAddresses}
+            walletAddress={walletAddress} // Pass walletAddress here
+            onSave={handleSaveModal}
+            onCancel={handleCancelModal}
+          />
+        )}
+
+        {/* Display the toast if there is a message */}
+        {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
       </div>
     </Router>
   );
 }
-
 
 export default App;

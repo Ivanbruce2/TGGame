@@ -2,7 +2,7 @@
 
 body, html {
   margin: 0;
-  padding: 0;
+  padding: 5px 0 0 0; /* Add padding only to the top */
   height: 100%;
   width: 100%;
   background: linear-gradient(135deg, #4101ff, #880176, #190275); 
@@ -13,6 +13,7 @@ body, html {
   position: relative;
   animation: rainbowShift 15s ease infinite; /* Add animation for gradient shift */
 }
+
 
 @keyframes rainbowShift {
   0% { background-position: 0% 50%; }
@@ -76,7 +77,7 @@ body:before {
   background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff);
   background-size: 200% 200%;
   color: rgb(6, 6, 6);
-  font-size: 1em;
+  font-size: clamp(0.8em, 1.2vw, 1em); /* Dynamically adjust font size */
   border: 2px solid #333;
   height: 50px;
   line-height: 46px;
@@ -89,8 +90,26 @@ body:before {
   text-transform: uppercase;
   font-family: 'Press Start 2P', cursive;
   box-shadow: 0 4px #333;
+  position: relative;
   animation: gradientShift 2s infinite linear;
+  overflow: hidden; /* Prevent text from overflowing */
+  white-space: nowrap; /* Prevent text from wrapping */
+  text-overflow: ellipsis; /* Indicate overflow with ellipsis */
 }
+
+.create-button {
+  width: 200px; /* Ensure enough space */
+}
+
+.refresh-button {
+  width: 60px; /* Smaller width for the refresh button */
+}
+
+.pixel-button:active {
+  top: 4px; /* Simulate button press */
+  box-shadow: 0 0 #333;
+}
+
 .game-result {
   display: flex;
   flex-direction: column;
@@ -150,18 +169,7 @@ body:before {
   animation: gradientShift 2s infinite linear; /* Animate the gradient */
 }
 
-.create-button {
-  width: 200px; /* Width for Create Room button */
-}
 
-.refresh-button {
-  width: 60px; /* Smaller width for Refresh button */
-}
-
-.pixel-button:active {
-  top: 4px; /* Simulate button press */
-  box-shadow: 0 0 #333;
-}
 
 .welcome-message {
   text-transform: uppercase;

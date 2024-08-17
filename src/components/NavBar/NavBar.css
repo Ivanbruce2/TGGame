@@ -1,9 +1,9 @@
 /* NavBar.css */
 .navbar {
-  background-color: #333; /* Improved color */
-  padding: 0.5rem 1rem; /* Smaller padding for a compact design */
-  position: fixed; /* Stick to the top */
-  width: 100%; /* Cover full width */
+  background-color: #333;
+  padding: 0.5rem 1rem;
+  position: fixed;
+  width: 100%;
   top: 0;
   z-index: 1000;
 }
@@ -13,18 +13,18 @@
   margin: 0;
   padding: 0;
   display: flex;
-  justify-content: space-between;
-  align-items: center; /* Ensures proper alignment vertically */
+  justify-content: center; /* Center the navbar items */
+  align-items: center;
 }
 
 .navbar ul li {
-  margin: 0 8px; /* Space between links */
+  margin: 0 4px; /* Reduce space between links */
 }
 
 .navbar ul li a {
   color: #fff;
   text-decoration: none;
-  padding: 6px 12px;
+  padding: 6px 10px; /* Reduce padding inside the buttons */
   font-weight: bold;
   transition: background-color 0.3s ease;
 }
@@ -34,7 +34,6 @@
   border-radius: 4px;
 }
 
-/* To make sure the content below doesn’t get hidden behind the navbar */
 .container {
-  padding-top: 3rem; /* Adds space equivalent to the navbar height */
+  padding-top: 3rem;
 }

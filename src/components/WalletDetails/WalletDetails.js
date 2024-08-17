@@ -1,37 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import TokenCard from '../TokenCard/TokenCard'; // Adjust the import path as needed
-import './WalletDetails.css'; // Import the CSS for the scrollable container
+import TokenCard from '../TokenCard/TokenCard';
+import Toast from '../Toast/Toast'; // Import your custom Toast component
+import './WalletDetails.css';
 
-const WalletDetails = ({ walletAddress }) => {
+const WalletDetails = ({ walletAddress, backendURL, userID }) => { 
   const [tokens, setTokens] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // New state for walletAddress if it's undefined
   const [localWalletAddress, setLocalWalletAddress] = useState(walletAddress);
+  const [boneAmount, setBoneAmount] = useState(null);
+  const [toastVisible, setToastVisible] = useState(false); // State to control toast visibility
+  const [toastMessage, setToastMessage] = useState(''); // State for the toast message
 
   useEffect(() => {
-    // Fetch wallet address if it's not already provided
     if (!walletAddress) {
       const initializeUser = async () => {
         try {
-          const response = await fetch('https://b0e804af9b97159966bd365b9c66b07e.serveo.net/initialize_user', {
+          const response = await fetch(`${backendURL}/initialize_user`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: new URLSearchParams({
-              userid: "5199577425",
+              userid: userID,
               username: "poemcryptoman",
             }),
           });
-      
+
           const rawData = await response.text();
-      
+
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
-      
+
           const data = JSON.parse(rawData);
           setLocalWalletAddress(data.wallet_address);
         } catch (error) {
@@ -41,31 +42,56 @@ const WalletDetails = ({ walletAddress }) => {
 
       initializeUser();
     }
-  }, [walletAddress]);
+  }, [walletAddress, backendURL, userID]);
 
   useEffect(() => {
-    const fetchTokens = async () => {
-      if (!localWalletAddress) return; // Don't fetch tokens until we have the wallet address
+    const fetchTokensAndBone = async () => {
+      if (!localWalletAddress) return;
 
       try {
-        const response = await fetch(`https://www.shibariumscan.io/api/v2/addresses/${localWalletAddress}/token-balances`);
+        // Fetch BONE balance
+        const response = await fetch(`https://www.shibariumscan.io/api/v2/addresses/${localWalletAddress}`);
         const data = await response.json();
-        
-        if (Array.isArray(data)) {
-          setTokens(data);
+
+        // Calculate the BONE equivalent by dividing by 10^18
+        const boneBalance = (parseFloat(data.coin_balance) / Math.pow(10, 18)).toFixed(3);
+        setBoneAmount(boneBalance);
+
+        // Fetch tokens
+        const tokenResponse = await fetch(`https://www.shibariumscan.io/api/v2/addresses/${localWalletAddress}/token-balances`);
+        const tokenData = await tokenResponse.json();
+
+        if (Array.isArray(tokenData)) {
+          setTokens(tokenData);
         } else {
           setError('Unexpected data format');
         }
       } catch (error) {
-        console.error('Error fetching token data:', error);
-        setError('Failed to fetch token data');
+        console.error('Error fetching token or BONE data:', error);
+        setError('Failed to fetch data');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTokens();
+    fetchTokensAndBone();
   }, [localWalletAddress]);
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(localWalletAddress).then(() => {
+      // Trigger the toast with a success message
+      setToastMessage('Wallet address copied!');
+      setToastVisible(true);
+    }, (err) => {
+      console.error('Failed to copy text: ', err);
+      setToastMessage('Failed to copy the address.');
+      setToastVisible(true);
+    });
+  };
+
+  const truncateAddress = (address) => {
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
 
   if (loading) {
     return <p>Loading token data...</p>;
@@ -77,19 +103,41 @@ const WalletDetails = ({ walletAddress }) => {
 
   return (
     <div>
-      <h2>Wallet Details</h2>
-      <p>Address: {localWalletAddress}</p>
-      <div className="token-list-container"> {/* Scrollable container */}
+      <h2 className="welcome-message">Wallet Details</h2>
+      <p>
+        Address: 
+        <span className="wallet-address" onClick={copyToClipboard} style={{ cursor: 'pointer' }}>
+          {truncateAddress(localWalletAddress)}
+        </span>
+        {boneAmount && (
+          <span className="bone-amount"> ({boneAmount} BONE)</span>
+        )}
+      </p>
+      <div className="token-list-container">
         <div className="token-list">
           {tokens.length > 0 ? (
             tokens.map((tokenData, index) => (
-              <TokenCard key={index} token={tokenData.token} value={tokenData.value} />
+              <TokenCard
+                key={index}
+                token={tokenData.token}
+                value={tokenData.value}
+                backendURL={backendURL}
+                userID={userID}
+              />
             ))
           ) : (
             <p>No tokens found.</p>
           )}
         </div>
       </div>
+
+      {/* Render the toast if visible */}
+      {toastVisible && (
+        <Toast 
+          message={toastMessage} 
+          onClose={() => setToastVisible(false)} // Hide the toast after 5 seconds
+        />
+      )}
     </div>
   );
 };
