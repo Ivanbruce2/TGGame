@@ -109,17 +109,9 @@ fetchRooms()
   
           if (data.status === "completed") {
             clearInterval(pollingRef.current);
-            
-            // Check if there's a transaction hash included in the response
-            if (data.txHash) {
-              setToastMessage('Game completed! Tokens have been transferred.');
-              setToastLink(`https://shibariumscan.io/tx/${data.txHash}`); // Update with the actual transaction link
-              setToastVisible(true);
-            } else {
-              setToastMessage('Game completed!');
-              setToastLink(''); // No link if there's no transaction
-              setToastVisible(true);
-            }
+  
+            // Trigger the token transfer
+            await triggerTokenTransfer(roomId);
           }
         } catch (error) {
           clearInterval(pollingRef.current);
@@ -134,6 +126,36 @@ fetchRooms()
       console.error("Error in startPollingChoices:", error);
     }
   };
+  
+  const triggerTokenTransfer = async (roomId) => {
+    try {
+      const response = await performFetch('/trigger_transfer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          room_id: roomId,
+        }),
+      });
+  
+      if (response && response.txHash) {
+        setToastMessage('Tokens have been transferred successfully!');
+        setToastLink(`https://shibariumscan.io/tx/${response.txHash}`);
+        setToastVisible(true);
+      } else {
+        setToastMessage('Token transfer failed. Please try again.');
+        setToastLink(''); // No link in case of failure
+        setToastVisible(true);
+      }
+    } catch (error) {
+      console.error('Error in triggerTokenTransfer:', error);
+      setToastMessage('An error occurred during token transfer.');
+      setToastLink('');
+      setToastVisible(true);
+    }
+  };
+
   
   const createRoom = async (contractAddress, wagerAmount) => {
     try {
