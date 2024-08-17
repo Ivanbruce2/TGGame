@@ -405,8 +405,8 @@ fetchRooms()
                         <div className="room-card" key={room.room_id}>
                           <div className="room-details">
                             <p>Room ID: {room.room_id} | {room.status === 'waiting'
-                                ? `Player: ${room.player1}`
-                                : `${room.player1} vs ${room.player2}`}</p>                          
+                                ? `Player: ${room.player1_username}`
+                                : `${room.player1_username} vs ${room.player2_username}`}</p>                          
                             
                             <p>Wager: {contract ? `(${contract.symbol})` : 'N/A'} | {formattedWagerAmount}</p> {/* Display the token name and symbol */}
                           
