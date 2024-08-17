@@ -28,7 +28,7 @@ const [toastVisible, setToastVisible] = useState(false); // State to control the
   const pollingRef = useRef(null);
   const roomPollingRef = useRef(null);
   const contractAddresses = [
-    { address: '0xC0deBA91b9f5550B927BD4E4Ff5179148450C457', name: 'Shib King', symbol: 'ShibKing', decimals: 18 },
+    { address: '0xA77241231a899b69725F2e2e092cf666286Ced7E', name: 'ShibWare', symbol: 'ShibWare', decimals: 18 },
     { address: '0x43AB6e79a0ee99e6cF4eF9e70b4C0c2DF5A4d0Fb', name: 'CRYPTIQ', symbol: 'CTQ', decimals: 18 },
   ];
 
