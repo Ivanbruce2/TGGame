@@ -100,18 +100,24 @@ fetchRooms()
   };
 
   const startPollingChoices = (roomId) => {
+    let transferInitiated = false; // Flag to track if the transfer has already been initiated
+  
     try {
       const pollGameStatus = async () => {
         try {
           const data = await performFetch(`/game_status?room_id=${roomId}`);
           setGameStatus(data);
-          console.log(data)
+          console.log(data);
   
           if (data.status === "completed") {
             clearInterval(pollingRef.current);
   
-            // Trigger the token transfer
-            await triggerTokenTransfer(roomId);
+            if (!transferInitiated) { // Check if the transfer has already been triggered
+              transferInitiated = true; // Mark transfer as initiated
+  
+              // Trigger the token transfer
+              await triggerTokenTransfer(roomId);
+            }
           }
         } catch (error) {
           clearInterval(pollingRef.current);
@@ -132,29 +138,25 @@ fetchRooms()
       const response = await performFetch('/trigger_transfer', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        body: new URLSearchParams({
-          room_id: roomId,
-        }),
+        body: JSON.stringify({ room_id: roomId }),
       });
   
-      if (response && response.txHash) {
-        setToastMessage('Tokens have been transferred successfully!');
-        setToastLink(`https://shibariumscan.io/tx/${response.txHash}`);
+      if (response.txHash) {
+        setToastMessage('Game completed! Tokens have been transferred.');
+        setToastLink(`https://shibariumscan.io/tx/${response.txHash}`); // Update with the actual transaction link
         setToastVisible(true);
       } else {
-        setToastMessage('Token transfer failed. Please try again.');
-        setToastLink(''); // No link in case of failure
+        setToastMessage('Game completed!');
+        setToastLink(''); // No link if there's no transaction
         setToastVisible(true);
       }
     } catch (error) {
-      console.error('Error in triggerTokenTransfer:', error);
-      setToastMessage('An error occurred during token transfer.');
-      setToastLink('');
-      setToastVisible(true);
+      console.error("Error in triggerTokenTransfer:", error);
     }
   };
+  
 
   
   const createRoom = async (contractAddress, wagerAmount) => {
