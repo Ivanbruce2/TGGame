@@ -210,7 +210,7 @@ fetchRooms()
   
       if (data && data.room_id) {
         setSelectedRoom(data.room_id);
-        // startPollingChoices(data.room_id);
+        startPollingChoices(data.room_id);
       } else if (data && data.error) {
         // Set the toast message with the error
         setToastMessage(data.error);
@@ -258,7 +258,7 @@ fetchRooms()
           setToastVisible(true);
         }
       } else {
-        startPollingChoices(selectedRoom);
+        // startPollingChoices(selectedRoom);
       }
     } catch (error) {
       console.error("Error in handleChoice:", error);
