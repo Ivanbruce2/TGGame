@@ -9,7 +9,7 @@ import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
 
 // Define the backend URL once in a central location
-const backendURL = 'https://558d65649332056d4a00bcc257b1b2b8.serveo.net';
+const backendURL = 'https://17b33cd6c4adc106dfb00516a983553b.serveo.net';
 
 function App() {
   const { initDataRaw, initData } = retrieveLaunchParams();
@@ -210,7 +210,7 @@ fetchRooms()
   
       if (data && data.room_id) {
         setSelectedRoom(data.room_id);
-        startPollingChoices(data.room_id);
+        // startPollingChoices(data.room_id);
       } else if (data && data.error) {
         // Set the toast message with the error
         setToastMessage(data.error);
