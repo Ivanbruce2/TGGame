@@ -4,14 +4,12 @@ import WalletDetails from './components/WalletDetails/WalletDetails';
 import NavBar from './components/NavBar/NavBar';
 import WagerModal from './components/WagerModal/WagerModal';
 import Toast from './components/Toast/Toast';
+import SockJS from 'sockjs-client'; // Add this import
 import './App.css';
-import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
-// Define the backend WebSocket URL
-const wsURL = 'wss://heavy-experts-smell.loca.lt/ws';
+const wsURL = 'https://flat-donkeys-laugh.loca.lt/ws'; // Use the correct URL
 
 function App() {
-  const { initDataRaw, initData } = retrieveLaunchParams();
   const [userID, setUserID] = useState('');
   const [username, setUsername] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
@@ -23,34 +21,34 @@ function App() {
   const [toastMessage, setToastMessage] = useState('');
   const [toastVisible, setToastVisible] = useState(false);
 
-  const ws = useRef(null); // WebSocket reference
+  const ws = useRef(null);
   const contractAddresses = [
     { address: '0xA77241231a899b69725F2e2e092cf666286Ced7E', name: 'ShibWare', symbol: 'ShibWare', decimals: 18 },
     { address: '0x43AB6e79a0ee99e6cF4eF9e70b4C0c2DF5A4d0Fb', name: 'CRYPTIQ', symbol: 'CTQ', decimals: 18 },
   ];
 
   useEffect(() => {
-    const retrievedUsername = initData.user.username || "Unknown Username";
-    const retrievedUserID = initData.user.id || "Unknown UserID";
-    setUserID(retrievedUserID);
-    setUsername(retrievedUsername);
+    setUserID('5199577425');
+    setUsername('poemcryptoman');
 
-    // Initialize the WebSocket connection
-    ws.current = new WebSocket(wsURL);
+    // Initialize the SockJS connection
+    ws.current = new SockJS(wsURL, null, {
+      headers: {
+        'bypass-tunnel-reminder': 'your-custom-value', // This is the header to bypass the Localtunnel page
+      },
+    });
 
     ws.current.onopen = () => {
       console.log('WebSocket connection established');
-      // Send initialization data when connected
       ws.current.send(JSON.stringify({
         type: 'initialize_user',
-        userID: retrievedUserID,
-        username: retrievedUsername
+        userID: '5199577425',
+        username: 'poemcryptoman',
       }));
     };
 
     ws.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
-
       switch (data.type) {
         case 'rooms':
           setRooms(data.rooms);
@@ -66,7 +64,7 @@ function App() {
           setToastVisible(true);
           break;
         default:
-          console.log("Received unhandled message:", data);
+          console.log('Received unhandled message:', data);
       }
     };
 
@@ -102,7 +100,7 @@ function App() {
       userID,
       username,
       contractAddress,
-      wagerAmount
+      wagerAmount,
     }));
   };
 
@@ -112,7 +110,7 @@ function App() {
       userID,
       username,
       room_id: roomId,
-      walletAddress
+      walletAddress,
     }));
   };
 
@@ -124,7 +122,7 @@ function App() {
       userID,
       username,
       room_id: selectedRoom,
-      choice
+      choice,
     }));
   };
 
@@ -134,7 +132,7 @@ function App() {
         type: 'leave_room',
         userID,
         username,
-        room_id: selectedRoom
+        room_id: selectedRoom,
       }));
 
       setSelectedRoom(null);
@@ -192,7 +190,7 @@ function App() {
             {gameStatus.status !== 'completed' && (
               <>
                 <div className="choices">
-                  {["Scissors", "Paper", "Stone"].map(choice => (
+                  {['Scissors', 'Paper', 'Stone'].map((choice) => (
                     <button
                       key={choice}
                       className="choice-button"
@@ -231,7 +229,7 @@ function App() {
           <>
             <p>Select your choice below:</p>
             <div className="choices">
-              {["Scissors", "Paper", "Stone"].map(choice => (
+              {['Scissors', 'Paper', 'Stone'].map((choice) => (
                 <button
                   key={choice}
                   className="choice-button"
@@ -274,7 +272,7 @@ function App() {
                   <div className="room-list">
                     {Object.values(rooms).map((room) => {
                       const contract = contractAddresses.find(
-                        (c) => c.address === room.contract_address
+                        (c) => c.address === room.contract_address,
                       );
                       const decimals = contract ? contract.decimals : 1;
                       const formattedWagerAmount = room.wager_amount
@@ -285,10 +283,12 @@ function App() {
                         <div className="room-card" key={room.room_id}>
                           <div className="room-details">
                             <p>Room ID: {room.room_id} | {room.status === 'waiting'
-                                ? `Player: ${room.player1_username}`
-                                : `${room.player1_username} vs ${room.player2_username}`}</p>                          
-                            
-                            <p>Wager: {contract ? `(${contract.symbol})` : 'N/A'} | {formattedWagerAmount}</p>
+                              ? `Player: ${room.player1_username}`
+                              : `${room.player1_username} vs ${room.player2_username}`}
+                            </p>
+                            <p>
+                              Wager: {contract ? `(${contract.symbol})` : 'N/A'} | {formattedWagerAmount}
+                            </p>
                           </div>
                           {room.status === 'waiting' && (
                             <button className="join-button" onClick={() => joinRoom(room.room_id)}>
