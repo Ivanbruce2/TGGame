@@ -7,7 +7,8 @@ import Toast from './components/Toast/Toast';
 import SockJS from 'sockjs-client'; // Add this import
 import './App.css';
 
-const wsURL = 'https://flat-donkeys-laugh.loca.lt/ws'; // Use the correct URL
+// Use the correct URL with bypass header
+const wsURL = 'https://flat-donkeys-laugh.loca.lt/ws';
 
 function App() {
   const [userID, setUserID] = useState('');
@@ -34,7 +35,7 @@ function App() {
     // Initialize the SockJS connection
     ws.current = new SockJS(wsURL, null, {
       headers: {
-        'bypass-tunnel-reminder': 'your-custom-value', // This is the header to bypass the Localtunnel page
+        'bypass-tunnel-reminder': 'custom-value', // Use this header to bypass the Localtunnel reminder page
       },
     });
 
