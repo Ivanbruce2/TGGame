@@ -4,10 +4,10 @@ import WalletDetails from './components/WalletDetails/WalletDetails';
 import NavBar from './components/NavBar/NavBar';
 import WagerModal from './components/WagerModal/WagerModal';
 import Toast from './components/Toast/Toast';
-import SockJS from 'sockjs-client'; // Add this import
+import SockJS from 'sockjs-client'; // Import SockJS
 import './App.css';
 
-// Use the correct URL with bypass header
+// Define the backend WebSocket URL
 const wsURL = 'https://flat-donkeys-laugh.loca.lt/ws';
 
 function App() {
@@ -23,6 +23,7 @@ function App() {
   const [toastVisible, setToastVisible] = useState(false);
 
   const ws = useRef(null);
+
   const contractAddresses = [
     { address: '0xA77241231a899b69725F2e2e092cf666286Ced7E', name: 'ShibWare', symbol: 'ShibWare', decimals: 18 },
     { address: '0x43AB6e79a0ee99e6cF4eF9e70b4C0c2DF5A4d0Fb', name: 'CRYPTIQ', symbol: 'CTQ', decimals: 18 },
@@ -32,11 +33,12 @@ function App() {
     setUserID('5199577425');
     setUsername('poemcryptoman');
 
-    // Initialize the SockJS connection
+    // Initialize the SockJS connection with the right headers
     ws.current = new SockJS(wsURL, null, {
       headers: {
-        'bypass-tunnel-reminder': 'custom-value', // Use this header to bypass the Localtunnel reminder page
+        'bypass-tunnel-reminder': 'your-custom-value', // Custom header to bypass LocalTunnel page
       },
+      withCredentials: true, // Ensure credentials are sent with the request
     });
 
     ws.current.onopen = () => {
