@@ -266,7 +266,7 @@ fetchRooms()
           user_id: userID, // Player 1's userID
         }),
       });
-  
+  console.log(response)
       if (response.success) {
         // Reset the game status to waiting
         setSelectedRoom(response.room_id); // Keep the same room ID
@@ -280,7 +280,7 @@ fetchRooms()
           result: '',
         });
         setUserChoice(''); // Reset Player 1’s choice
-        // startPollingChoices(response.room_id); // Start polling for new Player 2
+        startPollingChoices(response.room_id); // Start polling for new Player 2
       } else {
         setToastMessage('Failed to reset the game.');
         setToastVisible(true);
