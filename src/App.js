@@ -295,6 +295,9 @@ fetchRooms()
 
   const leaveGame = async () => {
     if (selectedRoom) {
+      setSelectedRoom('');
+      setGameStatus('');
+      setUserChoice('');
       await performFetch('/leave_room', {
         method: 'POST',
         headers: {
@@ -307,9 +310,7 @@ fetchRooms()
         }),
       });
 
-      setSelectedRoom('');
-      // setGameStatus('');
-      setUserChoice('');
+     
     }
   };
 
