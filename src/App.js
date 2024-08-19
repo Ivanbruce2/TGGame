@@ -279,7 +279,7 @@ fetchRooms()
         //   status: 'waiting', // Reset to waiting status
         //   result: '',
         // });
-        // setUserChoice(''); // Reset Player 1’s choice
+        setUserChoice(''); // Reset Player 1’s choice
         startPollingChoices(response.room_id); // Start polling for new Player 2
       } else {
         setToastMessage('Failed to reset the game.');
