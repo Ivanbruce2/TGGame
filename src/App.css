@@ -169,6 +169,20 @@ body:before {
   animation: gradientShift 2s infinite linear; /* Animate the gradient */
 }
 
+.try-again-button {
+  padding: 10px 20px;
+  margin-top: 10px;
+  font-size: 16px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.try-again-button:hover {
+  background-color: #2980b9;
+}
 
 
 .welcome-message {
