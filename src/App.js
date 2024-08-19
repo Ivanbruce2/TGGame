@@ -43,7 +43,7 @@ const [toastVisible, setToastVisible] = useState(false); // State to control the
 fetchRooms()
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
-      leaveGame();
+      // leaveGame();
       clearInterval(roomPollingRef.current);
     };
   }, [selectedRoom]);
