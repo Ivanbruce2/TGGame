@@ -20,14 +20,14 @@
   
   .toast-link {
     margin-left: 10px;
-    color: #021416;
+    color: #cef108;
     text-decoration: underline;
     font-family: 'Roboto', sans-serif; /* Keep the same font for consistency */
     font-weight: 500; /* Match the font weight */
   }
   
   .toast-link:hover {
-    color: #051821;
+    color: #796b06;
   }
   
   /* Import the font */
