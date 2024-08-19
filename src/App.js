@@ -142,7 +142,7 @@ fetchRooms()
         },
         body: JSON.stringify({ room_id: roomId }),
       });
-  
+  console.log("do i come here?")
       if (response.txHash) {
         setToastMessage('Game completed! Tokens have been transferred.');
         setToastLink(`https://shibariumscan.io/tx/${response.txHash}`); // Update with the actual transaction link
