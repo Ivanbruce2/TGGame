@@ -4,6 +4,7 @@ import WalletDetails from './components/WalletDetails/WalletDetails';
 import NavBar from './components/NavBar/NavBar';
 import WagerModal from './components/WagerModal/WagerModal';
 import Toast from './components/Toast/Toast';
+import Stats from './components/Stats/Stats';
 import './App.css';
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
@@ -32,6 +33,7 @@ const [toastVisible, setToastVisible] = useState(false); // State to control the
     { address: '0x43AB6e79a0ee99e6cF4eF9e70b4C0c2DF5A4d0Fb', name: 'CRYPTIQ', symbol: 'CTQ', decimals: 18 },
   ];
 
+  
   useEffect(() => {
     const retrievedUsername = initData.user.username || "Unknown Username";
     const retrievedUserID = initData.user.id || "Unknown UserID";
@@ -512,6 +514,7 @@ fetchRooms()
               path="/wallet-details"
               element={<WalletDetails walletAddress={walletAddress} backendURL={backendURL} userID={userID} />}
             />
+            <Route path="/stats" element={<Stats userID={userID} />} /> {/* New stats route */}
           </Routes>
         </div>
 

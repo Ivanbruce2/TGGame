@@ -1,0 +1,34 @@
+.stats-container {
+    padding: 20px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 10px;
+  }
+  
+  .stats-summary {
+    margin-bottom: 20px;
+  }
+  
+  .game-logs {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .log-card {
+    background-color: #444;
+    padding: 15px;
+    margin: 10px;
+    border-radius: 8px;
+    width: 300px;
+    color: #FFD700;
+  }
+  
+  .log-card p {
+    margin: 5px 0;
+  }
+  
+  .log-card a {
+    color: #FFD700;
+    text-decoration: underline;
+  }
+  
