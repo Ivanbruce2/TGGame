@@ -307,8 +307,8 @@ fetchRooms()
         }),
       });
 
-      setSelectedRoom(null);
-      setGameStatus(null);
+      setSelectedRoom('');
+      // setGameStatus('');
       setUserChoice('');
     }
   };
