@@ -161,6 +161,7 @@ fetchRooms()
 
   
   const createRoom = async (contractAddress, wagerAmount) => {
+    startPollingChoices(data.room_id);
     try {
       const data = await performFetch('/create_room', {
         method: 'POST',
