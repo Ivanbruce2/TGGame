@@ -4,13 +4,15 @@ import WalletDetails from './components/WalletDetails/WalletDetails';
 import NavBar from './components/NavBar/NavBar';
 import WagerModal from './components/WagerModal/WagerModal';
 import Toast from './components/Toast/Toast';
-import SockJS from 'sockjs-client'; // Import SockJS
 import './App.css';
+import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
-// Define the backend WebSocket URL
-const wsURL = 'https://flat-donkeys-laugh.loca.lt/ws';
+
+// Define the backend URL once in a central location
+const backendURL = 'https://bbe88075d672d388dd5265158ee85069.serveo.net';
 
 function App() {
+  const { initDataRaw, initData } = retrieveLaunchParams();
   const [userID, setUserID] = useState('');
   const [username, setUsername] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
@@ -19,76 +21,30 @@ function App() {
   const [gameStatus, setGameStatus] = useState(null);
   const [userChoice, setUserChoice] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState(''); // New state for toast messages
+const [toastLink, setToastLink] = useState(''); // State for an optional link in the toast
+const [toastVisible, setToastVisible] = useState(false); // State to control the visibility of the toast
 
-  const ws = useRef(null);
-
+  const pollingRef = useRef(null);
+  const roomPollingRef = useRef(null);
   const contractAddresses = [
     { address: '0xA77241231a899b69725F2e2e092cf666286Ced7E', name: 'ShibWare', symbol: 'ShibWare', decimals: 18 },
     { address: '0x43AB6e79a0ee99e6cF4eF9e70b4C0c2DF5A4d0Fb', name: 'CRYPTIQ', symbol: 'CTQ', decimals: 18 },
   ];
 
   useEffect(() => {
-    setUserID('5199577425');
-    setUsername('poemcryptoman');
+    const retrievedUsername = initData.user.username || "Unknown Username";
+    const retrievedUserID = initData.user.id || "Unknown UserID";
+    setUserID(retrievedUserID);
+    setUsername(retrievedUsername);
 
-    // Initialize the SockJS connection with the right headers
-    ws.current = new SockJS(wsURL, null, {
-      headers: {
-        'bypass-tunnel-reminder': 'your-custom-value', // Custom header to bypass LocalTunnel page
-      },
-      withCredentials: true, // Ensure credentials are sent with the request
-    });
-
-    ws.current.onopen = () => {
-      console.log('WebSocket connection established');
-      ws.current.send(JSON.stringify({
-        type: 'initialize_user',
-        userID: '5199577425',
-        username: 'poemcryptoman',
-      }));
-    };
-
-    ws.current.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      switch (data.type) {
-        case 'rooms':
-          setRooms(data.rooms);
-          break;
-        case 'game_status':
-          setGameStatus(data.gameStatus);
-          break;
-        case 'wallet_address':
-          setWalletAddress(data.wallet_address);
-          break;
-        case 'error':
-          setToastMessage(data.message);
-          setToastVisible(true);
-          break;
-        default:
-          console.log('Received unhandled message:', data);
-      }
-    };
-
-    ws.current.onerror = (error) => {
-      console.error('WebSocket error:', error);
-      setToastMessage('WebSocket connection error. Please try again.');
-      setToastVisible(true);
-    };
-
-    ws.current.onclose = () => {
-      console.log('WebSocket connection closed');
-    };
-
+    initializeUser(retrievedUserID, retrievedUsername);
     window.addEventListener('beforeunload', handleBeforeUnload);
-
+fetchRooms()
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       leaveGame();
-      if (ws.current) {
-        ws.current.close();
-      }
+      clearInterval(roomPollingRef.current);
     };
   }, [selectedRoom]);
 
@@ -97,50 +53,130 @@ function App() {
     event.returnValue = '';
   };
 
-  const createRoom = (contractAddress, wagerAmount) => {
-    ws.current.send(JSON.stringify({
-      type: 'create_room',
-      userID,
-      username,
-      contractAddress,
-      wagerAmount,
-    }));
+  const performFetch = async (endpoint, options = {}) => {
+    try {
+      const response = await fetch(`${backendURL}${endpoint}`, options);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(`Error fetching ${endpoint}:`, error);
+      throw error; // Re-throw the error to be handled by the caller
+    }
   };
 
-  const joinRoom = (roomId) => {
-    ws.current.send(JSON.stringify({
-      type: 'join_room',
-      userID,
-      username,
-      room_id: roomId,
-      walletAddress,
-    }));
+  const fetchRooms = async () => {
+    try {
+      const data = await performFetch('/list_rooms');
+      setRooms(data);
+    } catch (error) {
+      console.error('Error fetching rooms:', error);
+    }
   };
 
-  const handleChoice = (choice) => {
-    setUserChoice(choice);
-
-    ws.current.send(JSON.stringify({
-      type: 'make_choice',
-      userID,
-      username,
-      room_id: selectedRoom,
-      choice,
-    }));
+  const startPollingRooms = () => {
+    roomPollingRef.current = setInterval(fetchRooms, 5000);
   };
 
-  const leaveGame = () => {
-    if (selectedRoom) {
-      ws.current.send(JSON.stringify({
-        type: 'leave_room',
-        userID,
-        username,
-        room_id: selectedRoom,
-      }));
+  const initializeUser = async (userID, username) => {
+    try {
+      const data = await performFetch('/initialize_user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          userid: userID,
+          username: username,
+        }),
+      });
+      setWalletAddress(data.wallet_address);
+      console.log(data.wallet_address);
+    } catch (error) {
+      console.error('Error initializing user:', error);
+    }
+  };
 
-      setSelectedRoom(null);
-      setGameStatus(null);
-      setUserChoice('');
+  const startPollingChoices = (roomId) => {
+    let transferInitiated = false; // Flag to track if the transfer has already been initiated
+  
+    try {
+      const pollGameStatus = async () => {
+        try {
+          const data = await performFetch(`/game_status?room_id=${roomId}`);
+          setGameStatus(data);
+          console.log(data);
+  
+          if (data.status === "completed") {
+            clearInterval(pollingRef.current);
+  
+            if (!transferInitiated) { // Check if the transfer has already been triggered
+              transferInitiated = true; // Mark transfer as initiated
+  
+              // Trigger the token transfer
+              await triggerTokenTransfer(roomId);
+            }
+          }
+        } catch (error) {
+          clearInterval(pollingRef.current);
+          setSelectedRoom(null);
+          setGameStatus(null);
+        }
+      };
+  
+      clearInterval(pollingRef.current);
+      pollingRef.current = setInterval(pollGameStatus, 1000);
+    } catch (error) {
+      console.error("Error in startPollingChoices:", error);
+    }
+  };
+  
+  const triggerTokenTransfer = async (roomId) => {
+    try {
+      const response = await performFetch('/trigger_transfer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ room_id: roomId }),
+      });
+  
+      if (response.txHash) {
+        setToastMessage('Game completed! Tokens have been transferred.');
+        setToastLink(`https://shibariumscan.io/tx/${response.txHash}`); // Update with the actual transaction link
+        setToastVisible(true);
+      } else {
+        setToastMessage('Game completed!');
+        setToastLink(''); // No link if there's no transaction
+        setToastVisible(true);
+      }
+    } catch (error) {
+      console.error("Error in triggerTokenTransfer:", error);
+    }
+  };
+  
+
+  
+  const createRoom = async (contractAddress, wagerAmount) => {
+    try {
+      const data = await performFetch('/create_room', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          userid: userID,
+          username: username,
+          contract_address: contractAddress,
+          wager_amount: wagerAmount,
+        }),
+      });
+      setSelectedRoom(data.room_id);
+      startPollingChoices(data.room_id);
+    } catch (error) {
+      console.error('Error creating room:', error);
     }
   };
 
@@ -150,20 +186,119 @@ function App() {
 
   const handleSaveModal = (contractAddress, wagerAmount) => {
     setIsModalOpen(false);
-    createRoom(contractAddress, wagerAmount);
+    createRoom(contractAddress, wagerAmount); // Pass the contract address and wager amount to the createRoom function
   };
 
   const handleCancelModal = () => {
     setIsModalOpen(false);
   };
 
+  const joinRoom = async (roomId) => {
+    try {
+      const data = await performFetch('/join_room', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          userid: userID,
+          username: username,
+          room_id: roomId,
+          wallet_address: walletAddress, // Send wallet address
+        }),
+      });
+  
+      if (data && data.room_id) {
+        setSelectedRoom(data.room_id);
+        startPollingChoices(data.room_id);
+      } else if (data && data.error) {
+        // Set the toast message with the error
+        setToastMessage(data.error);
+        setToastLink(''); // No link needed for errors
+        setToastVisible(true); // Show the toast
+      }
+    } catch (error) {
+      console.error("Error in joinRoom:", error);
+      setToastMessage('Failed to join the room due to an error.');
+      setToastLink(''); // No link needed for errors
+      setToastVisible(true); // Show the toast
+    }
+  };
+  
+  
+  
+
+  const handleChoice = async (choice) => {
+    setUserChoice(choice);
+  
+    try {
+      const data = await performFetch('/webhook', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          userid: userID,
+          username: username,
+          choice: choice,
+          room_id: selectedRoom,
+        }),
+      });
+  
+      setGameStatus(data);
+  
+      if (data.status === "completed") {
+        if (data.txHash) {
+          setToastMessage('Game completed! Tokens have been transferred.');
+          setToastLink(`https://shibariumscan.io/tx/${data.txHash}`);
+          setToastVisible(true);
+        } else {
+          setToastMessage('Game completed!');
+          setToastLink(''); // No link if there's no transaction
+          setToastVisible(true);
+        }
+      } else {
+        // startPollingChoices(selectedRoom);
+      }
+    } catch (error) {
+      console.error("Error in handleChoice:", error);
+    }
+  };
+  
+
+  const leaveGame = async () => {
+    if (selectedRoom) {
+      await performFetch('/leave_room', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          userid: userID,
+          username: username,
+          room_id: selectedRoom,
+        }),
+      });
+
+      setSelectedRoom(null);
+      setGameStatus(null);
+      setUserChoice('');
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      clearInterval(pollingRef.current);
+      clearInterval(roomPollingRef.current);
+    };
+  }, []);
+
   const WalletDisplay = ({ walletAddress }) => {
     const truncatedAddress = `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`;
 
     const copyToClipboard = () => {
       navigator.clipboard.writeText(walletAddress).then(() => {
-        setToastMessage('Wallet address copied to clipboard!');
-        setToastVisible(true);
+        setToastMessage('Wallet address copied to clipboard!'); // Trigger toast message
       }, (err) => {
         console.error('Failed to copy text: ', err);
       });
@@ -185,15 +320,18 @@ function App() {
         {gameStatus ? (
           <>
             <h2 className="game-status">
+              {/* Check if player1 details are available and display them */}
               {gameStatus.player1_username ? `${gameStatus.player1_username} ${gameStatus.player1_choice ? '✔️' : '❓'}` : '[Pending]'}
               {' vs '}
+              {/* Check if player2 details are available and display them */}
               {gameStatus.player2_username ? `${gameStatus.player2_username} ${gameStatus.player2_choice ? '✔️' : '❓'}` : '[Pending]'}
             </h2>
-
+  
+            {/* If the game is not completed, show the choice buttons */}
             {gameStatus.status !== 'completed' && (
               <>
                 <div className="choices">
-                  {['Scissors', 'Paper', 'Stone'].map((choice) => (
+                  {["Scissors", "Paper", "Stone"].map(choice => (
                     <button
                       key={choice}
                       className="choice-button"
@@ -204,15 +342,16 @@ function App() {
                     </button>
                   ))}
                 </div>
-
+  
                 <p>Waiting for opponent...</p>
               </>
             )}
-
+  
             <button className="return-button" onClick={leaveGame}>
               Return to Lobby
             </button>
-
+  
+            {/* Display the game result when the status is completed */}
             {gameStatus.status === 'completed' && (
               <div>
                 {gameStatus.result?.includes('draw') ? (
@@ -232,7 +371,7 @@ function App() {
           <>
             <p>Select your choice below:</p>
             <div className="choices">
-              {['Scissors', 'Paper', 'Stone'].map((choice) => (
+              {["Scissors", "Paper", "Stone"].map(choice => (
                 <button
                   key={choice}
                   className="choice-button"
@@ -248,6 +387,7 @@ function App() {
       </div>
     );
   }
+  
 
   return (
     <Router>
@@ -268,16 +408,19 @@ function App() {
                     <button className="pixel-button create-button" onClick={handleOpenModal}>
                       Create Room
                     </button>
-                    <button className="pixel-button refresh-button" onClick={() => ws.current.send(JSON.stringify({ type: 'list_rooms' }))}>
+                    <button className="pixel-button refresh-button" onClick={fetchRooms}>
                       ↻
                     </button>
                   </div>
                   <div className="room-list">
                     {Object.values(rooms).map((room) => {
+                      // Find the corresponding contract info
                       const contract = contractAddresses.find(
-                        (c) => c.address === room.contract_address,
+                        (c) => c.address === room.contract_address
                       );
+                      // Determine decimals, fallback to 1 if not found
                       const decimals = contract ? contract.decimals : 1;
+                      // Convert the wager amount by dividing by 10^decimals
                       const formattedWagerAmount = room.wager_amount
                         ? (parseFloat(room.wager_amount) / Math.pow(10, decimals)).toFixed(3)
                         : 'N/A';
@@ -286,12 +429,12 @@ function App() {
                         <div className="room-card" key={room.room_id}>
                           <div className="room-details">
                             <p>Room ID: {room.room_id} | {room.status === 'waiting'
-                              ? `Player: ${room.player1_username}`
-                              : `${room.player1_username} vs ${room.player2_username}`}
-                            </p>
-                            <p>
-                              Wager: {contract ? `(${contract.symbol})` : 'N/A'} | {formattedWagerAmount}
-                            </p>
+                                ? `Player: ${room.player1_username}`
+                                : `${room.player1_username} vs ${room.player2_username}`}</p>                          
+                            
+                            <p>Wager: {contract ? `(${contract.symbol})` : 'N/A'} | {formattedWagerAmount}</p> {/* Display the token name and symbol */}
+                          
+                            {/* <p>Status: {room.status === 'waiting' ? 'Waiting for opponent' : room.status}</p> */}
                           </div>
                           {room.status === 'waiting' && (
                             <button className="join-button" onClick={() => joinRoom(room.room_id)}>
@@ -307,7 +450,7 @@ function App() {
             />
             <Route
               path="/wallet-details"
-              element={<WalletDetails walletAddress={walletAddress} backendURL={wsURL} userID={userID} />}
+              element={<WalletDetails walletAddress={walletAddress} backendURL={backendURL} userID={userID} />}
             />
           </Routes>
         </div>
@@ -315,12 +458,13 @@ function App() {
         {isModalOpen && (
           <WagerModal
             contracts={contractAddresses}
-            walletAddress={walletAddress}
+            walletAddress={walletAddress} // Pass walletAddress here
             onSave={handleSaveModal}
             onCancel={handleCancelModal}
           />
         )}
 
+        {/* Display the toast if there is a message */}
         {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
       </div>
     </Router>
