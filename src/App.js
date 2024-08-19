@@ -59,13 +59,20 @@ fetchRooms()
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      const data = await response.json();
+  
+      // Log the raw response text before parsing
+      const rawText = await response.text();
+      console.log("Raw response:", rawText);
+  
+      // Attempt to parse the JSON
+      const data = JSON.parse(rawText);
       return data;
     } catch (error) {
       console.error(`Error fetching ${endpoint}:`, error);
       throw error; // Re-throw the error to be handled by the caller
     }
   };
+  
 
   const fetchRooms = async () => {
     try {
