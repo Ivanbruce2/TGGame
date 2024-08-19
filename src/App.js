@@ -118,6 +118,9 @@ fetchRooms()
               // Trigger the token transfer
               await triggerTokenTransfer(roomId);
             }
+            console.log("Game status:", gameStatus.status);
+  console.log("Username:", username);
+  console.log("Player 1 Username:", gameStatus.player1_username);
           }
         } catch (error) {
           clearInterval(pollingRef.current);
@@ -142,8 +145,7 @@ fetchRooms()
         },
         body: JSON.stringify({ room_id: roomId }),
       });
-  console.log("do i come here?")
-  console.log(response)
+
       if (response.txHash) {
         setToastMessage('Game completed! Tokens have been transferred.');
         setToastLink(`https://shibariumscan.io/tx/${response.txHash}`); // Update with the actual transaction link
@@ -338,9 +340,7 @@ fetchRooms()
       </div>
     );
   };
-  console.log("Game status:", gameStatus.status);
-  console.log("Username:", username);
-  console.log("Player 1 Username:", gameStatus.player1_username);
+  
   
   if (selectedRoom) {
     return (
