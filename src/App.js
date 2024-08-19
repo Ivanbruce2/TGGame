@@ -247,19 +247,7 @@ fetchRooms()
   
       setGameStatus(data);
   
-      if (data.status === "completed") {
-        if (data.txHash) {
-          setToastMessage('Game completed! Tokens have been transferred.');
-          setToastLink(`https://shibariumscan.io/tx/${data.txHash}`);
-          setToastVisible(true);
-        } else {
-          setToastMessage('Game completed!');
-          setToastLink(''); // No link if there's no transaction
-          setToastVisible(true);
-        }
-      } else {
-        // startPollingChoices(selectedRoom);
-      }
+     
     } catch (error) {
       console.error("Error in handleChoice:", error);
     }
