@@ -33,31 +33,23 @@ const [toastVisible, setToastVisible] = useState(false); // State to control the
   ];
 
   useEffect(() => {
-    // This effect only runs when the component mounts and unmounts
-    window.addEventListener('beforeunload', handleBeforeUnload);
-  
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, []); // Empty dependency array ensures this only runs once
-  
-  useEffect(() => {
     const retrievedUsername = initData.user.username || "Unknown Username";
     const retrievedUserID = initData.user.id || "Unknown UserID";
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);
-  
+
     initializeUser(retrievedUserID, retrievedUsername);
-    fetchRooms();
-  
+    window.addEventListener('beforeunload', handleBeforeUnload);
+fetchRooms()
     return () => {
-      clearInterval(roomPollingRef.current); // Only clear the interval, don't call `leaveGame` here
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      leaveGame();
+      clearInterval(roomPollingRef.current);
     };
   }, [selectedRoom]);
-  
 
   const handleBeforeUnload = (event) => {
-    leaveGame();
+    // leaveGame();
     event.returnValue = '';
   };
 
