@@ -127,7 +127,7 @@ fetchRooms()
       };
   
       clearInterval(pollingRef.current);
-      pollingRef.current = setInterval(pollGameStatus, 1000);
+      pollingRef.current = setInterval(pollGameStatus, 3000);
     } catch (error) {
       console.error("Error in startPollingChoices:", error);
     }
