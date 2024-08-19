@@ -302,80 +302,93 @@ fetchRooms()
     );
   };
 
-  if (selectedRoom) {
-    return (
-      <div className="App">
-        <h1 className="welcome-message2">Room: {selectedRoom}</h1>
-        {gameStatus ? (
-          <>
-            <h2 className="game-status">
-              {/* Check if player1 details are available and display them */}
-              {gameStatus.player1_username ? `${gameStatus.player1_username} ${gameStatus.player1_choice ? '✔️' : '❓'}` : '[Pending]'}
-              {' vs '}
-              {/* Check if player2 details are available and display them */}
-              {gameStatus.player2_username ? `${gameStatus.player2_username} ${gameStatus.player2_choice ? '✔️' : '❓'}` : '[Pending]'}
-            </h2>
-  
-            {/* If the game is not completed, show the choice buttons */}
-            {gameStatus.status !== 'completed' && (
-              <>
-                <div className="choices">
-                  {["Scissors", "Paper", "Stone"].map(choice => (
-                    <button
-                      key={choice}
-                      className="choice-button"
-                      onClick={() => handleChoice(choice)}
-                      disabled={!!userChoice}
-                    >
-                      {choice}
-                    </button>
-                  ))}
+  return (
+    <div className="App">
+      {selectedRoom ? (
+        <>
+          <h1 className="welcome-message2">Room: {selectedRoom}</h1>
+          {gameStatus ? (
+            <>
+              <h2 className="game-status">
+                {gameStatus.player1_username ? `${gameStatus.player1_username} ${gameStatus.player1_choice ? '✔️' : '❓'}` : '[Pending]'}
+                {' vs '}
+                {gameStatus.player2_username ? `${gameStatus.player2_username} ${gameStatus.player2_choice ? '✔️' : '❓'}` : '[Pending]'}
+              </h2>
+
+              {gameStatus.status !== 'completed' && (
+                <>
+                  <div className="choices">
+                    {["Scissors", "Paper", "Stone"].map(choice => (
+                      <button
+                        key={choice}
+                        className="choice-button"
+                        onClick={() => handleChoice(choice)}
+                        disabled={!!userChoice}
+                      >
+                        {choice}
+                      </button>
+                    ))}
+                  </div>
+
+                  <p>Waiting for opponent...</p>
+                </>
+              )}
+
+              <button className="return-button" onClick={leaveGame}>
+                Return to Lobby
+              </button>
+
+              {gameStatus.status === 'completed' && (
+                <div>
+                  {gameStatus.result?.includes('draw') ? (
+                    <p>It's a Draw! Both players chose {gameStatus.player1_choice}.</p>
+                  ) : (
+                    <>
+                      <p>{gameStatus.result?.split('! ')[1]}</p>
+                      <h2>
+                        {gameStatus.result?.includes(username) ? 'You Win!' : 'You Lose...'}
+                      </h2>
+                    </>
+                  )}
                 </div>
-  
-                <p>Waiting for opponent...</p>
-              </>
-            )}
-  
-            <button className="return-button" onClick={leaveGame}>
-              Return to Lobby
-            </button>
-  
-            {/* Display the game result when the status is completed */}
-            {gameStatus.status === 'completed' && (
-              <div>
-                {gameStatus.result?.includes('draw') ? (
-                  <p>It's a Draw! Both players chose {gameStatus.player1_choice}.</p>
-                ) : (
-                  <>
-                    <p>{gameStatus.result?.split('! ')[1]}</p>
-                    <h2>
-                      {gameStatus.result?.includes(username) ? 'You Win!' : 'You Lose...'}
-                    </h2>
-                  </>
-                )}
+              )}
+            </>
+          ) : (
+            <>
+              <p>Select your choice below:</p>
+              <div className="choices">
+                {["Scissors", "Paper", "Stone"].map(choice => (
+                  <button
+                    key={choice}
+                    className="choice-button"
+                    onClick={() => handleChoice(choice)}
+                    disabled={!!userChoice}
+                  >
+                    {choice}
+                  </button>
+                ))}
               </div>
-            )}
-          </>
-        ) : (
-          <>
-            <p>Select your choice below:</p>
-            <div className="choices">
-              {["Scissors", "Paper", "Stone"].map(choice => (
-                <button
-                  key={choice}
-                  className="choice-button"
-                  onClick={() => handleChoice(choice)}
-                  disabled={!!userChoice}
-                >
-                  {choice}
-                </button>
-              ))}
-            </div>
-          </>
-        )}
-      </div>
-    );
-  }
+            </>
+          )}
+        </>
+      ) : (
+        <p>Please select a room.</p>
+      )}
+
+      {/* Render the toast if it’s visible */}
+      {toastVisible && (
+        <div className="toast">
+          <p>{toastMessage}</p>
+          {toastLink && (
+            <a href={toastLink} target="_blank" rel="noopener noreferrer">
+              View Transaction
+            </a>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
   
 
   return (
