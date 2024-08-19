@@ -373,6 +373,7 @@ fetchRooms()
             </div>
           </>
         )}
+        {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
       </div>
     );
   }
