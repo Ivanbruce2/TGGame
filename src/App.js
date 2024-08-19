@@ -9,7 +9,7 @@ import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
 
 // Define the backend URL once in a central location
-const backendURL = 'https://a81dd74fe01077b9bd995c3fe953834b.serveo.net';
+const backendURL = 'https://905f52431640c8e483a145804a8ae7c7.serveo.net';
 
 function App() {
   const { initDataRaw, initData } = retrieveLaunchParams();
