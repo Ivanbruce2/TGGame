@@ -270,15 +270,15 @@ fetchRooms()
       if (response.success) {
         // Reset the game status to waiting
         setSelectedRoom(response.room_id); // Keep the same room ID
-        setGameStatus({
-          ...gameStatus,
-          player2_userid: '', // Remove Player 2
-          player2_username: '', // Remove Player 2
-          player2_choice: '',
-          player1_choice: '',
-          status: 'waiting', // Reset to waiting status
-          result: '',
-        });
+        // setGameStatus({
+        //   ...gameStatus,
+        //   player2_userid: '', // Remove Player 2
+        //   player2_username: '', // Remove Player 2
+        //   player2_choice: '',
+        //   player1_choice: '',
+        //   status: 'waiting', // Reset to waiting status
+        //   result: '',
+        // });
         setUserChoice(''); // Reset Player 1’s choice
         startPollingChoices(response.room_id); // Start polling for new Player 2
       } else {
