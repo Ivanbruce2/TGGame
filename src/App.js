@@ -254,6 +254,44 @@ fetchRooms()
     }
   };
   
+  const handleTryAgain = async () => {
+    try {
+      const response = await performFetch('/try_again', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          room_id: selectedRoom,
+          user_id: userID, // Player 1's userID
+        }),
+      });
+  
+      if (response.success) {
+        // Reset the game status to waiting
+        setSelectedRoom(response.room_id); // Keep the same room ID
+        setGameStatus({
+          ...gameStatus,
+          player2_userid: '', // Remove Player 2
+          player2_username: '', // Remove Player 2
+          player2_choice: '',
+          player1_choice: '',
+          status: 'waiting', // Reset to waiting status
+          result: '',
+        });
+        setUserChoice(''); // Reset Player 1’s choice
+        startPollingChoices(response.room_id); // Start polling for new Player 2
+      } else {
+        setToastMessage('Failed to reset the game.');
+        setToastVisible(true);
+      }
+    } catch (error) {
+      console.error('Error in handleTryAgain:', error);
+      setToastMessage('Error occurred while trying again.');
+      setToastVisible(true);
+    }
+  };
+
 
   const leaveGame = async () => {
     if (selectedRoom) {
@@ -342,29 +380,50 @@ fetchRooms()
   
             {/* Display the game result when the status is completed */}
             {gameStatus.status === 'completed' && (
-              <div>
-                {gameStatus.result?.includes('draw') ? (
-                  <p>It's a Draw! Both players chose {gameStatus.player1_choice}.</p>
-                ) : (
-                  <>
-                    <p>{gameStatus.result?.split('! ')[1]}</p>
-                    <h2>
-                      {gameStatus.result?.includes(username) ? 'You Win!' : 'You Lose...'}
-                    </h2>
-                  </>
-                )}
-                
+  <div>
+    {gameStatus.result?.includes('draw') ? (
+      <>
+        <p>It's a Draw! Both players chose {gameStatus.player1_choice}.</p>
+        {/* Display the "Try Again" button for Player 1 */}
+        {username === gameStatus.player1_username && (
+          <button
+            className="try-again-button"
+            onClick={handleTryAgain}
+          >
+            Try Again
+          </button>
+        )}
+      </>
+    ) : (
+      <>
+        <p>{gameStatus.result?.split('! ')[1]}</p>
+        <h2>
+          {gameStatus.result?.includes(username) ? 'You Win!' : 'You Lose...'}
+        </h2>
+        {/* Display the "Try Again" button for Player 1 */}
+        {username === gameStatus.player1_username && (
+          <button
+            className="try-again-button"
+            onClick={handleTryAgain}
+          >
+            Try Again
+          </button>
+        )}
+      </>
+    )}
 
-                {toastMessage && <Toast
-  message={toastMessage}
-  link={toastLink}
-  onClose={() => {
-    setToastMessage('');
-    setToastLink('');
-  }}
-/>}
-              </div>
-            )}
+    {toastMessage && (
+      <Toast
+        message={toastMessage}
+        link={toastLink}
+        onClose={() => {
+          setToastMessage('');
+          setToastLink('');
+        }}
+      />
+    )}
+  </div>
+)}
           </>
         ) : (
           <>
