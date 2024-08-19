@@ -158,7 +158,44 @@ fetchRooms()
     }
   };
   
-
+  const handleTryAgain = async () => {
+    try {
+      const response = await performFetch('/try_again', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          room_id: selectedRoom,
+          user_id: userID, // Player 1's userID
+        }),
+      });
+  
+      if (response.success) {
+        // Reset the game status to waiting
+        setSelectedRoom(response.room_id); // Keep the same room ID
+        setGameStatus({
+          ...gameStatus,
+          player2_userid: '', // Remove Player 2
+          player2_username: '', // Remove Player 2
+          player2_choice: '',
+          player1_choice: '',
+          status: 'waiting', // Reset to waiting status
+          result: '',
+        });
+        setUserChoice(''); // Reset Player 1’s choice
+        startPollingChoices(response.room_id); // Start polling for new Player 2
+      } else {
+        setToastMessage('Failed to reset the game.');
+        setToastVisible(true);
+      }
+    } catch (error) {
+      console.error('Error in handleTryAgain:', error);
+      setToastMessage('Error occurred while trying again.');
+      setToastVisible(true);
+    }
+  };
+  
   
   const createRoom = async (contractAddress, wagerAmount) => {
     try {
@@ -301,7 +338,10 @@ fetchRooms()
       </div>
     );
   };
-
+  console.log("Game status:", gameStatus.status);
+  console.log("Username:", username);
+  console.log("Player 1 Username:", gameStatus.player1_username);
+  
   if (selectedRoom) {
     return (
       <div className="App">
