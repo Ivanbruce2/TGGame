@@ -9,7 +9,7 @@ import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
 
 // Define the backend URL once in a central location
-const backendURL = 'https://491333c270093c7b27361add5c9454c9.serveo.net';
+const backendURL = 'https://5fedd10017304411c77030cc7ecdd7c7.serveo.net';
 
 function App() {
   const { initDataRaw, initData } = retrieveLaunchParams();
@@ -43,13 +43,13 @@ const [toastVisible, setToastVisible] = useState(false); // State to control the
 fetchRooms()
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
-      // leaveGame();
+      leaveGame();
       clearInterval(roomPollingRef.current);
     };
   }, [selectedRoom]);
 
   const handleBeforeUnload = (event) => {
-    // leaveGame();
+    leaveGame();
     event.returnValue = '';
   };
 
@@ -405,14 +405,7 @@ fetchRooms()
 />}
               </div>
             )}
-            {gameStatus.status === 'completed' && username === gameStatus.player1_username && (
-  <button
-    className="try-again-button"
-    onClick={handleTryAgain}
-  >
-    Try Again
-  </button>
-)}
+            
           </>
         ) : (
           <>
