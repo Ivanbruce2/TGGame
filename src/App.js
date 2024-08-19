@@ -365,6 +365,14 @@ fetchRooms()
 />}
               </div>
             )}
+            {gameStatus.status === 'completed' && username === gameStatus.player1_username && (
+  <button
+    className="try-again-button"
+    onClick={handleTryAgain}
+  >
+    Try Again
+  </button>
+)}
           </>
         ) : (
           <>
