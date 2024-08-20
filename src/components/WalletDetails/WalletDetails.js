@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import TokenCard from '../TokenCard/TokenCard';
 import Toast from '../Toast/Toast'; // Import your custom Toast component
 import './WalletDetails.css';
 
-const WalletDetails = ({ walletAddress, backendURL, userID, wsPrefix }) => { // Accept the wsPrefix as a prop
+const WalletDetails = ({ walletAddress, backendURL, userID }) => { // Accept the prefix as a prop
   const [tokens, setTokens] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -11,55 +11,71 @@ const WalletDetails = ({ walletAddress, backendURL, userID, wsPrefix }) => { // 
   const [boneAmount, setBoneAmount] = useState(null);
   const [toastVisible, setToastVisible] = useState(false); // State to control toast visibility
   const [toastMessage, setToastMessage] = useState(''); // State for the toast message
+  const apiPrefix="https://www.shibariumscan.io/api/v2" 
+  useEffect(() => {
+    if (!walletAddress) {
+      const initializeUser = async () => {
+        try {
+          const response = await fetch(`${backendURL}/initialize_user`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+              userid: userID,
+              username: "poemcryptoman",
+            }),
+          });
 
-  const ws = useRef(null); // UseRef to store the WebSocket instance
+          const rawData = await response.text();
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const data = JSON.parse(rawData);
+          setLocalWalletAddress(data.wallet_address);
+        } catch (error) {
+          console.error('Error initializing user:', error);
+        }
+      };
+
+      initializeUser();
+    }
+  }, [walletAddress, backendURL, userID]);
 
   useEffect(() => {
-    // Initialize WebSocket connection
-    ws.current = new WebSocket(`${wsPrefix}`);
+    const fetchTokensAndBone = async () => {
+      if (!localWalletAddress) return;
 
-    ws.current.onopen = () => {
-      console.log('WebSocket connection established');
+      try {
+        // Fetch BONE balance using the prefix
+        const response = await fetch(`${apiPrefix}/addresses/${localWalletAddress}`);
+        const data = await response.json();
 
-      if (!walletAddress) {
-        // Send user initialization data via WebSocket when connected
-        ws.current.send(JSON.stringify({
-          type: 'initialize_user',
-          userID: userID,
-          username: "poemcryptoman"
-        }));
-      }
-    };
+        // Calculate the BONE equivalent by dividing by 10^18
+        const boneBalance = (parseFloat(data.coin_balance) / Math.pow(10, 18)).toFixed(3);
+        setBoneAmount(boneBalance);
 
-    ws.current.onmessage = (event) => {
-      const data = JSON.parse(event.data);
+        // Fetch tokens using the prefix
+        const tokenResponse = await fetch(`${apiPrefix}/addresses/${localWalletAddress}/token-balances`);
+        const tokenData = await tokenResponse.json();
 
-      if (data.type === 'wallet_address') {
-        setLocalWalletAddress(data.wallet_address);
-      } else if (data.type === 'token_data') {
-        setTokens(data.tokens);
-        setBoneAmount(data.boneAmount);
-        setLoading(false);
-      } else if (data.type === 'error') {
-        setError(data.message);
+        if (Array.isArray(tokenData)) {
+          setTokens(tokenData);
+        } else {
+          setError('Unexpected data format');
+        }
+      } catch (error) {
+        console.error('Error fetching token or BONE data:', error);
+        setError('Failed to fetch data');
+      } finally {
         setLoading(false);
       }
     };
 
-    ws.current.onclose = () => {
-      console.log('WebSocket connection closed');
-    };
-
-    ws.current.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
-
-    return () => {
-      if (ws.current) {
-        ws.current.close();
-      }
-    };
-  }, [walletAddress, wsPrefix, userID]);
+    fetchTokensAndBone();
+  }, [localWalletAddress, apiPrefix]); // Use the prefix as a dependency
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(localWalletAddress).then(() => {

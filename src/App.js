@@ -8,12 +8,11 @@ import Stats from './components/Stats/Stats';
 import './App.css';
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
-
-// Define the backend URL once in a central location
-const backendURL = 'https://5fedd10017304411c77030cc7ecdd7c7.serveo.net';
+// Define the backend WebSocket URL
+const backendURL = 'ws://localhost:8080/ws';
 
 function App() {
-  const { initDataRaw, initData } = retrieveLaunchParams();
+    const { initDataRaw, initData } = retrieveLaunchParams();
   const [userID, setUserID] = useState('');
   const [username, setUsername] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
@@ -22,164 +21,206 @@ function App() {
   const [gameStatus, setGameStatus] = useState(null);
   const [userChoice, setUserChoice] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState(''); // New state for toast messages
-const [toastLink, setToastLink] = useState(''); // State for an optional link in the toast
-const [toastVisible, setToastVisible] = useState(false); // State to control the visibility of the toast
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastLink, setToastLink] = useState('');
+  const [toastVisible, setToastVisible] = useState(false);
 
-  const pollingRef = useRef(null);
-  const roomPollingRef = useRef(null);
+  const websocketRef = useRef(null);
+
   const contractAddresses = [
     { address: '0xA77241231a899b69725F2e2e092cf666286Ced7E', name: 'ShibWare', symbol: 'ShibWare', decimals: 18 },
     { address: '0x43AB6e79a0ee99e6cF4eF9e70b4C0c2DF5A4d0Fb', name: 'CRYPTIQ', symbol: 'CTQ', decimals: 18 },
   ];
 
-  
   useEffect(() => {
-    const retrievedUsername = initData.user.username || "Unknown Username";
-    const retrievedUserID = initData.user.id || "Unknown UserID";
+    const retrievedUsername = initDataRaw.username;
+    const retrievedUserID = initDataRaw.userID;
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);
 
-    initializeUser(retrievedUserID, retrievedUsername);
+    // Establish WebSocket connection only if it is not already established
+    if (!websocketRef.current || websocketRef.current.readyState === WebSocket.CLOSED) {
+      console.log('Establishing WebSocket connection');
+      websocketRef.current = new WebSocket(backendURL);
+
+      websocketRef.current.onopen = () => {
+        console.log('WebSocket connection established');
+        initializeUser(retrievedUserID, retrievedUsername);
+        fetchRooms();
+      };
+
+      websocketRef.current.onmessage = (event) => {
+        console.log('WebSocket message received:', event.data);
+        const message = JSON.parse(event.data);
+        handleWebSocketMessage(message);
+      };
+
+      websocketRef.current.onerror = (error) => {
+        console.error('WebSocket error:', error);
+      };
+
+      websocketRef.current.onclose = (event) => {
+        console.log('WebSocket connection closed:', event);
+      };
+    }
+
     window.addEventListener('beforeunload', handleBeforeUnload);
-fetchRooms()
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      leaveGame();
-      clearInterval(roomPollingRef.current);
-    };
-  }, [selectedRoom]);
+
+    // Disabling cleanup for now
+    // return () => {
+    //   console.log('Cleaning up WebSocket connection');
+    //   window.removeEventListener('beforeunload', handleBeforeUnload);
+
+    //   // Only close the WebSocket if it's open or connecting
+    //   if (
+    //     websocketRef.current &&
+    //     (websocketRef.current.readyState === WebSocket.OPEN ||
+    //       websocketRef.current.readyState === WebSocket.CONNECTING)
+    //   ) {
+    //     console.log('Closing WebSocket connection');
+    //     websocketRef.current.close();
+    //   }
+    // };
+  }, []); 
 
   const handleBeforeUnload = (event) => {
     leaveGame();
     event.returnValue = '';
   };
 
-  const performFetch = async (endpoint, options = {}) => {
-    try {
-      const response = await fetch(`${backendURL}${endpoint}`, options);
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error(`Error fetching ${endpoint}:`, error);
-      throw error; // Re-throw the error to be handled by the caller
-    }
-  };
-
-  const fetchRooms = async () => {
-    try {
-      const data = await performFetch('/list_rooms');
-      setRooms(data);
-    } catch (error) {
-      console.error('Error fetching rooms:', error);
-    }
-  };
-
-  const startPollingRooms = () => {
-    roomPollingRef.current = setInterval(fetchRooms, 5000);
-  };
-
-  const initializeUser = async (userID, username) => {
-    try {
-      const data = await performFetch('/initialize_user', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          userid: userID,
-          username: username,
-        }),
-      });
-      setWalletAddress(data.wallet_address);
-      console.log(data.wallet_address);
-    } catch (error) {
-      console.error('Error initializing user:', error);
-    }
-  };
-
-  const startPollingChoices = (roomId) => {
-    let transferInitiated = false; // Flag to track if the transfer has already been initiated
-  
-    try {
-      const pollGameStatus = async () => {
-        try {
-          const data = await performFetch(`/game_status?room_id=${roomId}`);
-          setGameStatus(data);
-          console.log(data);
-  
-          if (data.status === "completed") {
-            clearInterval(pollingRef.current);
-  
-            if (!transferInitiated) { // Check if the transfer has already been triggered
-              transferInitiated = true; // Mark transfer as initiated
-  
-              // Trigger the token transfer
-              await triggerTokenTransfer(roomId);
-            }
+  const handleWebSocketMessage = (message) => {
+    switch (message.type) {
+      
+      case 'ROOMS_LIST':
+        setRooms(message.rooms);
+        break;
+        case 'GAME_STATUS':
+          setGameStatus(message.status);
+          if (message.status === 'completed') {
+            // Display the result or handle the completed game state
+            console.log('Game completed:', message.result);
           }
-        } catch (error) {
-          clearInterval(pollingRef.current);
-          setSelectedRoom(null);
-          setGameStatus(null);
+          break;
+        
+      case 'TOKEN_TRANSFER':
+        if (message.success) {
+          setToastMessage('Game completed! Tokens have been transferred.');
+          setToastLink(`https://shibariumscan.io/tx/${message.txHash}`);
+          setToastVisible(true);
+        } else {
+          setToastMessage('Game completed!');
+          setToastVisible(true);
         }
-      };
-  
-      clearInterval(pollingRef.current);
-      pollingRef.current = setInterval(pollGameStatus, 3000);
-    } catch (error) {
-      console.error("Error in startPollingChoices:", error);
+        break;
+        case 'INITIALIZE_USER':  // New case for handling INITIALIZE_USER
+        setUserID(message.userID);
+        setUsername(message.username);
+        setWalletAddress(message.walletAddress);
+        console.log("User initialized:", message);
+        break;
+        case 'JOIN_ROOM':  // New case for handling JOIN_ROOM
+        if (message.error) {
+          // Handle any errors returned from the backend
+          setToastMessage(message.error);
+          setToastVisible(true);
+        } else {
+          // Successfully joined the room
+          setSelectedRoom(message.room_id);
+          setGameStatus('waiting');
+          console.log("Joined room:", message.room_id);
+        }
+        break;
+      default:
+        console.log('Unknown message type:', message.type);
     }
   };
-  
-  const triggerTokenTransfer = async (roomId) => {
-    try {
-      const response = await performFetch('/trigger_transfer', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ room_id: roomId }),
-      });
-  console.log("do i come here?")
-  console.log(response)
-      if (response.txHash) {
-        setToastMessage('Game completed! Tokens have been transferred.');
-        setToastLink(`https://shibariumscan.io/tx/${response.txHash}`); // Update with the actual transaction link
-        setToastVisible(true);
-      } else {
-        setToastMessage('Game completed!');
-        setToastLink(''); // No link if there's no transaction
-        setToastVisible(true);
-      }
-    } catch (error) {
-      console.error("Error in triggerTokenTransfer:", error);
+
+  const sendMessage = (message) => {
+    if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
+      websocketRef.current.send(JSON.stringify(message));
     }
+  };
+
+  const fetchRooms = () => {
+    sendMessage({ type: 'FETCH_ROOMS' });
+  };
+
+  const initializeUser = (userID, username) => {
+    console.log(userID,username)
+    sendMessage({
+      type: 'INITIALIZE_USER',
+      userID,
+      username,
+    });
+  };
+
+  const createRoom = (contractAddress, wagerAmount) => {
+    sendMessage({
+      type: 'CREATE_ROOM',
+      userID,
+      username,
+      contractAddress,
+      wagerAmount,
+    });
+  };
+
+  const joinRoom = (roomId) => {
+    // Log the parameters before sending them to the backend
+    console.log('Joining room with the following details:');
+    console.log('userID:', userID);
+    console.log('username:', username);
+    console.log('roomId:', roomId);
+    console.log('walletAddress:', walletAddress);
+  
+    // Explicitly ensure that the userID is treated as a string to avoid scientific notation
+    const userIDString = String(userID);
+  
+    // Log the userID after conversion to ensure it looks correct
+    console.log('userID after conversion to string:', userIDString);
+  
+    sendMessage({
+      type: 'JOIN_ROOM',
+      userID: userIDString,
+      username,
+      roomId,
+      walletAddress,
+    });
+  
+    // Log after sending the message
+    console.log('Message sent for joining room');
   };
   
 
-  
-  const createRoom = async (contractAddress, wagerAmount) => {
-    try {
-      const data = await performFetch('/create_room', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          userid: userID,
-          username: username,
-          contract_address: contractAddress,
-          wager_amount: wagerAmount,
-        }),
+  const handleChoice = (choice) => {
+    setUserChoice(choice);
+    sendMessage({
+      type: 'MAKE_CHOICE',
+      userID,
+      username,
+      roomId: selectedRoom,
+      choice,
+    });
+  };
+
+  const handleTryAgain = () => {
+    sendMessage({
+      type: 'TRY_AGAIN',
+      roomId: selectedRoom,
+      userID,
+    });
+  };
+
+  const leaveGame = () => {
+    if (selectedRoom) {
+      sendMessage({
+        type: 'LEAVE_ROOM',
+        userID,
+        username,
+        roomId: selectedRoom,
       });
-      setSelectedRoom(data.room_id);
-      startPollingChoices(data.room_id);
-    } catch (error) {
-      console.error('Error creating room:', error);
+      setSelectedRoom('');
+      setGameStatus('');
+      setUserChoice('');
     }
   };
 
@@ -189,146 +230,19 @@ fetchRooms()
 
   const handleSaveModal = (contractAddress, wagerAmount) => {
     setIsModalOpen(false);
-    createRoom(contractAddress, wagerAmount); // Pass the contract address and wager amount to the createRoom function
+    createRoom(contractAddress, wagerAmount);
   };
 
   const handleCancelModal = () => {
     setIsModalOpen(false);
   };
 
-  const joinRoom = async (roomId) => {
-    try {
-      const data = await performFetch('/join_room', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          userid: userID,
-          username: username,
-          room_id: roomId,
-          wallet_address: walletAddress, // Send wallet address
-        }),
-      });
-  
-      if (data && data.room_id) {
-        setSelectedRoom(data.room_id);
-        startPollingChoices(data.room_id);
-      } else if (data && data.error) {
-        // Set the toast message with the error
-        setToastMessage(data.error);
-        setToastLink(''); // No link needed for errors
-        setToastVisible(true); // Show the toast
-      }
-    } catch (error) {
-      console.error("Error in joinRoom:", error);
-      setToastMessage('Failed to join the room due to an error.');
-      setToastLink(''); // No link needed for errors
-      setToastVisible(true); // Show the toast
-    }
-  };
-  
-  
-  
-
-  const handleChoice = async (choice) => {
-    setUserChoice(choice);
-  
-    try {
-      const data = await performFetch('/webhook', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          userid: userID,
-          username: username,
-          choice: choice,
-          room_id: selectedRoom,
-        }),
-      });
-  
-      setGameStatus(data);
-  
-     
-    } catch (error) {
-      console.error("Error in handleChoice:", error);
-    }
-  };
-  
-  const handleTryAgain = async () => {
-    try {
-      const response = await performFetch('/try_again', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          room_id: selectedRoom,
-          user_id: userID, // Player 1's userID
-        }),
-      });
-  console.log(response)
-      if (response.success) {
-        // Reset the game status to waiting
-        // setSelectedRoom(response.room_id); // Keep the same room ID
-        // setGameStatus({
-        //   ...gameStatus,
-        //   player2_userid: '', // Remove Player 2
-        //   player2_username: '', // Remove Player 2
-        //   player2_choice: '',
-        //   player1_choice: '',
-        //   status: 'waiting', // Reset to waiting status
-        //   result: '',
-        // });
-        setUserChoice(''); // Reset Player 1’s choice
-        startPollingChoices(response.room_id); // Start polling for new Player 2
-      } else {
-        setToastMessage('Failed to reset the game.');
-        setToastVisible(true);
-      }
-    } catch (error) {
-      console.error('Error in handleTryAgain:', error);
-      setToastMessage('Error occurred while trying again.');
-      setToastVisible(true);
-    }
-  };
-
-
-  const leaveGame = async () => {
-    if (selectedRoom) {
-      setSelectedRoom('');
-      setGameStatus('');
-      setUserChoice('');
-      await performFetch('/leave_room', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          userid: userID,
-          username: username,
-          room_id: selectedRoom,
-        }),
-      });
-
-     
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      clearInterval(pollingRef.current);
-      clearInterval(roomPollingRef.current);
-    };
-  }, []);
-
   const WalletDisplay = ({ walletAddress }) => {
     const truncatedAddress = `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`;
 
     const copyToClipboard = () => {
       navigator.clipboard.writeText(walletAddress).then(() => {
-        setToastMessage('Wallet address copied to clipboard!'); // Trigger toast message
+        setToastMessage('Wallet address copied to clipboard!');
       }, (err) => {
         console.error('Failed to copy text: ', err);
       });
@@ -350,14 +264,11 @@ fetchRooms()
         {gameStatus ? (
           <>
             <h2 className="game-status">
-              {/* Check if player1 details are available and display them */}
               {gameStatus.player1_username ? `${gameStatus.player1_username} ${gameStatus.player1_choice ? '✔️' : '❓'}` : '[Pending]'}
               {' vs '}
-              {/* Check if player2 details are available and display them */}
               {gameStatus.player2_username ? `${gameStatus.player2_username} ${gameStatus.player2_choice ? '✔️' : '❓'}` : '[Pending]'}
             </h2>
-  
-            {/* If the game is not completed, show the choice buttons */}
+
             {gameStatus.status !== 'completed' && (
               <>
                 <div className="choices">
@@ -372,61 +283,48 @@ fetchRooms()
                     </button>
                   ))}
                 </div>
-  
                 <p>Waiting for opponent...</p>
               </>
             )}
-  
+
             <button className="return-button" onClick={leaveGame}>
               Return to Lobby
             </button>
-  
-            {/* Display the game result when the status is completed */}
-            {gameStatus.status === 'completed' && (
-  <div>
-    {gameStatus.result?.includes('draw') ? (
-      <>
-        <p>It's a Draw! Both players chose {gameStatus.player1_choice}.</p>
-        {/* Display the "Try Again" button for Player 1 */}
-        {username === gameStatus.player1_username && (
-          <button
-            className="try-again-button"
-            onClick={handleTryAgain}
-          >
-            Try Again
-          </button>
-        )}
-      </>
-    ) : (
-      <>
-        <p>{gameStatus.result?.split('! ')[1]}</p>
-        <h2>
-          {gameStatus.result?.includes(username) ? 'You Win!' : 'You Lose...'}
-        </h2>
-        {/* Display the "Try Again" button for Player 1 */}
-        {username === gameStatus.player1_username && (
-          <button
-            className="try-again-button"
-            onClick={handleTryAgain}
-          >
-            Try Again
-          </button>
-        )}
-      </>
-    )}
 
-    {toastMessage && (
-      <Toast
-        message={toastMessage}
-        link={toastLink}
-        onClose={() => {
-          setToastMessage('');
-          setToastLink('');
-        }}
-      />
-    )}
-  </div>
-)}
+            {gameStatus.status === 'completed' && (
+              <div>
+                {gameStatus.result?.includes('draw') ? (
+                  <>
+                    <p>It's a Draw! Both players chose {gameStatus.player1_choice}.</p>
+                    {username === gameStatus.player1_username && (
+                      <button className="try-again-button" onClick={handleTryAgain}>
+                        Try Again
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <p>{gameStatus.result?.split('! ')[1]}</p>
+                    <h2>{gameStatus.result?.includes(username) ? 'You Win!' : 'You Lose...'}</h2>
+                    {username === gameStatus.player1_username && (
+                      <button className="try-again-button" onClick={handleTryAgain}>
+                        Try Again
+                      </button>
+                    )}
+                  </>
+                )}
+                {toastMessage && (
+                  <Toast
+                    message={toastMessage}
+                    link={toastLink}
+                    onClose={() => {
+                      setToastMessage('');
+                      setToastLink('');
+                    }}
+                  />
+                )}
+              </div>
+            )}
           </>
         ) : (
           <>
@@ -445,11 +343,9 @@ fetchRooms()
             </div>
           </>
         )}
-        
       </div>
     );
   }
-  
 
   return (
     <Router>
@@ -476,13 +372,8 @@ fetchRooms()
                   </div>
                   <div className="room-list">
                     {Object.values(rooms).map((room) => {
-                      // Find the corresponding contract info
-                      const contract = contractAddresses.find(
-                        (c) => c.address === room.contract_address
-                      );
-                      // Determine decimals, fallback to 1 if not found
+                      const contract = contractAddresses.find(c => c.address === room.contract_address);
                       const decimals = contract ? contract.decimals : 1;
-                      // Convert the wager amount by dividing by 10^decimals
                       const formattedWagerAmount = room.wager_amount
                         ? (parseFloat(room.wager_amount) / Math.pow(10, decimals)).toFixed(3)
                         : 'N/A';
@@ -490,13 +381,12 @@ fetchRooms()
                       return (
                         <div className="room-card" key={room.room_id}>
                           <div className="room-details">
-                            <p>Room ID: {room.room_id} | {room.status === 'waiting'
+                            <p>
+                              Room ID: {room.room_id} | {room.status === 'waiting'
                                 ? `Player: ${room.player1_username}`
-                                : `${room.player1_username} vs ${room.player2_username}`}</p>                          
-                            
-                            <p>Wager: {contract ? `(${contract.symbol})` : 'N/A'} | {formattedWagerAmount}</p> {/* Display the token name and symbol */}
-                          
-                            {/* <p>Status: {room.status === 'waiting' ? 'Waiting for opponent' : room.status}</p> */}
+                                : `${room.player1_username} vs ${room.player2_username}`}
+                            </p>
+                            <p>Wager: {contract ? `(${contract.symbol})` : 'N/A'} | {formattedWagerAmount}</p>
                           </div>
                           {room.status === 'waiting' && (
                             <button className="join-button" onClick={() => joinRoom(room.room_id)}>
@@ -514,20 +404,19 @@ fetchRooms()
               path="/wallet-details"
               element={<WalletDetails walletAddress={walletAddress} backendURL={backendURL} userID={userID} />}
             />
-            <Route path="/stats" element={<Stats userID={userID} />} /> {/* New stats route */}
+            <Route path="/stats" element={<Stats userID={userID} backendURL={backendURL} contractAddresses={contractAddresses} />} />
           </Routes>
         </div>
 
         {isModalOpen && (
           <WagerModal
             contracts={contractAddresses}
-            walletAddress={walletAddress} // Pass walletAddress here
+            walletAddress={walletAddress}
             onSave={handleSaveModal}
             onCancel={handleCancelModal}
           />
         )}
 
-        {/* Display the toast if there is a message */}
         {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
       </div>
     </Router>

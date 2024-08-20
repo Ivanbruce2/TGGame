@@ -1,30 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { performFetch } from '../utils/fetchUtils'; // Reuse the fetch function
-import Stats from './components/Stats/Stats';
 import './Stats.css';
 
-const contractAddresses = {
-  '0xA77241231a899b69725F2e2e092cf666286Ced7E': 'ShibWare',
-  '0x43AB6e79a0ee99e6cF4eF9e70b4C0c2DF5A4d0Fb': 'CRYPTIQ',
-};
-
-function Stats({ userID }) {
-  const [overallStats, setOverallStats] = useState({});
+function Stats({ userID, backendURL, contractAddresses }) {
+  const [overallStats, setOverallStats] = useState(null);
   const [gameLogs, setGameLogs] = useState([]);
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [view, setView] = useState('history'); // State to manage the toggle view
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const data = await performFetch('/game_stats', {
+        const response = await fetch(`${backendURL}/game_stats`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
           },
-          body: new URLSearchParams({
-            user_id: userID,
-          }),
+          body: JSON.stringify({ user_id: userID }),
         });
 
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
         setOverallStats(data.overallStats);
         setGameLogs(data.gameLogs);
       } catch (error) {
@@ -32,32 +30,132 @@ function Stats({ userID }) {
       }
     };
 
+    const fetchLeaderboard = async () => {
+      try {
+        const response = await fetch(`${backendURL}/leaderboard`, {
+          method: 'GET',
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setLeaderboard(data);
+      } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+      }
+    };
+
     fetchStats();
-  }, [userID]);
+    if (view === 'leaderboard') {
+      fetchLeaderboard();
+    }
+  }, [userID, view]);
+
+  const getTokenSymbol = (address) => {
+    const token = contractAddresses.find((contract) => contract.address === address);
+    return token ? token.symbol : address;
+  };
+
+  const getFormattedAmount = (amount, address) => {
+    const token = contractAddresses.find((contract) => contract.address === address);
+    const decimals = token ? token.decimals : 1;
+    return (parseFloat(amount) / Math.pow(10, decimals)).toFixed(2);
+  };
 
   return (
     <div className="stats-container">
-      <h2>Game Statistics</h2>
-      <div className="stats-summary">
-        <p><b>Total Matches:</b> {overallStats.total_matches || 0}</p>
-        <p><b>Wins:</b> {overallStats.wins || 0}</p>
-        <p><b>Losses:</b> {overallStats.losses || 0}</p>
+      <h2>Game Stats</h2>
+      {overallStats && (
+        <div className="overall-stats">
+          <div className="stats-row">
+            <span>Total Matches</span>
+            <span>Wins</span>
+            <span>Losses</span>
+          </div>
+          <div className="stats-row">
+            <span>{overallStats.total_matches}</span>
+            <span>{overallStats.wins}</span>
+            <span>{overallStats.losses}</span>
+          </div>
+        </div>
+      )}
+
+      <div className="toggle-buttons">
+        <button
+          className={`toggle-button ${view === 'history' ? 'active' : ''}`}
+          onClick={() => setView('history')}
+        >
+          Game History
+        </button>
+        <button
+          className={`toggle-button ${view === 'leaderboard' ? 'active' : ''}`}
+          onClick={() => setView('leaderboard')}
+        >
+          Leaderboard
+        </button>
       </div>
 
-      <div className="game-logs">
-        {gameLogs.length === 0 ? (
-          <p>No game logs available.</p>
-        ) : (
-          gameLogs.map((log, index) => (
-            <div className="log-card" key={index}>
-              <p><b>Contract:</b> {contractAddresses[log.contract_address] || 'Unknown Contract'}</p>
-              <p><b>Result:</b> {log.result === 'win' ? 'Win' : 'Loss'}</p>
-              <p><b>Amount:</b> {parseFloat(log.amount) / Math.pow(10, 18)}</p>
-              <p><b>Transaction:</b> <a href={`https://shibariumscan.io/tx/${log.txhash}`} target="_blank" rel="noopener noreferrer">View on Explorer</a></p>
-            </div>
-          ))
-        )}
-      </div>
+      {view === 'history' ? (
+        <div className="game-history">
+          <h3>Game History</h3>
+          <div className="game-logs">
+            <table className="game-log-table">
+              <thead>
+                <tr>
+                  <th>Contract</th>
+                  <th>Result</th>
+                  <th>Amount</th>
+                  <th>Transaction</th>
+                </tr>
+              </thead>
+              <tbody>
+                {gameLogs && gameLogs.map((log, index) => (
+                  <tr key={index}>
+                    <td>{getTokenSymbol(log.contract_address)}</td>
+                    <td className={log.result === 'win' ? 'result-win' : 'result-lose'}>
+                      {log.result}
+                    </td>
+                    <td>{getFormattedAmount(log.amount, log.contract_address)}</td>
+                    <td>
+                      <a
+                        href={`https://shibariumscan.io/tx/${log.txhash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View Transaction
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ) : (
+        <div className="leaderboard">
+          <h3>Leaderboard</h3>
+          <table className="leaderboard-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Username</th>
+                <th>Wins</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leaderboard && leaderboard.map((player, index) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>{player.username}</td>
+                  <td>{player.wins}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
