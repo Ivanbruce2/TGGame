@@ -156,9 +156,10 @@ function App() {
   };
 
   const createRoom = (contractAddress, wagerAmount) => {
+    const userIDString = String(userID);
     sendMessage({
       type: 'CREATE_ROOM',
-      userID,
+      userIDString,
       username,
       contractAddress,
       wagerAmount,
