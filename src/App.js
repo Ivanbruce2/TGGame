@@ -146,20 +146,19 @@ function App() {
   };
 
   const initializeUser = (userID, username) => {
-    const userIDString = String(userID);
-    console.log(userID,username)
+    console.log(userID, username);
     sendMessage({
       type: 'INITIALIZE_USER',
-      userIDString,
+      userID: userID.toString(), // Convert userID to string before sending
       username,
     });
   };
+  
 
   const createRoom = (contractAddress, wagerAmount) => {
-    const userIDString = String(userID);
     sendMessage({
       type: 'CREATE_ROOM',
-      userIDString,
+      userID,
       username,
       contractAddress,
       wagerAmount,
