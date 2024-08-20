@@ -146,10 +146,11 @@ function App() {
   };
 
   const initializeUser = (userID, username) => {
+    const userIDString = String(userID);
     console.log(userID,username)
     sendMessage({
       type: 'INITIALIZE_USER',
-      userID,
+      userIDString,
       username,
     });
   };
