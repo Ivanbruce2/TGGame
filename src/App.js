@@ -33,8 +33,8 @@ function App() {
   ];
 
   useEffect(() => {
-    const retrievedUsername = initDataRaw.username;
-    const retrievedUserID = initDataRaw.userID;
+    const retrievedUsername = initData.username;
+    const retrievedUserID = initData.userID;
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);
 
