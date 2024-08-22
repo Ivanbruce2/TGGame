@@ -95,7 +95,7 @@ useEffect(() => {
 
 const fetchGameStatus = (roomId) => {
   sendMessage({
-    type: 'FETCH_GAME_STATUS',
+    type: 'GAME_STATUS',
     roomId,
   });
 };
