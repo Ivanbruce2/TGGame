@@ -347,21 +347,46 @@ const fetchGameStatus = (roomId) => {
   };
 
   if (selectedRoom) {
+    // Extract the relevant contract information based on the stored contract address
+    const contract = contractAddresses.find(
+      (c) => c.address === gameStatus?.contractAddress
+    );
+    const contractSymbol = contract?.symbol || 'Unknown Symbol';
+    const decimals = contract?.decimals || 1;
+    const formattedWagerAmount = gameStatus?.wagerAmount
+      ? (parseFloat(gameStatus.wagerAmount) / Math.pow(10, decimals)).toFixed(3)
+      : 'N/A';
+  
     return (
       <div className="App">
         <h1 className="welcome-message2">Room: {selectedRoom}</h1>
         {gameStatus ? (
           <>
             <h2 className="game-status">
-              {gameStatus.player1Username ? `${gameStatus.player1Username} ${gameStatus.player1Choice ? '✔️' : '❓'}` : '[Pending]'}
+              {gameStatus.player1Username
+                ? `${gameStatus.player1Username} ${
+                    gameStatus.player1Choice ? '✔️' : '❓'
+                  }`
+                : '[Pending]'}
               {' vs '}
-              {gameStatus.player2Username ? `${gameStatus.player2Username} ${gameStatus.player2Choice ? '✔️' : '❓'}` : '[Pending]'}
+              {gameStatus.player2Username
+                ? `${gameStatus.player2Username} ${
+                    gameStatus.player2Choice ? '✔️' : '❓'
+                  }`
+                : '[Pending]'}
             </h2>
-
+  
+            {/* Display the wager contract and amount */}
+            <div className="wager-info">
+              <p>
+                <b>Wager Contract:</b> {contractSymbol} ({formattedWagerAmount})
+              </p>
+            </div>
+  
             {gameStatus.status !== 'completed' && (
               <>
                 <div className="choices">
-                  {["Scissors", "Paper", "Stone"].map(choice => (
+                  {['Scissors', 'Paper', 'Stone'].map((choice) => (
                     <button
                       key={choice}
                       className="choice-button"
@@ -375,16 +400,16 @@ const fetchGameStatus = (roomId) => {
                 <p>Waiting for opponent...</p>
               </>
             )}
-
+  
             <button className="return-button" onClick={leaveGame}>
               Return to Lobby
             </button>
-
+  
             {gameStatus.status === 'completed' && (
               <div>
                 {!gameStatus.result ? (
                   <>
-                    <p>It's a Draw! Both players chose {gameStatus.player1_choice}.</p>
+                    <p>It's a Draw! Both players chose {gameStatus.player1Choice}.</p>
                     {username === gameStatus.player1Username && (
                       <button className="try-again-button" onClick={handleTryAgain}>
                         Try Again
@@ -418,7 +443,7 @@ const fetchGameStatus = (roomId) => {
           <>
             <p>Select your choice below:</p>
             <div className="choices">
-              {["Scissors", "Paper", "Stone"].map(choice => (
+              {['Scissors', 'Paper', 'Stone'].map((choice) => (
                 <button
                   key={choice}
                   className="choice-button"
@@ -434,6 +459,7 @@ const fetchGameStatus = (roomId) => {
       </div>
     );
   }
+  
 
   return (
     <Router>
