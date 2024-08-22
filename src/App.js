@@ -9,7 +9,7 @@ import './App.css';
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
 // Define the backend WebSocket URL
-const backendURL = 'wss://4aca48e8c4a7cce8b13db1302b37c72c.serveo.net/ws';
+const backendURL = 'wss://8b2486f5a2d89bf193c9c735060f74ba.serveo.net/ws';
 
 
 function App() {
@@ -39,48 +39,47 @@ function App() {
   ];
 
   useEffect(() => {
+    // const retrievedUsername = "TrialAcc31";
+    // const retrievedUserID = "6937856159";
     const retrievedUsername = initData.user.username || "Unknown Username";
     const retrievedUserID = initData.user.id || "Unknown UserID";
+    console.log('Setting userID:', retrievedUserID);
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);
+    
+  }, []); // This effect runs only once, when the component mounts
   
-    // Establish WebSocket connection only if it is not already established
-    if (!websocketRef.current || websocketRef.current.readyState === WebSocket.CLOSED) {
-      console.log('Establishing WebSocket connection');
-      websocketRef.current = new WebSocket(backendURL);
+  useEffect(() => {
+    if (userID) { // Ensure this only runs when userID is set
+      // Establish WebSocket connection only if it is not already established
+      if (!websocketRef.current || websocketRef.current.readyState === WebSocket.CLOSED) {
+        console.log('Establishing WebSocket connection');
+        websocketRef.current = new WebSocket(backendURL);
   
-      websocketRef.current.onopen = () => {
-        console.log('WebSocket connection established');
-        initializeUser(retrievedUserID, retrievedUsername);
-        fetchRooms(); // Fetch rooms and check if the user is already in a game
-      };
+        websocketRef.current.onopen = () => {
+          console.log('WebSocket connection established');
+          initializeUser(userID, username);
+          fetchRooms();
+        };
   
-      websocketRef.current.onmessage = (event) => {
-        console.log('WebSocket message received:', event.data);
-        const message = JSON.parse(event.data);
-        handleWebSocketMessage(message);
-      };
+        websocketRef.current.onmessage = (event) => {
+          console.log('WebSocket message received:', event.data);
+          const message = JSON.parse(event.data);
+          handleWebSocketMessage(message);
+        };
   
-      websocketRef.current.onerror = (error) => {
-        console.error('WebSocket error:', error);
-      };
+        websocketRef.current.onerror = (error) => {
+          console.error('WebSocket error:', error);
+        };
   
-      websocketRef.current.onclose = (event) => {
-        console.log('WebSocket connection closed:', event);
-      };
-    }
-  
-    window.addEventListener('beforeunload', handleBeforeUnload);
-  
-    return () => {
-      console.log('Cleaning up WebSocket connection');
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-  
-      if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
-        websocketRef.current.close();
+        websocketRef.current.onclose = (event) => {
+          console.log('WebSocket connection closed:', event);
+        };
       }
-    };
-  }, []);
+    }
+  }, [userID]); // This effect depends on the userID
+  
+  
   
 
   // Listening to game status updates when players join or make a move
@@ -88,11 +87,24 @@ useEffect(() => {
   if (selectedRoom) {
     const interval = setInterval(() => {
       fetchGameStatus(selectedRoom);
-    }, 2000); // Polling every 2 seconds
+    }, 500); // Polling every 2 seconds
 
     return () => clearInterval(interval);
   }
 }, [selectedRoom]);
+
+useEffect(() => {
+  // Call the fetch rooms function initially
+  fetchRooms();
+
+  // Set up an interval to refresh rooms every 10 seconds (adjust the interval as needed)
+  const intervalId = setInterval(() => {
+    fetchRooms();
+  }, 1000); // 10000 ms = 10 seconds
+
+  // Cleanup the interval when the component unmounts
+  return () => clearInterval(intervalId);
+}, []);
 
 const fetchGameStatus = (roomId) => {
   sendMessage({
@@ -162,32 +174,60 @@ useEffect(() => {
         console.log('Room created with ID:', message.room_id);
         setSelectedRoom(message.room_id);
         break;
-      case 'ROOMS_LIST':
-        setRooms(message.rooms);
-        const activeRoom = message.rooms.find(
-          (room) =>
-            room.player1ID === userID && room.status === 'waiting'
-        );
+        case 'ROOMS_LIST':
+  console.log('Rooms list received:', message.rooms); // Log all rooms received
   
-        if (activeRoom) {
-          // Automatically join the room if found
-          setSelectedRoom(activeRoom.room_id);
-          setGameStatus({
-            roomId: activeRoom.room_id,
-            player1ID: activeRoom.player1ID,
-            player1Username: activeRoom.player1Username,
-            player1Choice: activeRoom.player1Choice,
-            player2ID: activeRoom.player2ID,
-            player2Username: activeRoom.player2Username,
-            player2Choice: activeRoom.player2Choice,
-            status: activeRoom.status,
-            contractAddress: activeRoom.contract_address,
-            wagerAmount: activeRoom.wager_amount,
-            result: activeRoom.result,
-          });
-        }
-        break;
-      case 'GAME_STATUS':
+  // Ensure message.rooms is not null or undefined
+  if (!message.rooms) {
+    console.error('Rooms data is null or undefined.');
+    break;
+  }
+
+  setRooms(message.rooms);
+
+  // Add log to check userID
+  console.log('Current userID:', userID);
+
+  // Check if there's an active room where the user is player1 and the status is 'waiting'
+  const activeRoom = message.rooms.find(
+    (room) =>
+      room.player1_id === userID && room.status === 'waiting'
+  );
+
+  console.log('Active room found:', activeRoom); // Log the active room if found
+
+  if (activeRoom) {
+    // Automatically join the room if found
+    console.log('Automatically joining room with ID:', activeRoom.room_id);
+
+    setSelectedRoom(activeRoom.room_id);
+    setGameStatus({
+      roomId: activeRoom.room_id,
+      player1ID: activeRoom.player1_id,
+      player1Username: activeRoom.player1_username,
+      player1Choice: activeRoom.player1_choice,
+      player2ID: activeRoom.player2_id,
+      player2Username: activeRoom.player2_username,
+      player2Choice: activeRoom.player2_choice,
+      status: activeRoom.status,
+      contractAddress: activeRoom.contract_address,
+      wagerAmount: activeRoom.wager_amount,
+      result: activeRoom.result,
+    });
+
+    // Determine the correct choice based on whether the current user is player1 or player2
+    if (userID === activeRoom.player1_id) {
+      setUserChoice(activeRoom.player1_choice);
+    } else if (userID === activeRoom.player2_id) {
+      setUserChoice(activeRoom.player2_choice);
+    }
+  } else {
+    console.log('No active room found for this user.');
+  }
+
+  break;
+
+ case 'GAME_STATUS':
         console.log('Updating game status:', message);
         setGameStatus({
           roomId: message.roomId,
@@ -202,9 +242,15 @@ useEffect(() => {
           wagerAmount: message.wagerAmount,
           result: message.result,
         });
-        if (message.status === 'completed' && message.result) {
+        if (message.status === 'completed' && message.result && message.result !== 'transferCompleted') {
           triggerTransfer(message.roomId);
+          setGameStatus((prevState) => ({
+            ...prevState,
+            result: 'transferCompleted',
+          }));
         }
+        
+        
         break;
       case 'TOKEN_TRANSFER':
         if (message.success) {
@@ -217,8 +263,7 @@ useEffect(() => {
         }
         break;
       case 'INITIALIZE_USER':
-        setUserID(message.userID);
-        setUsername(message.username);
+      
         setWalletAddress(message.walletAddress);
         break;
       case 'JOIN_ROOM':
@@ -330,6 +375,9 @@ useEffect(() => {
 
   const leaveGame = () => {
     if (selectedRoom) {
+      setSelectedRoom('');
+      setGameStatus('');
+      setUserChoice('');
       sendMessage({
         type: 'LEAVE_ROOM',
         userID: userID.toString(),
