@@ -100,6 +100,11 @@ const fetchGameStatus = (roomId) => {
   });
 };
 
+useEffect(() => {
+  console.log("Updated game status state:", gameStatus);
+}, [gameStatus]);
+
+
   const handleBeforeUnload = (event) => {
     leaveGame();
     event.returnValue = '';
@@ -284,6 +289,8 @@ const fetchGameStatus = (roomId) => {
       roomId: selectedRoom,
       choice,
     });
+    
+    
   };
 
   const triggerTransfer = (roomId) => {
@@ -359,45 +366,58 @@ const fetchGameStatus = (roomId) => {
   
     return (
       <div className="App">
-        <h1 className="welcome-message2">Room: {selectedRoom}</h1>
+        <h1 className="welcome-message2">Room {selectedRoom}</h1>
+  
+        {/* Display the wager contract and amount immediately below the room information */}
+        <div className="wager-info">
+          <p>
+            [{contractSymbol}: {formattedWagerAmount}]
+          </p>
+        </div>
+  
         {gameStatus ? (
           <>
-            <h2 className="game-status">
-              {gameStatus.player1Username
-                ? `${gameStatus.player1Username} ${
-                    gameStatus.player1Choice ? '✔️' : '❓'
-                  }`
-                : '[Pending]'}
-              {' vs '}
-              {gameStatus.player2Username
-                ? `${gameStatus.player2Username} ${
-                    gameStatus.player2Choice ? '✔️' : '❓'
-                  }`
-                : '[Pending]'}
-            </h2>
-  
-            {/* Display the wager contract and amount */}
-            <div className="wager-info">
-              <p>
-                <b>Wager Contract:</b> {contractSymbol} ({formattedWagerAmount})
-              </p>
-            </div>
+<h2 className="game-status">
+  {gameStatus.player1Username
+    ? `${gameStatus.player1Username} ${
+        gameStatus.player1Choice ? (
+         ' [✔️]'
+        ) : (
+          '[❓]'
+        )
+      }`
+    : '[Pending]'}
+  {' vs '}
+  {gameStatus.player2Username
+    ? `${gameStatus.player2Username} ${
+        gameStatus.player2Choice ? (
+          '[✔️]'
+        ) : (
+          '[❓]'
+        )
+      }`
+    : '[Pending]'}
+</h2>
+
+
   
             {gameStatus.status !== 'completed' && (
               <>
-                <div className="choices">
-                  {['Scissors', 'Paper', 'Stone'].map((choice) => (
-                    <button
-                      key={choice}
-                      className="choice-button"
-                      onClick={() => handleChoice(choice)}
-                      disabled={!!userChoice}
-                    >
-                      {choice}
-                    </button>
-                  ))}
-                </div>
-                <p>Waiting for opponent...</p>
+<div className="choices">
+  {['Scissors', 'Paper', 'Stone'].map((choice) => (
+    <button
+      key={choice}
+      className={`choice-button ${userChoice === choice ? 'selected' : ''}`}
+      onClick={() => handleChoice(choice)}
+      disabled={!!userChoice} // Disable buttons after a choice is made
+    >
+      {choice}
+    </button>
+  ))}
+</div>
+
+                <div className="wager-info"><p>Waiting for opponent...</p></div>
+                
               </>
             )}
   
@@ -459,6 +479,7 @@ const fetchGameStatus = (roomId) => {
       </div>
     );
   }
+  
   
 
   return (

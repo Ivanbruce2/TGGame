@@ -21,6 +21,7 @@ body, html {
   100% { background-position: 0% 50%; }
 }
 
+
 body:before {
   content: '';
   position: absolute;
@@ -126,14 +127,14 @@ body:before {
 }
 
 .return-button {
-  margin-top: 20px;
+  margin-top: 15px;
   padding: 10px 20px;
-  font-size: 1em;
+  font-size: 0.9em;
   background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff);
   background-size: 200% 200%;
   color: rgb(6, 6, 6);
   border: 2px solid #333;
-  height: 50px;
+  height: 40px;
   line-height: 46px;
   border-radius: 4px;
   cursor: pointer;
@@ -159,6 +160,59 @@ body:before {
 
 .try-again-button:hover {
   background-color: #2980b9;
+}
+
+.welcome-message2 {
+  font-size: 2em; /* Larger font size for clear emphasis */
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  color: #ffd700; /* Gold-like color */
+  font-family: 'Press Start 2P', cursive;
+  text-shadow: 
+    1px 1px 0 #ff0047,   /* red shadow */
+    2px 2px 0 #ff8a00,   /* orange shadow */
+    3px 3px 0 #fcdc4d,   /* yellow shadow */
+    4px 4px 0 #28e0ae,   /* green shadow */
+    5px 5px 0 #0044ff;   /* blue shadow */
+  position: relative;
+  padding: 10px 0; /* Spacing around the text */
+}
+
+.wager-info {
+  font-size: 1em; /* Adjust size for good readability */
+  color: #fff;
+  margin-bottom: 4px;
+  margin-top: 4px;
+ 
+}
+
+.wager-info p {
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  text-align: center; /* Center-align the text for neatness */
+}
+
+.game-status {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  color: #ffd700;
+  text-align: center;
+  border: none; /* Ensure no borders are applied */
+  text-decoration: none; /* Remove any underlines */
+}
+
+.game-status::before,
+.game-status::after {
+  content: '';
+  display: none; /* Disable any pseudo-elements that could add lines */
+}
+
+
+.game-status span {
+  color: #32CD32; /* Green for ✔️ indicators */
+  font-weight: bold;
 }
 
 
@@ -312,24 +366,16 @@ body:before {
   }
 }
 
-.choices {
-  display: flex;
-  flex-direction: column; /* Stack buttons vertically */
-  justify-content: center;
-  align-items: center;
-  width: 100%; /* Center content horizontally */
-}
-
 .choice-button {
   background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); /* Rainbow gradient */
   background-size: 200% 200%;
   color: rgb(6, 6, 6);
-  font-size: 1em;
+  font-size: 0.8em;
   border: 2px solid #333;
-  height: 50px; /* Consistent height */
-  width: 200px; /* Consistent width */
+  height: 40px; /* Consistent height */
+  width: 150px; /* Consistent width */
   line-height: 46px; /* Center text vertically */
-  margin: 10px 0; /* Vertical margin for spacing */
+  margin: 18px 0; /* Vertical margin for spacing */
   border-radius: 4px;
   cursor: pointer;
   display: flex;
@@ -339,4 +385,21 @@ body:before {
   font-family: 'Press Start 2P', cursive; /* Matching the pixel art style */
   box-shadow: 0 4px #333; /* Pixelated shadow effect */
   animation: gradientShift 2s infinite linear; /* Animate the gradient */
+  transition: background 0.2s ease, transform 0.2s ease; /* Smooth transition for hover and selected effects */
 }
+
+.choice-button:hover:not(.selected) {
+  transform: scale(1.05); /* Slightly enlarge the button on hover if it's not selected */
+}
+
+.choice-button.selected {
+  background: #ff0047; /* Highlight selected choice with green */
+  color: #fff;
+  box-shadow: 0 4px #001600; /* Adjust shadow color for selected choice */
+}
+
+.choice-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6; /* Dim the button when disabled */
+}
+
