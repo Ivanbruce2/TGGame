@@ -6,12 +6,14 @@ import WagerModal from './components/WagerModal/WagerModal';
 import Toast from './components/Toast/Toast';
 import Stats from './components/Stats/Stats';
 import './App.css';
+import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
 // Define the backend WebSocket URL
 const backendURL = 'wss://afdc41b7b3009e6b3fe09190ec36666c.serveo.net/ws';
 
 
 function App() {
+  const { initDataRaw, initData } = retrieveLaunchParams();
   const [userID, setUserID] = useState('');
   const [username, setUsername] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
@@ -37,8 +39,8 @@ function App() {
   ];
 
   useEffect(() => {
-    const retrievedUsername = "TrialAcc31";
-    const retrievedUserID = "6937856159";
+    const retrievedUsername = initData.user.username || "Unknown Username";
+    const retrievedUserID = initData.user.id || "Unknown UserID";
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);
 
