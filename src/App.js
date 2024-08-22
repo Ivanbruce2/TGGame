@@ -82,6 +82,24 @@ function App() {
     };
   }, []);
 
+  // Listening to game status updates when players join or make a move
+useEffect(() => {
+  if (selectedRoom) {
+    const interval = setInterval(() => {
+      fetchGameStatus(selectedRoom);
+    }, 2000); // Polling every 2 seconds
+
+    return () => clearInterval(interval);
+  }
+}, [selectedRoom]);
+
+const fetchGameStatus = (roomId) => {
+  sendMessage({
+    type: 'FETCH_GAME_STATUS',
+    roomId,
+  });
+};
+
   const handleBeforeUnload = (event) => {
     leaveGame();
     event.returnValue = '';
