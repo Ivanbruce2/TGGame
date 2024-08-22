@@ -266,21 +266,22 @@ useEffect(() => {
       
         setWalletAddress(message.walletAddress);
         break;
-      case 'JOIN_ROOM':
-        if (message.error) {
-          setToastMessage(message.error);
-          setToastVisible(true);
-        } else {
-          setSelectedRoom(message.room_id);
-          setGameStatus({
-            player1ID: message.player1ID,
-            player1Choice: message.player1Choice,
-            player2ID: message.player2ID,
-            player2Choice: message.player2Choice,
-            status: 'waiting',
-          });
-        }
-        break;
+        case 'JOIN_ROOM':
+          if (message.error) {
+            setToastMessage(message.error);
+            setToastVisible(true);
+          } else {
+            console.log(message)
+            setSelectedRoom(message.room_id);
+            setGameStatus({
+              player1ID: message.player1ID,
+              player1Choice: message.player1Choice,
+              player2ID: message.player2ID,
+              player2Choice: message.player2Choice,
+              status: message.status, // Make sure to pass the correct status here
+            });
+          }
+          break;
       default:
         console.log('Unknown message type received:', message.type);
     }
