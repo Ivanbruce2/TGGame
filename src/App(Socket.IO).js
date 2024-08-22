@@ -6,10 +6,10 @@ import WagerModal from './components/WagerModal/WagerModal';
 import Toast from './components/Toast/Toast';
 import Stats from './components/Stats/Stats';
 import './App.css';
+import { io } from 'socket.io-client'; // Import Socket.IO client
 
-// Define the backend WebSocket URL
-const backendURL = 'wss://afdc41b7b3009e6b3fe09190ec36666c.serveo.net/ws';
-
+// Define the backend Socket.IO URL
+const backendURL = 'http://localhost:8080';
 
 function App() {
   const [userID, setUserID] = useState('');
@@ -27,9 +27,9 @@ function App() {
   const [gameLogs, setGameLogs] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
   const [view, setView] = useState('history');
-  const [users, setUsers] = useState([]); // New state to store users
+  const [users, setUsers] = useState([]);
 
-  const websocketRef = useRef(null);
+  const socketRef = useRef(null);
 
   const contractAddresses = [
     { address: '0xA77241231a899b69725F2e2e092cf666286Ced7E', name: 'ShibWare', symbol: 'ShibWare', decimals: 18 },
@@ -41,58 +41,76 @@ function App() {
     const retrievedUserID = "6937856159";
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);
-
-    // Establish WebSocket connection only if it is not already established
-    if (!websocketRef.current || websocketRef.current.readyState === WebSocket.CLOSED) {
-      console.log('Establishing WebSocket connection');
-      websocketRef.current = new WebSocket(backendURL);
-
-      websocketRef.current.onopen = () => {
-        console.log('WebSocket connection established');
-        initializeUser(retrievedUserID, retrievedUsername);
-        fetchRooms();
-      };
-
-      websocketRef.current.onmessage = (event) => {
-        console.log('WebSocket message received:', event.data);
-        const message = JSON.parse(event.data);
-        handleWebSocketMessage(message);
-      };
-
-      websocketRef.current.onerror = (error) => {
-        console.error('WebSocket error:', error);
-      };
-
-      websocketRef.current.onclose = (event) => {
-        console.log('WebSocket connection closed:', event);
-      };
+  console.log(retrievedUsername,retrievedUserID)
+    // Establish the Socket.IO connection
+    if (!socketRef.current) {
+      socketRef.current = io(backendURL, {
+        transports: ["polling"],
+      });
+      
+  
+      socketRef.current.on("connect", () => {
+        console.log("Socket.IO connection established");
+  
+        // Log the message before emitting
+        const initializeUserMessage = {
+          userID: retrievedUserID,
+          username: retrievedUsername,
+        };
+        console.log("Emitting INITIALIZE_USER with message:", initializeUserMessage);
+        socketRef.current.emit("INITIALIZE_USER", initializeUserMessage);
+  
+        console.log("Emitting FETCH_ROOMS request");
+        socketRef.current.emit("FETCH_ROOMS");
+      });
+  
+      socketRef.current.on("connect_error", (error) => {
+        console.error("Socket.IO connection error:", error);
+      });
+  
+      socketRef.current.on("error", (error) => {
+        console.error("Socket.IO encountered an error:", error);
+      });
+  
+      // Listen for incoming messages from the server
+      socketRef.current.on("message", (message) => {
+        console.log("Socket.IO message received:", message);
+        handleSocketMessage(message);
+      });
+  
+      // Listen for disconnect events
+      socketRef.current.on("disconnect", (reason) => {
+        console.log("Socket.IO connection closed:", reason);
+      });
+  
+      window.addEventListener("beforeunload", handleBeforeUnload);
     }
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
+  
     return () => {
-      console.log('Cleaning up WebSocket connection');
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-
-      if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
-        websocketRef.current.close();
+      console.log("Cleaning up Socket.IO connection");
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+  
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
       }
     };
   }, []);
+  
+  
 
   const handleBeforeUnload = (event) => {
     leaveGame();
-    event.returnValue = '';
+    event.returnValue = ''; // Necessary for preventing the default behavior of closing
   };
 
-  const handleWebSocketMessage = (message) => {
-    console.log('Received WebSocket message:', message);
+  const handleSocketMessage = (message) => {
+    console.log('Received Socket.IO message:', message);
 
     switch (message.type) {
-      case 'USERS_LIST': // Handle the users list response
-      setUsers(message.users);
-      break;
-   
+      case 'USERS_LIST':
+        setUsers(message.users);
+        break;
       case 'GAME_STATS':
         setOverallStats(message.overallStats);
         setGameLogs(message.gameLogs);
@@ -100,20 +118,18 @@ function App() {
       case 'LEADERBOARD':
         setLeaderboard(message.leaderboard);
         break;
-        case 'TRANSFER_SUCCESS':
-          setToastMessage(
-            <span>
-              Transaction completed successfully!{' '}
-              <a href={`https://shibariumscan.io/tx/${message.txHash}`} target="_blank" rel="noopener noreferrer">
-                View Transaction
-              </a>
-            </span>
-          );
-          setToastVisible(true);
-          break;
-        
+      case 'TRANSFER_SUCCESS':
+        setToastMessage(
+          <span>
+            Transaction completed successfully!{' '}
+            <a href={`https://shibariumscan.io/tx/${message.txHash}`} target="_blank" rel="noopener noreferrer">
+              View Transaction
+            </a>
+          </span>
+        );
+        setToastVisible(true);
+        break;
       case 'TRY_AGAIN':
-        console.log(message);
         if (message.success) {
           setGameStatus('waiting');
           setUserChoice('');
@@ -125,7 +141,6 @@ function App() {
         }
         break;
       case 'LEAVE_ROOM':
-        console.log('Left room:', message.roomId);
         setSelectedRoom('');
         setGameStatus('');
         setUserChoice('');
@@ -133,14 +148,12 @@ function App() {
         setToastVisible(true);
         break;
       case 'CREATE_ROOM':
-        console.log('Room created with ID:', message.room_id);
         setSelectedRoom(message.room_id);
         break;
       case 'ROOMS_LIST':
         setRooms(message.rooms);
         break;
       case 'GAME_STATUS':
-        console.log('Updating game status:', message);
         setGameStatus({
           roomId: message.roomId,
           player1ID: message.player1ID,
@@ -194,11 +207,11 @@ function App() {
   };
 
   const sendMessage = (message) => {
-    console.log('Sending WebSocket message:', message);
-    if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
-      websocketRef.current.send(JSON.stringify(message));
+    console.log('Sending Socket.IO message:', message);
+    if (socketRef.current) {
+      socketRef.current.emit('message', message);
     } else {
-      console.log('WebSocket is not open. Cannot send message:', message);
+      console.log('Socket.IO is not connected. Cannot send message:', message);
     }
   };
 
@@ -207,14 +220,12 @@ function App() {
   };
 
   const initializeUser = (userID, username) => {
-    console.log(userID, username);
     sendMessage({
       type: 'INITIALIZE_USER',
-      userID: userID.toString(), // Convert userID to string before sending
+      userID: userID.toString(),
       username,
     });
   };
-  
 
   const fetchGameStats = () => {
     sendMessage({

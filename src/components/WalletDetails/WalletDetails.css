@@ -1,8 +1,4 @@
-/* Ensure a consistent font across all elements */
-.wallet-container {
-  font-family: 'Poppins', sans-serif; /* Use a clean, modern sans-serif font */
-  color: #ffffff;
-}
+
 
 .welcome-message {
   text-transform: uppercase;
@@ -21,12 +17,6 @@
     5px 5px 0 #0044ff;   /* blue shadow */
 }
 
-/* Title styling */
-.wallet-container h2 {
-  margin-bottom: 8px; /* Reduce space between title and the address */
-  font-size: 22px; /* Adjust the font size if needed */
-  font-weight: 600; /* Slightly bolder for emphasis */
-}
 
 /* Address styling */
 .wallet-address {
@@ -37,21 +27,11 @@
   transition: color 0.3s ease; /* Smooth color transition */
 }
 
-.bone-amount {
-  margin-left: 5px;
-  color: #ffffff; /* Gold color */
-}
-
-/* Hover effect for wallet address */
-.wallet-address:hover {
-  color: #1aa6e7; /* Gold color on hover */
-}
-
 /* Token list container */
 .token-list-container {
   max-height: 380px;
   overflow-y: auto;
-  border: 1px solid #e0e0e0;
+  border: 0px solid #e0e0e0;
   padding: 8px;
   margin-top: 12px; /* Slight margin to create separation from the BONE balance */
 }
@@ -60,5 +40,44 @@
 .token-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 3px;
+}
+
+/* Updated Address and BONE Amount Styling */
+.wallet-container .wallet-address, .wallet-container .bone-amount {
+  font-family: 'Roboto', sans-serif; /* Apply a clean sans-serif font */
+  font-size: 16px; /* Adjust the font size for better readability */
+  font-weight: 500; /* Slightly bold for better emphasis */
+  color: #ffffff; /* Use a subtle white color */
+  letter-spacing: 0.5px; /* Add a little spacing between letters */
+  transition: color 0.3s ease; /* Smooth color transition */
+}
+
+.bone-amount {
+  margin-left: 5px;
+  color: #f1f1ef; /* Gold color for BONE amount */
+}
+
+.wallet-address:hover {
+  color: #1aa6e7; /* Subtle hover effect */
+}
+
+/* Additional container improvements for spacing and alignment */
+.wallet-container {
+  font-family: 'Poppins', sans-serif; /* Default font for the container */
+  color: #ffffff;
+}
+
+.wallet-container h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px; /* Reduce the size for a subtler look */
+  font-weight: 600; /* Moderate weight for a clean appearance */
+  margin-bottom: 6px; /* Adjust the spacing between title and content */
+}
+
+/* Wallet container refinement */
+.wallet-container p {
+  margin: 0;
+  font-family: 'Roboto', sans-serif; /* Ensure consistency in font */
+  font-size: 14px; /* Adjust to a standard readable size */
 }

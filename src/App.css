@@ -77,11 +77,11 @@ body:before {
   background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff);
   background-size: 200% 200%;
   color: rgb(6, 6, 6);
-  font-size: clamp(0.8em, 1.2vw, 1em); /* Dynamically adjust font size */
+  font-size: 0.9em; /* Slightly smaller font size */
   border: 2px solid #333;
-  height: 50px;
-  line-height: 46px;
-  margin: 10px 0;
+  height: 34px; /* Reduced button height */
+  line-height: 34px; /* Align text vertically */
+  margin: 0 4px; /* Reduced margin around the buttons */
   border-radius: 4px;
   cursor: pointer;
   display: flex;
@@ -89,26 +89,27 @@ body:before {
   align-items: center;
   text-transform: uppercase;
   font-family: 'Press Start 2P', cursive;
-  box-shadow: 0 4px #333;
-  position: relative;
+  box-shadow: 0 2px #333; /* Reduced shadow depth */
   animation: gradientShift 2s infinite linear;
-  overflow: hidden; /* Prevent text from overflowing */
-  white-space: nowrap; /* Prevent text from wrapping */
-  text-overflow: ellipsis; /* Indicate overflow with ellipsis */
+  white-space: nowrap;
 }
 
-.create-button {
-  width: 200px; /* Ensure enough space */
+.pixel-button.create-button {
+  padding: 4px 12px; /* Reduced padding for less button width */
+  font-size: 0.8em; /* Slightly smaller font size */
 }
 
-.refresh-button {
-  width: 60px; /* Smaller width for the refresh button */
+.pixel-button.refresh-button {
+  padding: 4px 8px; /* Adjusted padding for smaller width */
+  font-size: 1.2em; /* Keep font larger for the refresh button */
+  width: 40px; /* Reduced overall button width */
 }
 
 .pixel-button:active {
-  top: 4px; /* Simulate button press */
+  top: 2px; /* Reduced the button press effect */
   box-shadow: 0 0 #333;
 }
+
 
 .game-result {
   display: flex;
@@ -145,30 +146,6 @@ body:before {
   align-items: center;
 }
 
-
-
-
-.pixel-button {
-  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); /* Rainbow gradient */
-  background-size: 200% 200%;
-  color: rgb(6, 6, 6);
-  font-size: 1em;
-  border: 2px solid #333;
-  height: 50px; /* Consistent height */
-  line-height: 46px; /* Center text vertically */
-  margin: 10px 0; /* Vertical margin for spacing */
-  border-radius: 4px;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-transform: uppercase;
-  font-family: 'Press Start 2P', cursive; /* Matching the pixel art style */
-  box-shadow: 0 4px #333; /* Pixelated shadow effect */
-  position: relative;
-  animation: gradientShift 2s infinite linear; /* Animate the gradient */
-}
-
 .try-again-button {
   padding: 10px 20px;
   margin-top: 10px;
@@ -201,23 +178,24 @@ body:before {
     4px 4px 0 #28e0ae,   /* green shadow */
     5px 5px 0 #0044ff;   /* blue shadow */
 }
-
 .header-row {
   display: flex;
-  justify-content: flex-start; /* Align buttons to the right */
+  justify-content: flex-start; /* Align buttons to the left */
   align-items: center;
-  width: 97%;
+  width: 97.4%;
   background-color: rgba(248, 248, 245, 0.7); /* Add transparency */
-  border-radius: 10px;
-  padding: 8px;
-  margin-bottom: 10px;
+  border-radius: 0px;
+  padding: 8px 8px; /* Adjust padding for less space */
+  margin-bottom: 0px; /* Reduced margin below */
 }
+
+
 
 .room-list {
   width: 100%;
   max-height: 400px;
   overflow-y: auto;
-  margin-top: 10px;
+  margin-top: 2px;
 }
 
 .room-card {
@@ -225,9 +203,9 @@ body:before {
   display: flex;
   align-items: flex-start;
   background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
+  border-radius: 0px;
   padding: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 2px;
   text-align: left;
   flex-direction: column;
 }

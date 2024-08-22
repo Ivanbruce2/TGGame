@@ -1,7 +1,58 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './Stats.css';
 
-function Stats({ overallStats, gameLogs, leaderboard, view, setView, contractAddresses }) {
+function Stats({ userID, backendURL, contractAddresses }) {
+  const [overallStats, setOverallStats] = useState(null);
+  const [gameLogs, setGameLogs] = useState([]);
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [view, setView] = useState('history'); // State to manage the toggle view
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch(`${backendURL}/game_stats`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ user_id: userID }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setOverallStats(data.overallStats);
+        setGameLogs(data.gameLogs);
+      } catch (error) {
+        console.error('Error fetching game stats:', error);
+      }
+    };
+
+    const fetchLeaderboard = async () => {
+      try {
+        const response = await fetch(`${backendURL}/leaderboard`, {
+          method: 'GET',
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setLeaderboard(data);
+      } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+      }
+    };
+
+    fetchStats();
+    if (view === 'leaderboard') {
+      fetchLeaderboard();
+    }
+  }, [userID, view]);
+
   const getTokenSymbol = (address) => {
     const token = contractAddresses.find((contract) => contract.address === address);
     return token ? token.symbol : address;
@@ -31,7 +82,6 @@ function Stats({ overallStats, gameLogs, leaderboard, view, setView, contractAdd
         </div>
       )}
 
-      {/* Toggle Buttons */}
       <div className="toggle-buttons">
         <button
           className={`toggle-button ${view === 'history' ? 'active' : ''}`}
@@ -47,7 +97,6 @@ function Stats({ overallStats, gameLogs, leaderboard, view, setView, contractAdd
         </button>
       </div>
 
-      {/* Conditional Rendering based on the selected view */}
       {view === 'history' ? (
         <div className="game-history">
           <h3>Game History</h3>

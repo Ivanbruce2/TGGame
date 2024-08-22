@@ -1,78 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './TokenCard.css';
 import Toast from '../Toast/Toast';
 
-const TokenCard = ({ token, value, backendURL, userID }) => {
+const TokenCard = ({ token, value, userID, sendMessage, users }) => { // users is now passed as a prop
   const tokenValue = (value / Math.pow(10, token.decimals)).toLocaleString();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [transferAmount, setTransferAmount] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
-  const [transactionStatus, setTransactionStatus] = useState(''); // State to hold the transfer status message
-  const [toastMessage, setToastMessage] = useState(''); // State for the toast message
-  const [toastLink, setToastLink] = useState(''); // State for the toast link
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastLink, setToastLink] = useState('');
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(token.address).then(() => {
-      console.log('Copied!');
-    }, (err) => {
-      console.error('Failed to copy text: ', err);
-    });
+  const handleUserSelect = (e) => {
+    const selectedUser = users.find(user => user.user_id === e.target.value);
+    if (selectedUser) {
+      setWalletAddress(selectedUser.wallet_address); // Auto-fill the wallet address
+    }
   };
 
-  const handleTransfer = async () => {
-    setToastMessage('Please wait...'); // Show the "Please wait..." toast before starting the transfer
-    setToastLink(''); // No link for this toast message
-    setTransactionStatus(''); // Reset status before starting the transfer
-    let result = {};
+  const handleTransfer = () => {
+    setToastMessage('Please wait...');
+    setToastLink('');
 
     const amountToTransfer = parseFloat(transferAmount) * Math.pow(10, token.decimals);
     const amountToTransferStr = Math.floor(amountToTransfer).toString();
 
     const payload = {
-      userID, // Include userID in the payload
-      to: walletAddress,
+      userID: userID.toString(),
+      toAddress: walletAddress,
       amount: amountToTransferStr,
       contractAddress: token.address,
     };
 
-    try {
-      const response = await fetch(`${backendURL}/transfer`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
+    // Use sendMessage instead of fetch
+    sendMessage({
+      type: 'TRANSFER',
+      ...payload,
+    });
 
-      result = await response.json();
-      if (result.success) {
-        setToastMessage('Transfer successful!'); // Update toast message
-        setToastLink(`https://www.shibariumscan.io/tx/${result.txHash}`); // Set the link for the successful transaction
-      } else {
-        setToastMessage(`Transfer failed: ${result.error}`);
-        setToastLink(''); // No link for failed transactions
-      }
-    } catch (error) {
-      console.error('Error during transfer:', error);
-      setToastMessage('Transfer failed due to an error.');
-      setToastLink('');
-    } finally {
-      if (result.success) {
-        setTimeout(() => {
-          setIsModalOpen(false);
-          setTransferAmount('');
-          setWalletAddress('');
-          setTransactionStatus(''); // Clear the status after closing the modal
-        }, 3000);
-      }
-    }
+    // WebSocket responses should be handled in App.js
   };
 
   return (
     <div className="token-card">
-      <div className="token-column" onClick={copyToClipboard}>
+      <div className="token-column">
         <h3 className="token-symbol">{token.symbol}</h3>
-        <span className="tooltip-text">Click to copy address</span>
         <p className="token-amount">{tokenValue}</p>
       </div>
       <div className="token-column token-action">
@@ -83,6 +54,14 @@ const TokenCard = ({ token, value, backendURL, userID }) => {
         <div className="modal">
           <div className="modal-content">
             <h3>Transfer {token.symbol}</h3>
+            <select onChange={handleUserSelect}>
+              <option value="">Select a user</option>
+              {users.map((user) => (
+                <option key={user.user_id} value={user.user_id}>
+                  {user.username}
+                </option>
+              ))}
+            </select>
             <input
               type="text"
               placeholder="Wallet Address"
@@ -101,7 +80,6 @@ const TokenCard = ({ token, value, backendURL, userID }) => {
         </div>
       )}
 
-      {/* Display the toast if there is a message */}
       {toastMessage && (
         <Toast message={toastMessage} link={toastLink} onClose={() => setToastMessage('')} />
       )}
