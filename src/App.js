@@ -9,7 +9,7 @@ import './App.css';
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
 // Define the backend WebSocket URL
-const backendURL = 'wss://73cc6442b8341507b161c8de991df0ed.serveo.net/ws';
+const backendURL = 'wss://4aca48e8c4a7cce8b13db1302b37c72c.serveo.net/ws';
 
 
 function App() {
@@ -404,7 +404,7 @@ useEffect(() => {
   {gameStatus.player1Username
     ? `${gameStatus.player1Username} ${
         gameStatus.player1Choice ? (
-         ' [✔️]'
+         '[✔️]'
         ) : (
           '[❓]'
         )
