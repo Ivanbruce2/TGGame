@@ -227,31 +227,31 @@ useEffect(() => {
 
   break;
 
-  case 'GAME_STATUS':
-    console.log('Updating game status:', message);
-    setGameStatus({
-      roomId: message.roomId,
-      player1ID: message.player1ID,
-      player1Username: message.player1Username,
-      player1Choice: message.player1Choice,
-      player2ID: message.player2ID,
-      player2Username: message.player2Username,
-      player2Choice: message.player2Choice,
-      status: message.status,
-      contractAddress: message.contractAddress,
-      wagerAmount: message.wagerAmount,
-      result: message.result,
-    });
-  
-    if (message.status === 'completed' && message.result && !transferTriggered) {
-      triggerTransfer(message.roomId);
-      setGameStatus((prevState) => ({
-        ...prevState,
-        result: 'transferCompleted',
-      }));
-    }
-  
-    break;
+ case 'GAME_STATUS':
+        console.log('Updating game status:', message);
+        setGameStatus({
+          roomId: message.roomId,
+          player1ID: message.player1ID,
+          player1Username: message.player1Username,
+          player1Choice: message.player1Choice,
+          player2ID: message.player2ID,
+          player2Username: message.player2Username,
+          player2Choice: message.player2Choice,
+          status: message.status,
+          contractAddress: message.contractAddress,
+          wagerAmount: message.wagerAmount,
+          result: message.result,
+        });
+        if (message.status === 'completed' && message.result && message.result !== 'transferCompleted') {
+          triggerTransfer(message.roomId);
+          setGameStatus((prevState) => ({
+            ...prevState,
+            result: 'transferCompleted',
+          }));
+        }
+        
+        
+        break;
       case 'TOKEN_TRANSFER':
         if (message.success) {
           setToastMessage('Game completed! Tokens have been transferred.');
@@ -362,26 +362,16 @@ useEffect(() => {
     
   };
 
-  let transferTriggered = false;
+  const triggerTransfer = (roomId) => {
+    sendMessage({ type: 'TRIGGER_TRANSFER', roomId });
+  };
 
-  const triggerTransfer = async (roomId) => {
-    if (transferTriggered) {
-      return;
-    }
-    transferTriggered = true;
-  
-    try {
-      // Introduce a delay before triggering to allow backend to process
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Adjust delay as needed
-      sendMessage({
-        type: 'TRIGGER_TRANSFER',
-        roomId,
-      });
-    } catch (error) {
-      console.error('Failed to trigger transfer:', error);
-    } finally {
-      transferTriggered = false; // Reset the flag after processing
-    }
+  const handleTryAgain = () => {
+    sendMessage({
+      type: 'TRY_AGAIN',
+      roomId: selectedRoom,
+      userID: userID.toString(),
+    });
   };
 
   const leaveGame = () => {
