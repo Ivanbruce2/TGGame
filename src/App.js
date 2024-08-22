@@ -43,44 +43,45 @@ function App() {
     const retrievedUserID = initData.user.id || "Unknown UserID";
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);
-
+  
     // Establish WebSocket connection only if it is not already established
     if (!websocketRef.current || websocketRef.current.readyState === WebSocket.CLOSED) {
       console.log('Establishing WebSocket connection');
       websocketRef.current = new WebSocket(backendURL);
-
+  
       websocketRef.current.onopen = () => {
         console.log('WebSocket connection established');
         initializeUser(retrievedUserID, retrievedUsername);
-        fetchRooms();
+        fetchRooms(); // Fetch rooms and check if the user is already in a game
       };
-
+  
       websocketRef.current.onmessage = (event) => {
         console.log('WebSocket message received:', event.data);
         const message = JSON.parse(event.data);
         handleWebSocketMessage(message);
       };
-
+  
       websocketRef.current.onerror = (error) => {
         console.error('WebSocket error:', error);
       };
-
+  
       websocketRef.current.onclose = (event) => {
         console.log('WebSocket connection closed:', event);
       };
     }
-
+  
     window.addEventListener('beforeunload', handleBeforeUnload);
-
+  
     return () => {
       console.log('Cleaning up WebSocket connection');
       window.removeEventListener('beforeunload', handleBeforeUnload);
-
+  
       if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
         websocketRef.current.close();
       }
     };
   }, []);
+  
 
   // Listening to game status updates when players join or make a move
 useEffect(() => {
@@ -163,6 +164,28 @@ useEffect(() => {
         break;
       case 'ROOMS_LIST':
         setRooms(message.rooms);
+        const activeRoom = message.rooms.find(
+          (room) =>
+            room.player1ID === userID && room.status === 'waiting'
+        );
+  
+        if (activeRoom) {
+          // Automatically join the room if found
+          setSelectedRoom(activeRoom.room_id);
+          setGameStatus({
+            roomId: activeRoom.room_id,
+            player1ID: activeRoom.player1ID,
+            player1Username: activeRoom.player1Username,
+            player1Choice: activeRoom.player1Choice,
+            player2ID: activeRoom.player2ID,
+            player2Username: activeRoom.player2Username,
+            player2Choice: activeRoom.player2Choice,
+            status: activeRoom.status,
+            contractAddress: activeRoom.contract_address,
+            wagerAmount: activeRoom.wager_amount,
+            result: activeRoom.result,
+          });
+        }
         break;
       case 'GAME_STATUS':
         console.log('Updating game status:', message);
