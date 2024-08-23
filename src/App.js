@@ -9,7 +9,7 @@ import './App.css';
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
 // Define the backend WebSocket URL
-const backendURL = 'wss://d636b80cf0026a92b7682e72beca78c5.serveo.net/ws';
+const backendURL = 'wss://ed8de9e65caae3881354a92e28e11f51.serveo.net/ws';
 
 
 function App() {
