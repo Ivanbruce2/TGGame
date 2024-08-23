@@ -8,7 +8,7 @@
   padding: 4px 8px; /* Reduced padding to remove extra space */
   margin-bottom: 0px; /* Removed extra margin */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  max-width: 350px;
+  max-width: 300px;
   width: 100%;
 }
 
@@ -44,10 +44,10 @@
   background-color: #007bff;
   color: white;
   border: none;
-  padding: 6px 16px;
-  border-radius: 4px;
+  padding: 6px 10px;
+  border-radius: 0px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
 }
 
