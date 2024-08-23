@@ -9,7 +9,7 @@ import './App.css';
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
 // Define the backend WebSocket URL
-const backendURL = 'ws://ed8de9e65caae3881354a92e28e11f51.serveo.net/ws';
+const backendURL = 'wss://ed8de9e65caae3881354a92e28e11f51.serveo.net/ws';
 
 
 function App() {
@@ -242,13 +242,7 @@ useEffect(() => {
           wagerAmount: message.wagerAmount,
           result: message.result,
         });
-        if (message.status === 'completed' && message.result && message.txHash !== '') {
-          triggerTransfer(message.roomId);
-          setGameStatus((prevState) => ({
-            ...prevState,
-            result: 'transferCompleted',
-          }));
-        }
+
         
         
         break;
