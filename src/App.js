@@ -241,9 +241,15 @@ useEffect(() => {
           contractAddress: message.contractAddress,
           wagerAmount: message.wagerAmount,
           result: message.result,
-          txHash: message.txHash
         });
-      
+        if (message.status === 'completed' && message.result && message.txHash !== '') {
+          triggerTransfer(message.roomId);
+          setGameStatus((prevState) => ({
+            ...prevState,
+            result: 'transferCompleted',
+          }));
+        }
+        
         
         break;
       case 'TOKEN_TRANSFER':
