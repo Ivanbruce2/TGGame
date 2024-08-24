@@ -179,6 +179,16 @@ useEffect(() => {
     // console.log('Received WebSocket message:', message);
 
     switch (message.type) {
+      case 'KICKOUT':
+        if (message.room_id === selectedRoom) {
+          setToastMessage(message.message);
+          setSelectedRoom('');
+          setGameStatus('');
+          setUserChoice('');
+        }
+        break;
+      
+
       case 'USERS_LIST': // Handle the users list response
       console.log('Setting users:', message.users);
       setUsers(message.users);
