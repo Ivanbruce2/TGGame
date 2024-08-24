@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './TokenCard.css';
 import Toast from '../Toast/Toast';
 
-const TokenCard = ({ token, value, userID, sendMessage, users }) => { // users is now passed as a prop
-  const tokenValue = (value / Math.pow(10, token.decimals)).toLocaleString();
+const TokenCard = ({ token, value, userID, sendMessage, users }) => {
+  const tokenValue = (value / Math.pow(10, token.decimals)).toLocaleString(); // Human-readable format
+  const maxTokenValue = value / Math.pow(10, token.decimals); // Actual value used for validation
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [transferAmount, setTransferAmount] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
@@ -16,26 +17,55 @@ const TokenCard = ({ token, value, userID, sendMessage, users }) => { // users i
       setWalletAddress(selectedUser.wallet_address); // Auto-fill the wallet address
     }
   };
-
+console.log(users)
   const handleTransfer = () => {
+    // Validate that a wallet address is provided
+    if (!walletAddress) {
+      setToastMessage('Please provide a valid wallet address.');
+      setToastLink('');
+      return; // Prevent further execution
+    }
+
+    // Validate that the transfer amount is within the available balance
+    if (parseFloat(transferAmount) > maxTokenValue) {
+      setToastMessage(`Insufficient balance. You only have ${tokenValue} ${token.symbol}.`);
+      setToastLink('');
+      return; // Prevent further execution
+    }
+
     setToastMessage('Please wait...');
     setToastLink('');
 
     const amountToTransfer = parseFloat(transferAmount) * Math.pow(10, token.decimals);
     const amountToTransferStr = Math.floor(amountToTransfer).toString();
 
-    const payload = {
-      userID: userID.toString(),
-      toAddress: walletAddress,
-      amount: amountToTransferStr,
-      contractAddress: token.address,
-    };
+    if (token.type === 'native') {
+      // Special handling for Bones (native token)
+      const payload = {
+        userID: userID.toString(),
+        toAddress: walletAddress,
+        amount: amountToTransferStr,
+        tokenType: 'native', // Distinguish that this is a native transfer
+      };
 
-    // Use sendMessage instead of fetch
-    sendMessage({
-      type: 'TRANSFER',
-      ...payload,
-    });
+      sendMessage({
+        type: 'TRANSFER_NATIVE', // Specify a different type for native transfers
+        ...payload,
+      });
+    } else {
+      // Handling for ERC-20 tokens
+      const payload = {
+        userID: userID.toString(),
+        toAddress: walletAddress,
+        amount: amountToTransferStr,
+        contractAddress: token.address,
+      };
+
+      sendMessage({
+        type: 'TRANSFER',
+        ...payload,
+      });
+    }
 
     // WebSocket responses should be handled in App.js
   };

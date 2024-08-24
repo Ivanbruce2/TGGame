@@ -6,14 +6,14 @@ import WagerModal from './components/WagerModal/WagerModal';
 import Toast from './components/Toast/Toast';
 import Stats from './components/Stats/Stats';
 import './App.css';
-import { retrieveLaunchParams } from '@telegram-apps/sdk';
+// import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
 // Define the backend WebSocket URL
-const backendURL = 'wss:///60df33f333f2707aa279ec8d60924a26.serveo.net/ws';
+const backendURL = 'wss://60df33f333f2707aa279ec8d60924a26.serveo.net/ws';
 
 
 function App() {
-  const { initDataRaw, initData } = retrieveLaunchParams();
+  // const { initDataRaw, initData } = retrieveLaunchParams();
   const [userID, setUserID] = useState('');
   const [username, setUsername] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
@@ -30,55 +30,92 @@ function App() {
   const [leaderboard, setLeaderboard] = useState([]);
   const [view, setView] = useState('history');
   const [users, setUsers] = useState([]); // New state to store users
-
+  const [boneBalance, setBoneBalance] = useState(0);
   const websocketRef = useRef(null);
+  const messageQueue = useRef([]); 
 
   const contractAddresses = [
-    { address: '0xA77241231a899b69725F2e2e092cf666286Ced7E', name: 'ShibWare', symbol: 'ShibWare', decimals: 18 },
-    { address: '0x43AB6e79a0ee99e6cF4eF9e70b4C0c2DF5A4d0Fb', name: 'CRYPTIQ', symbol: 'CTQ', decimals: 18 },
+    // { address: '', name: 'Bones', symbol: 'BONES', decimals: 18, type: 'native' },
+    { address: '0xA77241231a899b69725F2e2e092cf666286Ced7E', name: 'ShibWare', symbol: 'ShibWare', decimals: 18, type: 'erc20' },
+    { address: '0x43AB6e79a0ee99e6cF4eF9e70b4C0c2DF5A4d0Fb', name: 'CRYPTIQ', symbol: 'CTQ', decimals: 18, type: 'erc20' },
   ];
 
   useEffect(() => {
-    // const retrievedUsername = "TrialAcc31";
-    // const retrievedUserID = "6937856159";
-    const retrievedUsername = initData.user.username || "Unknown Username";
-    const retrievedUserID = initData.user.id || "Unknown UserID";
-    console.log('Setting userID:', retrievedUserID);
+    console.log('Contract Addresses:', contractAddresses);
+  }, []);
+
+  useEffect(() => {
+    if (walletAddress) {
+      const fetchBoneBalance = async () => {
+        try {
+          const response = await fetch(`https://www.shibariumscan.io/api/v2/addresses/${walletAddress}`);
+          const data = await response.json();
+          const balance = parseFloat(data.coin_balance) / Math.pow(10, 18); // Adjust for decimals
+          setBoneBalance(balance);
+        } catch (error) {
+          console.error('Error fetching BONE balance:', error);
+        }
+      };
+  
+      fetchBoneBalance();
+    }
+  }, [walletAddress]);
+
+
+
+
+  useEffect(() => {
+    const retrievedUsername = "TrialAcc31";
+    const retrievedUserID = "6937856159";
+    // const retrievedUsername = initData.user.username || "Unknown Username";
+    // const retrievedUserID = initData.user.id || "Unknown UserID";
+    // console.log('Setting userID:', retrievedUserID);
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);
     
   }, []); // This effect runs only once, when the component mounts
   
   useEffect(() => {
-    if (userID) { // Ensure this only runs when userID is set
-      // Establish WebSocket connection only if it is not already established
-      if (!websocketRef.current || websocketRef.current.readyState === WebSocket.CLOSED) {
+    if (userID) {
+      // Only establish a new WebSocket connection if it isn't already open or connecting
+      if (!websocketRef.current || websocketRef.current.readyState > WebSocket.OPEN) {
         console.log('Establishing WebSocket connection');
         websocketRef.current = new WebSocket(backendURL);
-  
+
         websocketRef.current.onopen = () => {
           console.log('WebSocket connection established');
+          // Process queued messages
+          while (messageQueue.current.length > 0) {
+            const message = messageQueue.current.shift();
+            sendMessage(message);
+          }
+          // Send initialization messages
           initializeUser(userID, username);
           fetchRooms();
+          fetchUsers();
         };
-  
+
         websocketRef.current.onmessage = (event) => {
-          console.log('WebSocket message received:', event.data);
           const message = JSON.parse(event.data);
           handleWebSocketMessage(message);
         };
-  
+
         websocketRef.current.onerror = (error) => {
           console.error('WebSocket error:', error);
         };
-  
+
         websocketRef.current.onclose = (event) => {
           console.log('WebSocket connection closed:', event);
         };
       }
     }
-  }, [userID]); // This effect depends on the userID
-  
+  }, [userID]);
+
+  useEffect(() => {
+    // Automatically fetch users when the app loads
+    fetchUsers();
+  }, []);
+
   useEffect(() => {
     // Fetch the initial data when the stats page is loaded for the first time
     if (view === 'history') {
@@ -133,11 +170,13 @@ useEffect(() => {
   };
 
   const handleWebSocketMessage = (message) => {
-    console.log('Received WebSocket message:', message);
+    // console.log('Received WebSocket message:', message);
 
     switch (message.type) {
       case 'USERS_LIST': // Handle the users list response
+      console.log('Setting users:', message.users);
       setUsers(message.users);
+      
       break;
    
       case 'GAME_STATS':
@@ -184,11 +223,11 @@ useEffect(() => {
         setSelectedRoom(message.room_id);
         break;
         case 'ROOMS_LIST':
-  console.log('Rooms list received:', message.rooms); // Log all rooms received
+  // console.log('Rooms list received:', message.rooms); // Log all rooms received
   
   // Ensure message.rooms is not null or undefined
   if (!message.rooms) {
-    console.error('Rooms data is null or undefined.');
+    // console.error('Rooms data is null or undefined.');
     break;
   }
 
@@ -291,11 +330,11 @@ useEffect(() => {
   };
 
   const sendMessage = (message) => {
-    console.log('Sending WebSocket message:', message);
     if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
       websocketRef.current.send(JSON.stringify(message));
     } else {
-      console.log('WebSocket is not open. Cannot send message:', message);
+      console.log('WebSocket is not open. Queuing message:', message);
+      messageQueue.current.push(message); // Queue the message if WebSocket is not open
     }
   };
 
@@ -330,9 +369,12 @@ useEffect(() => {
     } else if (view === 'leaderboard') {
       fetchLeaderboard();
     }
+    
   }, [view, userID]);
 
   const createRoom = (contractAddress, wagerAmount) => {
+
+
     sendMessage({
       type: 'CREATE_ROOM',
       userID: userID.toString(),
@@ -392,8 +434,14 @@ useEffect(() => {
   };
 
   const handleOpenModal = () => {
+    if (boneBalance < 1) {
+      setToastMessage(`You need at least 1 BONE to create a room. You currently have ${boneBalance.toFixed(3)} BONE.`);
+      setToastVisible(true);
+      return; // Prevent further execution
+    }
     setIsModalOpen(true);
   };
+  
 
   const handleSaveModal = (contractAddress, wagerAmount) => {
     setIsModalOpen(false);
@@ -403,6 +451,7 @@ useEffect(() => {
   const handleCancelModal = () => {
     setIsModalOpen(false);
   };
+  
 
   const fetchUsers = () => {
     sendMessage({ type: 'FETCH_USERS' });
@@ -605,7 +654,7 @@ useEffect(() => {
             />
             <Route
               path="/wallet-details"
-              element={<WalletDetails walletAddress={walletAddress} backendURL={backendURL} userID={userID} sendMessage={sendMessage} users={users} />}
+              element={<WalletDetails walletAddress={walletAddress} backendURL={backendURL} userID={userID} sendMessage={sendMessage} users={users} contractAddresses={contractAddresses} />}
             />
             <Route
               path="/stats"

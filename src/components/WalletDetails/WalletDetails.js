@@ -3,7 +3,8 @@ import TokenCard from '../TokenCard/TokenCard';
 import Toast from '../Toast/Toast'; // Import your custom Toast component
 import './WalletDetails.css';
 
-const WalletDetails = ({ walletAddress, backendURL, userID, sendMessage,users }) => { // Accept walletAddress as a prop
+const WalletDetails = ({ walletAddress, backendURL, userID, sendMessage, users, contractAddresses }) => { // Accept walletAddress as a prop
+
   const [tokens, setTokens] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,18 +19,48 @@ const WalletDetails = ({ walletAddress, backendURL, userID, sendMessage,users })
         try {
           // Fetch BONE balance using the prefix
           const response = await fetch(`${apiPrefix}/addresses/${walletAddress}`);
+          if (!response.ok) {
+            throw new Error(`Failed to fetch BONE data: ${response.statusText}`);
+          }
           const data = await response.json();
-
+          
+  
           // Calculate the BONE equivalent by dividing by 10^18
           const boneBalance = (parseFloat(data.coin_balance) / Math.pow(10, 18)).toFixed(3);
           setBoneAmount(boneBalance);
-
+  
           // Fetch tokens using the prefix
           const tokenResponse = await fetch(`${apiPrefix}/addresses/${walletAddress}/token-balances`);
+          if (!tokenResponse.ok) {
+            throw new Error(`Failed to fetch token data: ${tokenResponse.statusText}`);
+          }
           const tokenData = await tokenResponse.json();
-
+        
+  
           if (Array.isArray(tokenData)) {
-            setTokens(tokenData);
+            // Exclude the manually added BONE token from contractAddresses mapping
+            const mappedTokens = contractAddresses
+              .filter(contract => contract.symbol !== 'BONES') // Exclude BONE from the mapping
+              .map((contract) => {
+                const matchingToken = tokenData.find((token) => token.token.address.toLowerCase() === contract.address.toLowerCase());
+                return {
+                  ...contract,
+                  value: matchingToken ? matchingToken.value : "0", // If not found, default to "0"
+                };
+              });
+  
+            // Include BONE as a native token only once
+            setTokens([
+              {
+                address: '',
+                name: 'Bones',
+                symbol: 'BONES',
+                decimals: 18,
+                type: 'native',
+                value: data.coin_balance, // The raw BONE balance value
+              },
+              ...mappedTokens,
+            ]);
           } else {
             setError('Unexpected data format');
           }
@@ -40,10 +71,11 @@ const WalletDetails = ({ walletAddress, backendURL, userID, sendMessage,users })
           setLoading(false);
         }
       };
-
+  
       fetchTokensAndBone();
     }
-  }, [walletAddress, apiPrefix]); // Use the prefix as a dependency
+  }, [walletAddress, apiPrefix, contractAddresses]);
+  
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(walletAddress).then(() => {
@@ -73,13 +105,11 @@ const WalletDetails = ({ walletAddress, backendURL, userID, sendMessage,users })
     <div>
       <h2 className="welcome-message">Wallet Details</h2>
       <p>
-        <b>Wallet:</b> 
+        
         <span className="wallet-address" onClick={copyToClipboard} style={{ cursor: 'pointer' }}>
-          {truncateAddress(walletAddress)}
+          {walletAddress}
         </span>
-        {boneAmount && (
-          <span className="bone-amount"> ({boneAmount} BONE)</span>
-        )}
+        
       </p>
       <div className="token-list-container">
         <div className="token-list">
@@ -87,12 +117,12 @@ const WalletDetails = ({ walletAddress, backendURL, userID, sendMessage,users })
             tokens.map((tokenData, index) => (
               <TokenCard
                 key={index}
-                token={tokenData.token}
-                value={tokenData.value}
+                token={tokenData} // Pass the entire token object, including type and value
+                value={tokenData.value} // Pass the value (in raw smallest units)
                 backendURL={backendURL}
                 userID={userID}
                 sendMessage={sendMessage}
-                users={users} 
+                users={users}
               />
             ))
           ) : (
