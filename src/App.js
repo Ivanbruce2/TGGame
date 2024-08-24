@@ -244,6 +244,7 @@ useEffect(() => {
       case 'CREATE_ROOM':
         console.log('Room created with ID:', message.room_id);
         setSelectedRoom(message.room_id);
+        console.log(selectedRoom)
         break;
         case 'ROOMS_LIST':
   // console.log('Rooms list received:', message.rooms); // Log all rooms received
