@@ -8,7 +8,7 @@ const WalletDetails = ({ walletAddress, backendURL, userID, sendMessage, users, 
   const [tokens, setTokens] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [boneAmount, setBoneAmount] = useState(null);
+  const [boneAmount, setBoneAmount] = useState("0"); // Default to 0 if fetch fails
   const [toastVisible, setToastVisible] = useState(false); // State to control toast visibility
   const [toastMessage, setToastMessage] = useState(''); // State for the toast message
   const apiPrefix = "https://www.shibariumscan.io/api/v2";
@@ -23,7 +23,6 @@ const WalletDetails = ({ walletAddress, backendURL, userID, sendMessage, users, 
             throw new Error(`Failed to fetch BONE data: ${response.statusText}`);
           }
           const data = await response.json();
-          
   
           // Calculate the BONE equivalent by dividing by 10^18
           const boneBalance = (parseFloat(data.coin_balance) / Math.pow(10, 18)).toFixed(3);
@@ -35,7 +34,6 @@ const WalletDetails = ({ walletAddress, backendURL, userID, sendMessage, users, 
             throw new Error(`Failed to fetch token data: ${tokenResponse.statusText}`);
           }
           const tokenData = await tokenResponse.json();
-        
   
           if (Array.isArray(tokenData)) {
             // Exclude the manually added BONE token from contractAddresses mapping
@@ -66,7 +64,9 @@ const WalletDetails = ({ walletAddress, backendURL, userID, sendMessage, users, 
           }
         } catch (error) {
           console.error('Error fetching token or BONE data:', error);
-          setError('Failed to fetch data');
+          // Set boneAmount to "0" if the fetch fails
+          setBoneAmount("0");
+          setError('Failed to fetch token or BONE data, showing default values.');
         } finally {
           setLoading(false);
         }
