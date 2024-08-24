@@ -89,10 +89,11 @@
 .modal-content input,
 .modal-content select {
   display: block;
-  width: 100%; /* Ensure inputs don’t exceed modal width */
+  width: 100%; /* Ensure inputs and selects don't exceed modal width */
   box-sizing: border-box; /* Include padding and border in the element's width */
   margin-bottom: 15px;
-  padding: 12px; /* Increased padding */
+  padding: 12px; /* Uniform padding for consistent height */
+  height: 48px; /* Set a fixed height */
   border: 2px solid #333; /* Darker border for better contrast */
   border-radius: 8px; /* Larger border radius */
   background-color: #0f3460; /* Dark background */
@@ -106,6 +107,7 @@
 .modal-content select:focus {
   border-color: #ffd700; /* Highlight border on focus */
 }
+
 
 .send-button,
 .cancel-button {
