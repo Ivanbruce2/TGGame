@@ -185,6 +185,8 @@ useEffect(() => {
 
     switch (message.type) {
       case 'KICKOUT':
+        console.log(message.room_id)
+        console.log(selectedRoom)
         if (message.room_id === selectedRoom) {
           setToastMessage(message.message);
           setSelectedRoom('');
