@@ -239,7 +239,7 @@ body:before {
   width: 97.4%;
   background-color: rgba(248, 248, 245, 0.7); /* Add transparency */
   border-radius: 0px;
-  padding: 8px 8px; /* Adjust padding for less space */
+  padding: 4px 4px; /* Adjust padding for less space */
   margin-bottom: 0px; /* Reduced margin below */
 }
 

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './Stats.css';
 
-function Stats({ overallStats, gameLogs, leaderboard, view, setView, contractAddresses }) {
+function Stats({ overallStats, gameLogs, leaderboard, view, setView, contractAddresses,fetchGameStats,fetchLeaderboard }) {
   const getTokenSymbol = (address) => {
     const token = contractAddresses.find((contract) => contract.address === address);
     return token ? token.symbol : address;
@@ -12,14 +12,22 @@ function Stats({ overallStats, gameLogs, leaderboard, view, setView, contractAdd
     const decimals = token ? token.decimals : 1;
     return (parseFloat(amount) / Math.pow(10, decimals)).toFixed(2);
   };
+  useEffect(() => {
+    // Fetch the initial data when the component is mounted
+    if (view === 'history') {
+      fetchGameStats();
+    } else if (view === 'leaderboard') {
+      fetchLeaderboard();
+    }
+  }, [view, fetchGameStats, fetchLeaderboard]); 
 
   return (
     <div className="stats-container">
-      <h2>Game Stats</h2>
+      <h2>GAME STATS</h2>
       {overallStats && (
         <div className="overall-stats">
           <div className="stats-row">
-            <span>Total Matches</span>
+            <span>Overall</span>
             <span>Wins</span>
             <span>Losses</span>
           </div>
@@ -50,32 +58,28 @@ function Stats({ overallStats, gameLogs, leaderboard, view, setView, contractAdd
       {/* Conditional Rendering based on the selected view */}
       {view === 'history' ? (
         <div className="game-history">
-          <h3>Game History</h3>
           <div className="game-logs">
             <table className="game-log-table">
               <thead>
                 <tr>
-                  <th>Contract</th>
-                  <th>Result</th>
+                  <th>Token</th>
                   <th>Amount</th>
-                  <th>Transaction</th>
+                  <th>Result</th>
                 </tr>
               </thead>
               <tbody>
                 {gameLogs && gameLogs.map((log, index) => (
                   <tr key={index}>
                     <td>{getTokenSymbol(log.contract_address)}</td>
-                    <td className={log.result === 'win' ? 'result-win' : 'result-lose'}>
-                      {log.result}
-                    </td>
                     <td>{getFormattedAmount(log.amount, log.contract_address)}</td>
-                    <td>
+                    <td className={log.result === 'win' ? 'result-win' : 'result-lose'}>
                       <a
                         href={`https://shibariumscan.io/tx/${log.txhash}`}
                         target="_blank"
                         rel="noopener noreferrer"
+                        className={log.result === 'win' ? 'result-win' : 'result-lose'}
                       >
-                        View Transaction
+                        {log.result}
                       </a>
                     </td>
                   </tr>
@@ -86,7 +90,6 @@ function Stats({ overallStats, gameLogs, leaderboard, view, setView, contractAdd
         </div>
       ) : (
         <div className="leaderboard">
-          <h3>Leaderboard</h3>
           <table className="leaderboard-table">
             <thead>
               <tr>

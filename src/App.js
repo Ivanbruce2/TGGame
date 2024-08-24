@@ -9,7 +9,7 @@ import './App.css';
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
 // Define the backend WebSocket URL
-const backendURL = 'wss://4ecde973410024d8819037510e7c73e2.serveo.net/ws';
+const backendURL = 'wss:///6ef859a56c924195368dc2f5e39a6f4d.serveo.net/ws';
 
 
 function App() {
@@ -79,7 +79,16 @@ function App() {
     }
   }, [userID]); // This effect depends on the userID
   
-  
+  useEffect(() => {
+    // Fetch the initial data when the stats page is loaded for the first time
+    if (view === 'history') {
+      fetchGameStats();
+    } else if (view === 'leaderboard') {
+      fetchLeaderboard();
+    }
+  }, [view, userID]);
+
+ 
   
 
   // Listening to game status updates when players join or make a move
@@ -445,25 +454,18 @@ useEffect(() => {
           <>
 <h2 className="game-status">
   {gameStatus.player1Username
-    ? `${gameStatus.player1Username} ${
-        gameStatus.player1Choice ? (
-         '[✔️]'
-        ) : (
-          '[❓]'
-        )
+    ? `${gameStatus.player1Username}${
+        gameStatus.player1Choice ? '[✔️]' : '[❓]'
       }`
     : '[Pending]'}
   {' vs '}
   {gameStatus.player2Username
-    ? `${gameStatus.player2Username} ${
-        gameStatus.player2Choice ? (
-          '[✔️]'
-        ) : (
-          '[❓]'
-        )
+    ? `${gameStatus.player2Username}${
+        gameStatus.player2Choice ? '[✔️]' : '[❓]'
       }`
     : '[Pending]'}
 </h2>
+
 
 
   
@@ -558,7 +560,7 @@ useEffect(() => {
               path="/"
               element={
                 <div>
-                  <h1 className="welcome-message">Welcome, {username}</h1>
+                  <h1 className="welcome-message">Welcome {username}</h1>
                   <p>
                     <b>Wallet: </b>
                     <WalletDisplay walletAddress={walletAddress} />
@@ -617,6 +619,8 @@ useEffect(() => {
                   leaderboard={leaderboard}
                   view={view}
                   setView={setView}
+                  fetchGameStats={fetchGameStats} 
+                  fetchLeaderboard={fetchLeaderboard}
                 />}
             />
           </Routes>

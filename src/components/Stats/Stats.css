@@ -1,22 +1,28 @@
 .stats-container {
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
-    background-color: #1f1f1f;
-    border-radius: 10px;
-    color: #fff;
-    font-family: 'Arial', sans-serif;
-  }
+  padding: 20px;
+  max-width: 350px;
+  margin: 0 auto;
+  background-color: rgba(31, 31, 31, 0.8); /* Background with 80% opacity */
+  border-radius: 00px;
+  color: #fff;
+  font-family: 'Arial', sans-serif;
+}
+.game-history {
+  margin-bottom: 0px; /* Adjust the value as needed */
+}
+
   
   h2, h3 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+    color: #FFD700;
   }
   
  /* Center the overall stats headers and values */
 .overall-stats {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+    
   }
   
   .stats-row {
@@ -32,55 +38,56 @@
   }
   
   /* Game history table styling */
-  .game-logs {
-    max-height: 350px;
-    overflow-y: auto;
-    padding: 10px;
-  }
-  
-  .game-log-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .game-log-table th, .game-log-table td {
-    padding: 10px;
-    text-align: center; /* Center-align both headers and data */
-    border-bottom: 1px solid #555;
-  }
-  
-  .game-log-table th {
-    background-color: #333;
-    color: #fff;
-  }
-  
-  .game-log-table td {
-    vertical-align: middle; /* Ensure proper vertical alignment */
-  }
-  
-  .game-log-table td a {
-    color: #00FF00;
-    text-decoration: none;
-  }
-  
-  .game-log-table td a:hover {
-    text-decoration: underline;
-  }
-  
-  /* Style for result text: green for wins, red for losses */
-  .game-log-table td.result-win {
-    color: #00FF00;
-  }
-  
-  .game-log-table td.result-lose {
-    color: #FF0000;
-  }
+/* Game history table styling */
+.game-logs {
+  max-height: 350px;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.game-log-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.game-log-table th, .game-log-table td {
+  padding: 10px;
+  text-align: center; /* Center-align both headers and data */
+  border-bottom: 1px solid #555;
+}
+
+.game-log-table th {
+  background-color: #333;
+  color: #fff;
+}
+
+.game-log-table td {
+  vertical-align: middle; /* Ensure proper vertical alignment */
+}
+
+.game-log-table td a {
+  text-decoration: none;
+}
+
+/* Style for result text: green for wins, red for losses */
+.result-win a {
+  color: #00FF00 !important; /* Use !important to ensure the color is applied */
+}
+
+.result-lose a {
+  color: #FF0000 !important; /* Use !important to ensure the color is applied */
+}
+
+.game-log-table td a:hover {
+  text-decoration: underline;
+}
+
   
   /* Toggle Button Styles */
 .toggle-buttons {
     display: flex;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
   
   .toggle-button {
