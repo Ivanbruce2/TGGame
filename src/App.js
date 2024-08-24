@@ -253,6 +253,7 @@ useEffect(() => {
   
   // Ensure message.rooms is not null or undefined
   if (!message.rooms) {
+    setRooms('')
     // console.error('Rooms data is null or undefined.');
     break;
   }
