@@ -135,6 +135,8 @@ function App() {
   // Listening to game status updates when players join or make a move
   useEffect(() => {
     if (selectedRoom) {
+      console.log("game status")
+      console.log(selectedRoom)
       const interval = setInterval(() => {
         if (selectedRoom) { // Check if selectedRoom still exists before polling
           fetchGameStatus(selectedRoom);
