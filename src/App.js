@@ -143,7 +143,7 @@ function App() {
         } else {
           clearInterval(interval); // Stop polling if selectedRoom becomes invalid
         }
-      }, 5000); // Polling every 1 second
+      }, 1000); // Polling every 1 second
   
       return () => clearInterval(interval); // Clean up interval on component unmount
     }
