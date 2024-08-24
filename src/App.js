@@ -141,7 +141,7 @@ function App() {
         } else {
           clearInterval(interval); // Stop polling if selectedRoom becomes invalid
         }
-      }, 1000); // Polling every 1 second
+      }, 5000); // Polling every 1 second
   
       return () => clearInterval(interval); // Clean up interval on component unmount
     }
@@ -187,12 +187,12 @@ useEffect(() => {
       case 'KICKOUT':
         console.log(message.room_id)
         console.log(selectedRoom)
-        
+        if (message.room_id === selectedRoom) {
           setToastMessage(message.message);
           setSelectedRoom('');
           setGameStatus('');
           setUserChoice('');
-        
+        }
         break;
       
 
