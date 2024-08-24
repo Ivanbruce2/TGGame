@@ -187,12 +187,12 @@ useEffect(() => {
       case 'KICKOUT':
         console.log(message.room_id)
         console.log(selectedRoom)
-        if (message.room_id === selectedRoom) {
+        
           setToastMessage(message.message);
           setSelectedRoom('');
           setGameStatus('');
           setUserChoice('');
-        }
+        
         break;
       
 
@@ -313,8 +313,7 @@ useEffect(() => {
           wagerAmount: message.wagerAmount,
           result: message.result,
         });
-
-        
+       
         
         break;
       case 'TOKEN_TRANSFER':
