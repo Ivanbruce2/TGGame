@@ -479,12 +479,13 @@ useEffect(() => {
     return (
       <div className="loading-screen">
         <h1 className="loading-message">
-          <span>Game</span>
-          <span>Loading...</span>
+          Game<br />
+          Loading...
         </h1>
       </div>
     );
   }
+  
   
 
   if (selectedRoom) {
