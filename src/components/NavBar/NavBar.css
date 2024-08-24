@@ -1,11 +1,19 @@
 /* NavBar.css */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .navbar {
   background-color: #333;
   padding: 0.5rem 1rem;
   position: fixed;
   width: 100%;
   top: 0;
+  left: 0;
   z-index: 1000;
+  margin: 0;
 }
 
 .navbar ul {
@@ -35,5 +43,5 @@
 }
 
 .container {
-  padding-top: 3rem;
+  padding-top: 3.5rem; /* Adjusted padding to prevent content from being hidden behind the navbar */
 }
