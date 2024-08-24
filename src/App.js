@@ -14,6 +14,7 @@ const backendURL = 'wss://60df33f333f2707aa279ec8d60924a26.serveo.net/ws';
 
 function App() {
   const { initDataRaw, initData } = retrieveLaunchParams();
+  const [isUserInitialized, setIsUserInitialized] = useState(false); 
   const [userID, setUserID] = useState('');
   const [username, setUsername] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
@@ -37,7 +38,10 @@ function App() {
   const contractAddresses = [
     // { address: '', name: 'Bones', symbol: 'BONES', decimals: 18, type: 'native' },
     { address: '0xA77241231a899b69725F2e2e092cf666286Ced7E', name: 'ShibWare', symbol: 'ShibWare', decimals: 18, type: 'erc20' },
-    { address: '0x43AB6e79a0ee99e6cF4eF9e70b4C0c2DF5A4d0Fb', name: 'CRYPTIQ', symbol: 'CTQ', decimals: 18, type: 'erc20' },
+    { address: '0x2761723006d3Eb0d90B19B75654DbE543dcd974f', name: 'ChewySwap', symbol: 'CHEWY', decimals: 18, type: 'erc20' },
+    { address: '0x5212B42ef96A47Af93F3a6c801227b650EDEb12f', name: 'Sideshow 404', symbol: 'SKULLZ', decimals: 18, type: 'erc20' },
+    { address: '0x8cC82045E761329FA13C9b0A0a31d76615fEc109', name: 'CorruptFun', symbol: 'CFUN', decimals: 18, type: 'erc20' },
+
   ];
 
   useEffect(() => {
@@ -65,8 +69,8 @@ function App() {
 
 
   useEffect(() => {
-    // const retrievedUsername = "TrialAcc31";
-    // const retrievedUserID = "6937856159";
+    // const retrievedUsername = "poemcryptoman";
+    // const retrievedUserID = "5199577425";
     const retrievedUsername = initData.user.username || "Unknown Username";
     const retrievedUserID = initData.user.id || "Unknown UserID";
     // console.log('Setting userID:', retrievedUserID);
@@ -162,6 +166,8 @@ const fetchGameStatus = (roomId) => {
 useEffect(() => {
   console.log("Updated game status state:", gameStatus);
 }, [gameStatus]);
+
+
 
 
   const handleBeforeUnload = (event) => {
@@ -305,7 +311,7 @@ useEffect(() => {
         }
         break;
       case 'INITIALIZE_USER':
-      
+        setIsUserInitialized(true); // Mark the user as initialized
         setWalletAddress(message.walletAddress);
         break;
         case 'JOIN_ROOM':
@@ -363,14 +369,7 @@ useEffect(() => {
     sendMessage({ type: 'LEADERBOARD' });
   };
 
-  useEffect(() => {
-    if (view === 'history') {
-      fetchGameStats();
-    } else if (view === 'leaderboard') {
-      fetchLeaderboard();
-    }
-    
-  }, [view, userID]);
+
 
   const createRoom = (contractAddress, wagerAmount) => {
 
@@ -476,6 +475,14 @@ useEffect(() => {
       </div>
     );
   };
+
+  if (!isUserInitialized) {
+    return (
+      <div className="loading-screen">
+        <h1 className="loading-message">Game Loading...</h1>
+      </div>
+    );
+  }
 
   if (selectedRoom) {
     // Extract the relevant contract information based on the stored contract address
@@ -634,7 +641,7 @@ useEffect(() => {
                         <div className="room-card" key={room.room_id}>
                           <div className="room-details">
                             <p>
-                              Room ID: {room.room_id} | {room.status === 'waiting'
+                              {room.status === 'waiting'
                                 ? `Player: ${room.player1_username}`
                                 : `${room.player1_username} vs ${room.player2_username}`}
                             </p>

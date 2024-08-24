@@ -215,6 +215,25 @@ body:before {
   font-weight: bold;
 }
 
+.loading-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+}
+
+.loading-message {
+  font-family: 'Press Start 2P', cursive; /* Or any font you prefer */
+  font-size: 1.5em;
+  color: #ffd700;
+  text-shadow: 
+    1px 1px 0 #ff0047,   /* red shadow */
+    2px 2px 0 #ff8a00,   /* orange shadow */
+    3px 3px 0 #fcdc4d,   /* yellow shadow */
+    4px 4px 0 #28e0ae,   /* green shadow */
+    5px 5px 0 #0044ff;   /* blue shadow */
+}
+
 
 .welcome-message {
   text-transform: uppercase;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './TokenCard.css';
 import Toast from '../Toast/Toast';
 
-const TokenCard = ({ token, value, userID, sendMessage, users }) => {
+const TokenCard = ({ token, value, userID, sendMessage, users, refreshTokens }) => {
   const tokenValue = (value / Math.pow(10, token.decimals)).toLocaleString(); // Human-readable format
   const maxTokenValue = value / Math.pow(10, token.decimals); // Actual value used for validation
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,7 +17,7 @@ const TokenCard = ({ token, value, userID, sendMessage, users }) => {
       setWalletAddress(selectedUser.wallet_address); // Auto-fill the wallet address
     }
   };
-console.log(users)
+
   const handleTransfer = () => {
     // Validate that a wallet address is provided
     if (!walletAddress) {
@@ -67,7 +67,13 @@ console.log(users)
       });
     }
 
-    // WebSocket responses should be handled in App.js
+    // Close modal and wait for WebSocket response
+    setIsModalOpen(false);
+
+    // Trigger the token refresh after transfer (optional delay can be added if needed)
+    setTimeout(() => {
+      refreshTokens(); // Refresh token data after successful transfer
+    }, 1000);
   };
 
   return (
