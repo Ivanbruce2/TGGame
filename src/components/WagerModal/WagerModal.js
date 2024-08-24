@@ -4,7 +4,7 @@ import './WagerModal.css';
 const WagerModal = ({ contracts, walletAddress, onSave, onCancel }) => {
   const [selectedContract, setSelectedContract] = useState('');
   const [wagerAmount, setWagerAmount] = useState('');
-  const [availableBalance, setAvailableBalance] = useState(null); // Store available balance
+  const [availableBalance, setAvailableBalance] = useState(0); // Default balance to 0
   const [tokenBalances, setTokenBalances] = useState([]); // Store all token balances
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -29,8 +29,8 @@ const WagerModal = ({ contracts, walletAddress, onSave, onCancel }) => {
       const contract = contracts.find(contract => contract.address === selectedContract);
       const tokenData = tokenBalances.find(token => token.token.address === selectedContract);
 
-      if (tokenData && contract) {
-        const balance = parseFloat(tokenData.value) / Math.pow(10, contract.decimals);
+      if (contract) {
+        const balance = tokenData ? parseFloat(tokenData.value) / Math.pow(10, contract.decimals) : 0;
         setAvailableBalance(balance);
         setErrorMessage(''); // Clear any previous error message
       }
@@ -38,21 +38,27 @@ const WagerModal = ({ contracts, walletAddress, onSave, onCancel }) => {
   }, [selectedContract, contracts, tokenBalances]);
 
   const handleSave = () => {
-    if (selectedContract && wagerAmount) {
-      const contract = contracts.find(contract => contract.address === selectedContract);
+    if (!selectedContract) {
+      alert('Please select a contract.');
+      return;
+    }
 
-      if (contract) {
-        const adjustedWagerAmount = parseFloat(wagerAmount) * Math.pow(10, contract.decimals);
+    if (parseFloat(wagerAmount) === 0 || isNaN(parseFloat(wagerAmount))) {
+      setErrorMessage('Wager amount cannot be 0.');
+      return;
+    }
 
-        // Validate the wager amount against the available balance
-        if (parseFloat(wagerAmount) > availableBalance) {
-          setErrorMessage('Wager amount exceeds available balance.');
-        } else {
-          onSave(contract.address, adjustedWagerAmount.toString());
-        }
+    const contract = contracts.find(contract => contract.address === selectedContract);
+
+    if (contract) {
+      const adjustedWagerAmount = parseFloat(wagerAmount) * Math.pow(10, contract.decimals);
+
+      // Validate the wager amount against the available balance
+      if (parseFloat(wagerAmount) > availableBalance) {
+        setErrorMessage('Wager amount exceeds available balance.');
+      } else {
+        onSave(contract.address, adjustedWagerAmount.toString());
       }
-    } else {
-      alert('Please select a contract and enter a valid amount.');
     }
   };
 
