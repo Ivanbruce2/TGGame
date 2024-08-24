@@ -24,12 +24,12 @@
       "typescript": "^5.5.4"
     }
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
+"scripts": {
+  "start": "react-scripts start",
+  "build": "react-app-rewired build",
+  "test": "react-scripts test",
+  "eject": "react-scripts eject"
+},
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -47,5 +47,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "javascript-obfuscator": "^4.1.1",
+    "react-app-rewired": "^2.2.1",
+    "terser-webpack-plugin": "^5.3.10",
+    "webpack-obfuscator": "^3.5.1"
   }
 }
