@@ -133,15 +133,20 @@ function App() {
   
 
   // Listening to game status updates when players join or make a move
-useEffect(() => {
-  if (selectedRoom) {
-    const interval = setInterval(() => {
-      fetchGameStatus(selectedRoom);
-    }, 500); // Polling every 2 seconds
-
-    return () => clearInterval(interval);
-  }
-}, [selectedRoom]);
+  useEffect(() => {
+    if (selectedRoom) {
+      const interval = setInterval(() => {
+        if (selectedRoom) { // Check if selectedRoom still exists before polling
+          fetchGameStatus(selectedRoom);
+        } else {
+          clearInterval(interval); // Stop polling if selectedRoom becomes invalid
+        }
+      }, 1000); // Polling every 1 second
+  
+      return () => clearInterval(interval); // Clean up interval on component unmount
+    }
+  }, [selectedRoom]);
+  
 
 useEffect(() => {
   // Call the fetch rooms function initially
