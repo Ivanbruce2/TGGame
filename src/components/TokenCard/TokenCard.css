@@ -8,7 +8,7 @@
   padding: 4px 8px; /* Reduced padding to remove extra space */
   margin-bottom: 0px; /* Removed extra margin */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  max-width: 320px;
+  max-width: 300px;
   width: 100%;
 }
 
