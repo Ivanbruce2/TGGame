@@ -475,14 +475,17 @@ useEffect(() => {
       </div>
     );
   };
-
   if (!isUserInitialized) {
     return (
       <div className="loading-screen">
-        <h1 className="loading-message">Game Loading...</h1>
+        <h1 className="loading-message">
+          <span>Game</span>
+          <span>Loading...</span>
+        </h1>
       </div>
     );
   }
+  
 
   if (selectedRoom) {
     // Extract the relevant contract information based on the stored contract address
