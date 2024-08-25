@@ -192,10 +192,13 @@ useEffect(() => {
 
 const renderGameStatusMessage = () => {
   if (!gameStatus) return null;
-console.log("game status render:"+gameStatus.status)
-console.log(userID)
-console.log(gameStatus.player1ID)
-console.log("player choice"+gameStatus.player1Choice)
+  console.log("game status render:", gameStatus.status);
+  console.log("userID:", userID);
+  console.log("gameStatus.player1ID:", gameStatus.player1ID);
+  console.log("player1Choice:", gameStatus.player1Choice);
+  console.log("Is player1Choice empty:", gameStatus.player1Choice === '');
+  console.log("Is player1Choice null:", gameStatus.player1Choice === null);
+  console.log("Is player1Choice undefined:", gameStatus.player1Choice === undefined);
   if (gameStatus.status === 'waiting') {
     if (userID === gameStatus.player1ID) {
       console.log("Come gere?")
