@@ -526,6 +526,31 @@ useEffect(() => {
       ? (parseFloat(gameStatus.wagerAmount) / Math.pow(10, decimals)).toFixed(3)
       : 'N/A';
   
+    const renderGameStatusMessage = () => {
+      if (gameStatus.status === 'waiting') {
+        if (userID === gameStatus.player1ID && !gameStatus.player1Choice) {
+          return 'You have 20 seconds to make your move else you will be kicked out.';
+        }
+        return 'Waiting for opponent...';
+      } else if (gameStatus.status === 'in_progress') {
+        if (userID === gameStatus.player1ID && !gameStatus.player1Choice) {
+          return 'You have 20 seconds to make your move else you will be kicked out.';
+        } else if (userID === gameStatus.player2ID && !gameStatus.player2Choice) {
+          return 'You have 20 seconds to make your move else you will be kicked out.';
+        }
+        return 'Waiting for the game result...';
+      } else if (gameStatus.status === 'completed') {
+        return (
+          <>
+            <p>{gameStatus.player1Username} chose {gameStatus.player1Choice}.</p>
+            <p>{gameStatus.player2Username} chose {gameStatus.player2Choice}.</p>
+            <p>{gameStatus.result === username ? `You Win!` : `You Lose...`}</p>
+          </>
+        );
+      }
+      return null;
+    };
+  
     return (
       <div className="App">
         <h1 className="welcome-message2">Room {selectedRoom}</h1>
@@ -539,40 +564,42 @@ useEffect(() => {
   
         {gameStatus ? (
           <>
-<h2 className="game-status">
-  {gameStatus.player1Username
-    ? `${gameStatus.player1Username}${
-        gameStatus.player1Choice ? '[✔️]' : '[❓]'
-      }`
-    : '[Pending]'}
-  {' vs '}
-  {gameStatus.player2Username
-    ? `${gameStatus.player2Username}${
-        gameStatus.player2Choice ? '[✔️]' : '[❓]'
-      }`
-    : '[Pending]'}
-</h2>
-
-
-
+            <h2 className="game-status">
+              {gameStatus.player1Username
+                ? `${gameStatus.player1Username}${
+                    gameStatus.player1Choice ? '[✔️]' : '[❓]'
+                  }`
+                : '[Pending]'}
+              {' vs '}
+              {gameStatus.player2Username
+                ? `${gameStatus.player2Username}${
+                    gameStatus.player2Choice ? '[✔️]' : '[❓]'
+                  }`
+                : '[Pending]'}
+            </h2>
+  
+            <div className="game-status-message">{renderGameStatusMessage()}</div>
   
             {gameStatus.status !== 'completed' && (
               <>
-<div className="choices">
-  {['Scissors', 'Paper', 'Stone'].map((choice) => (
-    <button
-      key={choice}
-      className={`choice-button ${userChoice === choice ? 'selected' : ''}`}
-      onClick={() => handleChoice(choice)}
-      disabled={!!userChoice} // Disable buttons after a choice is made
-    >
-      {choice}
-    </button>
-  ))}
-</div>
-
-                <div className="wager-info"><p>Waiting for opponent...</p></div>
-                
+                <div className="choices">
+                  {['Scissors', 'Paper', 'Stone'].map((choice) => (
+                    <button
+                      key={choice}
+                      className={`choice-button ${userChoice === choice ? 'selected' : ''}`}
+                      onClick={() => handleChoice(choice)}
+                      disabled={!!userChoice} // Disable buttons after a choice is made
+                    >
+                      {choice}
+                    </button>
+                  ))}
+                </div>
+  
+                {gameStatus.status === 'waiting' && (
+                  <div className="wager-info">
+                    <p>Waiting for opponent...</p>
+                  </div>
+                )}
               </>
             )}
   
@@ -582,25 +609,6 @@ useEffect(() => {
   
             {gameStatus.status === 'completed' && (
               <div>
-                {!gameStatus.result ? (
-                  <>
-                    <p>It's a Draw! Both players chose {gameStatus.player1Choice}.</p>
-                    {username === gameStatus.player1Username && (
-                      <button className="try-again-button" onClick={handleTryAgain}>
-                        Try Again
-                      </button>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <p>{gameStatus.result === username ? `You Win!` : `You Lose...`}</p>
-                    {username === gameStatus.player1Username && (
-                      <button className="try-again-button" onClick={handleTryAgain}>
-                        Try Again
-                      </button>
-                    )}
-                  </>
-                )}
                 {toastMessage && (
                   <Toast
                     message={toastMessage}
@@ -634,6 +642,7 @@ useEffect(() => {
       </div>
     );
   }
+  
   
   
 
