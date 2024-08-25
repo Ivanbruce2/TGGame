@@ -684,23 +684,16 @@ useEffect(() => {
   
             {gameStatus.status === 'completed' && (
               <div>
-              {toastMessage && (
-  <Toast
-    message={
-      <span>
-        {toastMessage}{' '}
-        <a href={toastLink} style={{ color: '#FFD700' }}>
-          View Transaction
-        </a>
-      </span>
-    }
-    onClose={() => {
-      setToastMessage('');
-      setToastLink('');
-    }}
-  />
-)}
-
+                {toastMessage && (
+                  <Toast
+                    message={toastMessage}
+                    link={toastLink}
+                    onClose={() => {
+                      setToastMessage('');
+                      setToastLink('');
+                    }}
+                  />
+                )}
               </div>
             )}
           </>
