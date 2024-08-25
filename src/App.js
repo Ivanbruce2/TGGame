@@ -314,35 +314,37 @@ useEffect(() => {
   
   // Ensure message.rooms is not null or undefined
   if (!message.rooms) {
-    setRooms('')
-    // console.error('Rooms data is null or undefined.');
-    break;
+    setRooms('');
+    console.error('Rooms data is null or undefined.');
+    return; // Use return instead of break because this is not inside a loop
   }
-
+  
   setRooms(message.rooms);
-
+  
   // Add log to check userID
   console.log('Current userID:', userID);
-
+  
+  // Convert userID to a string for consistent comparison
+  const currentUserID = userID.toString().trim();
+  
   // Check if there's an active room where the user is player1 and the status is 'waiting'
   const activeRoom = message.rooms.find(
-    (room) =>
-      room.player1_id === userID && room.status === 'waiting'
+    (room) => room.player1_id?.toString().trim() === currentUserID && room.status === 'waiting'
   );
-
+  
   console.log('Active room found:', activeRoom); // Log the active room if found
-
+  
   if (activeRoom) {
     // Automatically join the room if found
     console.log('Automatically joining room with ID:', activeRoom.room_id);
-
+  
     setSelectedRoom(activeRoom.room_id);
     setGameStatus({
       roomId: activeRoom.room_id,
-      player1ID: activeRoom.player1_id,
+      player1ID: activeRoom.player1_id?.toString().trim(),
       player1Username: activeRoom.player1_username,
       player1Choice: activeRoom.player1_choice,
-      player2ID: activeRoom.player2_id,
+      player2ID: activeRoom.player2_id?.toString().trim(),
       player2Username: activeRoom.player2_username,
       player2Choice: activeRoom.player2_choice,
       status: activeRoom.status,
@@ -350,17 +352,17 @@ useEffect(() => {
       wagerAmount: activeRoom.wager_amount,
       result: activeRoom.result,
     });
-
+  
     // Determine the correct choice based on whether the current user is player1 or player2
-    if (userID === activeRoom.player1_id) {
+    if (currentUserID === activeRoom.player1_id?.toString().trim()) {
       setUserChoice(activeRoom.player1_choice);
-    } else if (userID === activeRoom.player2_id) {
+    } else if (currentUserID === activeRoom.player2_id?.toString().trim()) {
       setUserChoice(activeRoom.player2_choice);
     }
   } else {
     console.log('No active room found for this user.');
   }
-
+  
   break;
 
  case 'GAME_STATUS':
