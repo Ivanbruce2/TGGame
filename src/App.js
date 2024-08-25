@@ -192,7 +192,10 @@ useEffect(() => {
 
 const renderGameStatusMessage = () => {
   if (!gameStatus) return null;
-
+console.log("game status render:"+gameStatus.status)
+console.log(userID)
+console.log(gameStatus.player1ID)
+console.log(gameStatus.player1Choice)
   if (gameStatus.status === 'waiting') {
     if (userID === gameStatus.player1ID && !gameStatus.player1Choice) {
       return `You have ${countdown} seconds to make your move else you will be kicked out.`;
