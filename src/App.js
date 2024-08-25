@@ -14,6 +14,7 @@ const backendURL = 'wss://60df33f333f2707aa279ec8d60924a26.serveo.net/ws';
 
 function App() {
   const { initDataRaw, initData } = retrieveLaunchParams();
+  const [countdown, setCountdown] = useState(20); // Initialize countdown with 20 seconds
   const [isUserInitialized, setIsUserInitialized] = useState(false); 
   const [userID, setUserID] = useState('');
   const [username, setUsername] = useState('');
@@ -526,31 +527,47 @@ useEffect(() => {
       ? (parseFloat(gameStatus.wagerAmount) / Math.pow(10, decimals)).toFixed(3)
       : 'N/A';
   
-    const renderGameStatusMessage = () => {
-      if (gameStatus.status === 'waiting') {
- 
-        if (userID === gameStatus.player1ID && !gameStatus.player1Choice) {
-          return 'You have 20 seconds to make your move else you will be kicked out.';
+      useEffect(() => {
+        if (
+          (gameStatus.status === 'waiting' && userID === gameStatus.player1ID && !gameStatus.player1Choice) ||
+          (gameStatus.status === 'in_progress' && ((userID === gameStatus.player1ID && !gameStatus.player1Choice) || (userID === gameStatus.player2ID && !gameStatus.player2Choice)))
+        ) {
+          // Start a timer if the player has to make a move
+          const timer = setInterval(() => {
+            setCountdown((prevCountdown) => (prevCountdown > 0 ? prevCountdown - 1 : 0));
+          }, 1000);
+    
+          // Cleanup the timer when the component unmounts or the game status changes
+          return () => clearInterval(timer);
+        } else {
+          setCountdown(20); // Reset the countdown if the player makes a move or the game status changes
         }
-        return 'Waiting for opponent...';
-      } else if (gameStatus.status === 'in_progress') {
-        if (userID === gameStatus.player1ID && !gameStatus.player1Choice) {
-          return 'You have 20 seconds to make your move else you will be kicked out.';
-        } else if (userID === gameStatus.player2ID && !gameStatus.player2Choice) {
-          return 'You have 20 seconds to make your move else you will be kicked out.';
+      }, [gameStatus, userID]);
+    
+      const renderGameStatusMessage = () => {
+        if (gameStatus.status === 'waiting') {
+          if (userID === gameStatus.player1ID && !gameStatus.player1Choice) {
+            return `You have ${countdown} seconds to make your move else you will be kicked out.`;
+          }
+          return 'Waiting for opponent...';
+        } else if (gameStatus.status === 'in_progress') {
+          if (userID === gameStatus.player1ID && !gameStatus.player1Choice) {
+            return `You have ${countdown} seconds to make your move else you will be kicked out.`;
+          } else if (userID === gameStatus.player2ID && !gameStatus.player2Choice) {
+            return `You have ${countdown} seconds to make your move else you will be kicked out.`;
+          }
+          return 'Waiting for the game result...';
+        } else if (gameStatus.status === 'completed') {
+          return (
+            <>
+              <p>{gameStatus.player1Username} chose {gameStatus.player1Choice}.</p>
+              <p>{gameStatus.player2Username} chose {gameStatus.player2Choice}.</p>
+              <p>{gameStatus.result === username ? `You Win!` : `You Lose...`}</p>
+            </>
+          );
         }
-        return 'Waiting for the game result...';
-      } else if (gameStatus.status === 'completed') {
-        return (
-          <>
-            <p>{gameStatus.player1Username} chose {gameStatus.player1Choice}.</p>
-            <p>{gameStatus.player2Username} chose {gameStatus.player2Choice}.</p>
-            <p>{gameStatus.result === username ? `You Win!` : `You Lose...`}</p>
-          </>
-        );
-      }
-      return null;
-    };
+        return null;
+      };
   
     return (
       <div className="App">
