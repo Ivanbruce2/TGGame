@@ -157,7 +157,6 @@ useEffect(() => {
   // Set up an interval to refresh rooms every 10 seconds (adjust the interval as needed)
   const intervalId = setInterval(() => {
     fetchRooms();
-    console.log("pullign game status")
   }, 1000); // 10000 ms = 10 seconds
 
   // Cleanup the interval when the component unmounts
@@ -529,6 +528,9 @@ useEffect(() => {
   
     const renderGameStatusMessage = () => {
       if (gameStatus.status === 'waiting') {
+        console.log(userID)
+        console.log(gameStatus)
+        console.log(player1Choice)
         if (userID === gameStatus.player1ID && !gameStatus.player1Choice) {
           return 'You have 20 seconds to make your move else you will be kicked out.';
         }
@@ -596,11 +598,7 @@ useEffect(() => {
                   ))}
                 </div>
   
-                {gameStatus.status === 'waiting' && (
-                  <div className="wager-info">
-                    <p>Waiting for opponent...</p>
-                  </div>
-                )}
+
               </>
             )}
   
