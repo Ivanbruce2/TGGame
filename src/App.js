@@ -192,15 +192,12 @@ useEffect(() => {
 
 const renderGameStatusMessage = () => {
   if (!gameStatus) return null;
-  console.log("game status render:", gameStatus.status);
-  console.log("userID:", userID);
-  console.log("gameStatus.player1ID:", gameStatus.player1ID);
-  console.log("player1Choice:", gameStatus.player1Choice);
-  console.log("Is player1Choice empty:", gameStatus.player1Choice === '');
-  console.log("Is player1Choice null:", gameStatus.player1Choice === null);
-  console.log("Is player1Choice undefined:", gameStatus.player1Choice === undefined);
+  console.log("userID (type):", typeof userID);
+  console.log("gameStatus.player1ID (type):", typeof gameStatus.player1ID);
+  console.log("IDs Match (string):", userID.toString() === gameStatus.player1ID.toString());
+  
   if (gameStatus.status === 'waiting') {
-    if (userID === gameStatus.player1ID) {
+    if (userID === gameStatus.player1ID && (gameStatus.player1Choice === '' || gameStatus.player1Choice === null || gameStatus.player1Choice === undefined)) {
       console.log("Come gere?")
       return `You have ${countdown} seconds to make your move else you will be kicked out.`;
     }
