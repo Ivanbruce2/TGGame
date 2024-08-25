@@ -197,7 +197,7 @@ console.log(userID)
 console.log(gameStatus.player1ID)
 console.log(gameStatus.player1Choice)
   if (gameStatus.status === 'waiting') {
-    if (userID === gameStatus.player1ID && !gameStatus.player1Choice) {
+    if (userID === gameStatus.player1ID && (gameStatus.player1Choice === '' || gameStatus.player1Choice === null || gameStatus.player1Choice === undefined)) {
       console.log("Come gere?")
       return `You have ${countdown} seconds to make your move else you will be kicked out.`;
     }
