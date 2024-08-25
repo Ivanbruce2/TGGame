@@ -219,7 +219,7 @@ body:before {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Full viewport height */
+  height: 80vh; /* Full viewport height */
 }
 
 .loading-message {
