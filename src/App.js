@@ -217,13 +217,30 @@ const renderGameStatusMessage = () => {
     }
     return 'Waiting for the game result...';
   } else if (gameStatus.status === 'completed') {
-    return (
-      <>
-        <p>{gameStatus.player1Username} chose {gameStatus.player1Choice || '[Not selected]'}</p>
-        <p>{gameStatus.player2Username} chose {gameStatus.player2Choice || '[Not selected]'}</p>
-        <p>{gameStatus.result === username ? `You Win!` : `You Lose...`}</p>
-      </>
-    );
+    if (gameStatus.result?.includes('draw')) {
+      return (
+        <>
+          <p>It's a Draw! Both players chose {gameStatus.player1Choice}.</p>
+          {username === gameStatus.player1Username && (
+            <button className="try-again-button" onClick={handleTryAgain}>
+              Try Again
+            </button>
+          )}
+        </>
+      );
+    } else {
+      return (
+        <>
+          <p>{gameStatus.result?.split('! ')[1]}</p>
+          <h2>{gameStatus.result?.includes(username) ? 'You Win!' : 'You Lose...'}</h2>
+          {username === gameStatus.player1Username && (
+            <button className="try-again-button" onClick={handleTryAgain}>
+              Try Again
+            </button>
+          )}
+        </>
+      );
+    }
   }
   return null;
 };
@@ -634,6 +651,7 @@ useEffect(() => {
                   ))}
                 </div>
   
+
 
               </>
             )}
