@@ -192,34 +192,42 @@ useEffect(() => {
 
 const renderGameStatusMessage = () => {
   if (!gameStatus) return null;
-  console.log("userID (type):", typeof userID);
-  console.log("gameStatus.player1ID (type):", typeof gameStatus.player1ID);
-  console.log("IDs Match (string):", userID.toString() === gameStatus.player1ID.toString());
-  
+
+  // Convert IDs to strings for consistent comparison
+  const currentUserID = userID.toString().trim();
+  const player1ID = gameStatus.player1ID?.toString().trim();
+  const player2ID = gameStatus.player2ID?.toString().trim();
+
+  console.log("userID (type):", typeof currentUserID);
+  console.log("gameStatus.player1ID (type):", typeof player1ID);
+  console.log("IDs Match (string):", currentUserID === player1ID);
+
   if (gameStatus.status === 'waiting') {
-    if (userID === gameStatus.player1ID && (gameStatus.player1Choice === '' || gameStatus.player1Choice === null || gameStatus.player1Choice === undefined)) {
-      console.log("Come gere?")
+    // Check if the current user is player 1 and hasn't made a choice yet
+    if (currentUserID === player1ID && !gameStatus.player1Choice) {
+      console.log("You have X seconds to make your move.");
       return `You have ${countdown} seconds to make your move else you will be kicked out.`;
     }
     return 'Waiting for opponent...';
   } else if (gameStatus.status === 'in_progress') {
-    if (userID === gameStatus.player1ID && !gameStatus.player1Choice) {
+    if (currentUserID === player1ID && !gameStatus.player1Choice) {
       return `You have ${countdown} seconds to make your move else you will be kicked out.`;
-    } else if (userID === gameStatus.player2ID && !gameStatus.player2Choice) {
+    } else if (currentUserID === player2ID && !gameStatus.player2Choice) {
       return `You have ${countdown} seconds to make your move else you will be kicked out.`;
     }
     return 'Waiting for the game result...';
   } else if (gameStatus.status === 'completed') {
     return (
       <>
-        <p>{gameStatus.player1Username} chose {gameStatus.player1Choice}.</p>
-        <p>{gameStatus.player2Username} chose {gameStatus.player2Choice}.</p>
+        <p>{gameStatus.player1Username} chose {gameStatus.player1Choice || '[Not selected]'}</p>
+        <p>{gameStatus.player2Username} chose {gameStatus.player2Choice || '[Not selected]'}</p>
         <p>{gameStatus.result === username ? `You Win!` : `You Lose...`}</p>
       </>
     );
   }
   return null;
 };
+
 
 
 useEffect(() => {
