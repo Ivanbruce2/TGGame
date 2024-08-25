@@ -222,7 +222,7 @@ const renderGameStatusMessage = () => {
         <>
           <p>It's a Draw! Both players chose {gameStatus.player1Choice}.</p>
           {username === gameStatus.player1Username && (
-            <button className="try-again-button" onClick={handleTryAgain}>
+            <button className="return-button" onClick={handleTryAgain}>
               Try Again
             </button>
           )}
@@ -234,7 +234,7 @@ const renderGameStatusMessage = () => {
           <p>{gameStatus.result?.split('! ')[1]}</p>
           <h2>{gameStatus.result?.includes(username) ? 'You Win!' : 'You Lose...'}</h2>
           {username === gameStatus.player1Username && (
-            <button className="try-again-button" onClick={handleTryAgain}>
+            <button className="return-button" onClick={handleTryAgain}>
               Try Again
             </button>
           )}
