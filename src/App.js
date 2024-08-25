@@ -14,7 +14,9 @@ const backendURL = 'wss://60df33f333f2707aa279ec8d60924a26.serveo.net/ws';
 
 function App() {
   const { initDataRaw, initData } = retrieveLaunchParams();
-  const [isUserInitialized, setIsUserInitialized] = useState(false); 
+  const [allRooms, setAllRooms] = useState([]); // Store all rooms fetched from the backend
+  const [filteredRooms, setFilteredRooms] = useState([]); // Store filtered rooms based on selected contract
+  const [selectedContract, setSelectedContract] = useState('');  const [isUserInitialized, setIsUserInitialized] = useState(false); 
   const [userID, setUserID] = useState('');
   const [username, setUsername] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
@@ -45,6 +47,9 @@ function App() {
     { address: '0x8cC82045E761329FA13C9b0A0a31d76615fEc109', name: 'CorruptFun', symbol: 'CFUN', decimals: 18, type: 'erc20' },
 
   ];
+
+  
+
 
   useEffect(() => {
     console.log('Contract Addresses:', contractAddresses);
@@ -190,6 +195,19 @@ useEffect(() => {
   }
 }, [gameStatus]);
 
+const filterRooms = (rooms) => {
+  if (selectedContract) {
+    return rooms.filter((room) => room.contract_address === selectedContract);
+  }
+  return rooms;
+};
+
+// Handle changes in the filter dropdown
+const handleContractChange = (event) => {
+  setSelectedContract(event.target.value);
+};
+
+
 const renderGameStatusMessage = () => {
   if (!gameStatus) return null;
 
@@ -327,60 +345,64 @@ useEffect(() => {
         
         break;
         case 'ROOMS_LIST':
-  // console.log('Rooms list received:', message.rooms); // Log all rooms received
-  
-  // Ensure message.rooms is not null or undefined
-  if (!message.rooms) {
-    setRooms('');
-    console.error('Rooms data is null or undefined.');
-    return; // Use return instead of break because this is not inside a loop
-  }
-  
-  setRooms(message.rooms);
-  
-  // Add log to check userID
-  console.log('Current userID:', userID);
-  
-  // Convert userID to a string for consistent comparison
-  const currentUserID = userID.toString().trim();
-  
-  // Check if there's an active room where the user is player1 and the status is 'waiting'
-  const activeRoom = message.rooms.find(
-    (room) => room.player1_id?.toString().trim() === currentUserID && room.status === 'waiting'
-  );
-  
-  console.log('Active room found:', activeRoom); // Log the active room if found
-  
-  if (activeRoom) {
-    // Automatically join the room if found
-    console.log('Automatically joining room with ID:', activeRoom.room_id);
-  
-    setSelectedRoom(activeRoom.room_id);
-    setGameStatus({
-      roomId: activeRoom.room_id,
-      player1ID: activeRoom.player1_id?.toString().trim(),
-      player1Username: activeRoom.player1_username,
-      player1Choice: activeRoom.player1_choice,
-      player2ID: activeRoom.player2_id?.toString().trim(),
-      player2Username: activeRoom.player2_username,
-      player2Choice: activeRoom.player2_choice,
-      status: activeRoom.status,
-      contractAddress: activeRoom.contract_address,
-      wagerAmount: activeRoom.wager_amount,
-      result: activeRoom.result,
-    });
-  
-    // Determine the correct choice based on whether the current user is player1 or player2
-    if (currentUserID === activeRoom.player1_id?.toString().trim()) {
-      setUserChoice(activeRoom.player1_choice);
-    } else if (currentUserID === activeRoom.player2_id?.toString().trim()) {
-      setUserChoice(activeRoom.player2_choice);
-    }
-  } else {
-    console.log('No active room found for this user.');
-  }
-  
-  break;
+          // Ensure message.rooms is not null or undefined
+          if (!message.rooms) {
+            setRooms([]);
+            console.error('Rooms data is null or undefined.');
+            return;
+          }
+        
+          // Store all rooms in state (for filtering purposes)
+          setAllRooms(message.rooms);
+        
+          // Filter the rooms based on the selected contract
+          const filteredRooms = filterRooms(message.rooms);
+          setRooms(filteredRooms);
+        
+          // Log the current userID for debugging
+          console.log('Current userID:', userID);
+        
+          // Convert userID to a string for consistent comparison
+          const currentUserID = userID.toString().trim();
+        
+          // Check if there's an active room where the user is player1 and the status is 'waiting'
+          const activeRoom = filteredRooms.find(
+            (room) => room.player1_id?.toString().trim() === currentUserID && room.status === 'waiting'
+          );
+        
+          console.log('Active room found:', activeRoom); // Log the active room if found
+        
+          if (activeRoom) {
+            // Automatically join the room if found
+            console.log('Automatically joining room with ID:', activeRoom.room_id);
+        
+            setSelectedRoom(activeRoom.room_id);
+            setGameStatus({
+              roomId: activeRoom.room_id,
+              player1ID: activeRoom.player1_id?.toString().trim(),
+              player1Username: activeRoom.player1_username,
+              player1Choice: activeRoom.player1_choice,
+              player2ID: activeRoom.player2_id?.toString().trim(),
+              player2Username: activeRoom.player2_username,
+              player2Choice: activeRoom.player2_choice,
+              status: activeRoom.status,
+              contractAddress: activeRoom.contract_address,
+              wagerAmount: activeRoom.wager_amount,
+              result: activeRoom.result,
+            });
+        
+            // Determine the correct choice based on whether the current user is player1 or player2
+            if (currentUserID === activeRoom.player1_id?.toString().trim()) {
+              setUserChoice(activeRoom.player1_choice);
+            } else if (currentUserID === activeRoom.player2_id?.toString().trim()) {
+              setUserChoice(activeRoom.player2_choice);
+            }
+          } else {
+            console.log('No active room found for this user.');
+          }
+        
+          break;
+        
 
  case 'GAME_STATUS':
         console.log('Updating game status:', message);
@@ -718,18 +740,31 @@ useEffect(() => {
                     <button className="pixel-button create-button" onClick={handleOpenModal}>
                       Create Room
                     </button>
+                    <select
+  className="filter-dropdown"
+  value={selectedContract}
+  onChange={handleContractChange} // Correct function name
+>
+  <option value="">All Contracts</option>
+  {contractAddresses.map((contract) => (
+    <option key={contract.address} value={contract.address}>
+      {contract.symbol}
+    </option>
+  ))}
+</select>
+
                     <button className="pixel-button refresh-button" onClick={fetchRooms}>
                       ↻
                     </button>
                   </div>
                   <div className="room-list">
                     {Object.values(rooms).map((room) => {
-                      const contract = contractAddresses.find(c => c.address === room.contract_address);
+                      const contract = contractAddresses.find((c) => c.address === room.contract_address);
                       const decimals = contract ? contract.decimals : 1;
                       const formattedWagerAmount = room.wager_amount
                         ? (parseFloat(room.wager_amount) / Math.pow(10, decimals)).toFixed(3)
                         : 'N/A';
-
+  
                       return (
                         <div className="room-card" key={room.room_id}>
                           <div className="room-details">
@@ -754,7 +789,16 @@ useEffect(() => {
             />
             <Route
               path="/wallet-details"
-              element={<WalletDetails walletAddress={walletAddress} backendURL={backendURL} userID={userID} sendMessage={sendMessage} users={users} contractAddresses={contractAddresses} />}
+              element={
+                <WalletDetails
+                  walletAddress={walletAddress}
+                  backendURL={backendURL}
+                  userID={userID}
+                  sendMessage={sendMessage}
+                  users={users}
+                  contractAddresses={contractAddresses}
+                />
+              }
             />
             <Route
               path="/stats"
@@ -768,13 +812,14 @@ useEffect(() => {
                   leaderboard={leaderboard}
                   view={view}
                   setView={setView}
-                  fetchGameStats={fetchGameStats} 
+                  fetchGameStats={fetchGameStats}
                   fetchLeaderboard={fetchLeaderboard}
-                />}
+                />
+              }
             />
           </Routes>
         </div>
-
+  
         {isModalOpen && (
           <WagerModal
             contracts={contractAddresses}
@@ -783,11 +828,12 @@ useEffect(() => {
             onCancel={handleCancelModal}
           />
         )}
-
+  
         {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
       </div>
     </Router>
   );
+  
 }
 
 export default App;
