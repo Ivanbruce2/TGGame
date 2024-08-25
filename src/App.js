@@ -684,16 +684,23 @@ useEffect(() => {
   
             {gameStatus.status === 'completed' && (
               <div>
-                {toastMessage && (
-                  <Toast
-                    message={toastMessage}
-                    link={toastLink}
-                    onClose={() => {
-                      setToastMessage('');
-                      setToastLink('');
-                    }}
-                  />
-                )}
+              {toastMessage && (
+  <Toast
+    message={
+      <span>
+        {toastMessage}{' '}
+        <a href={toastLink} style={{ color: '#FFD700' }}>
+          View Transaction
+        </a>
+      </span>
+    }
+    onClose={() => {
+      setToastMessage('');
+      setToastLink('');
+    }}
+  />
+)}
+
               </div>
             )}
           </>
@@ -737,26 +744,30 @@ useEffect(() => {
                     <WalletDisplay walletAddress={walletAddress} />
                   </p>
                   <div className="header-row">
-                    <button className="pixel-button create-button" onClick={handleOpenModal}>
-                      Create Room
-                    </button>
-                    <select
-  className="filter-dropdown"
-  value={selectedContract}
-  onChange={handleContractChange} // Correct function name
->
-  <option value="">All Contracts</option>
-  {contractAddresses.map((contract) => (
-    <option key={contract.address} value={contract.address}>
-      {contract.symbol}
-    </option>
-  ))}
-</select>
+  <div className="left-section">
+    <button className="pixel-button create-button" onClick={handleOpenModal}>
+      Create Room
+    </button>
+    <button className="pixel-button refresh-button" onClick={fetchRooms}>
+      ↻
+    </button>
+  </div>
+  <div className="right-section">
+    <select
+      className="filter-dropdown"
+      value={selectedContract}
+      onChange={handleContractChange}
+    >
+      <option value="">All Tokens</option>
+      {contractAddresses.map((contract) => (
+        <option key={contract.address} value={contract.address}>
+          {contract.symbol}
+        </option>
+      ))}
+    </select>
+  </div>
+</div>
 
-                    <button className="pixel-button refresh-button" onClick={fetchRooms}>
-                      ↻
-                    </button>
-                  </div>
                   <div className="room-list">
                     {Object.values(rooms).map((room) => {
                       const contract = contractAddresses.find((c) => c.address === room.contract_address);

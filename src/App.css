@@ -1,26 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400&display=swap');
 
 body, html {
   margin: 0;
-  padding: 5px 0 0 0; /* Add padding only to the top */
+  padding: 5px 0 0 0;
   height: 100%;
   width: 100%;
   background: linear-gradient(135deg, #4101ff, #880176, #190275); 
-  background-size: 400% 400%; /* Extend the gradient */
+  background-size: 400% 400%;
   color: #ffd700;
   font-family: 'VT323', monospace;
   overflow: hidden;
   position: relative;
-  animation: rainbowShift 15s ease infinite; /* Add animation for gradient shift */
+  animation: rainbowShift 15s ease infinite;
 }
-
 
 @keyframes rainbowShift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
-
 
 body:before {
   content: '';
@@ -31,7 +29,7 @@ body:before {
   top: -200px;
   left: -200px;
   transform: rotate(45deg);
-  animation: floatBg 5s infinite linear; /* Speed up floating background animation */
+  animation: floatBg 5s infinite linear;
   z-index: 0;
   pointer-events: none;
 }
@@ -54,7 +52,7 @@ body:before {
 
 .App {
   text-align: center;
-  font-family: 'VT323', monospace; 
+  font-family: 'VT323', monospace;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -78,11 +76,11 @@ body:before {
   background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff);
   background-size: 200% 200%;
   color: rgb(6, 6, 6);
-  font-size: 0.9em; /* Slightly smaller font size */
+  font-size: 0.9em;
   border: 2px solid #333;
-  height: 34px; /* Reduced button height */
-  line-height: 34px; /* Align text vertically */
-  margin: 0 4px; /* Reduced margin around the buttons */
+  height: 34px;
+  line-height: 34px;
+  margin: 0 4px;
   border-radius: 4px;
   cursor: pointer;
   display: flex;
@@ -90,25 +88,119 @@ body:before {
   align-items: center;
   text-transform: uppercase;
   font-family: 'Press Start 2P', cursive;
-  box-shadow: 0 2px #333; /* Reduced shadow depth */
+  box-shadow: 0 2px #333;
   animation: gradientShift 2s infinite linear;
   white-space: nowrap;
 }
 
 .pixel-button.create-button {
-  padding: 4px 12px; /* Reduced padding for less button width */
-  font-size: 0.8em; /* Slightly smaller font size */
-}
-
-.pixel-button.refresh-button {
-  padding: 4px 8px; /* Adjusted padding for smaller width */
-  font-size: 1.2em; /* Keep font larger for the refresh button */
-  width: 40px; /* Reduced overall button width */
+  padding: 2px 10px;
+  font-size: 0.6em;
 }
 
 .pixel-button:active {
-  top: 2px; /* Reduced the button press effect */
+  top: 2px;
   box-shadow: 0 0 #333;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background-color: rgba(248, 248, 245, 0.7);
+  padding: 4px 4px;
+}
+
+.left-section {
+  display: flex;
+  gap: 0px; /* Ensures some space between Create Room and Refresh buttons */
+}
+
+.right-section {
+  margin-left: auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.filter-dropdown {
+  background: #ffffff;
+  color: #000000;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.9em;
+  border: 2px solid #333;
+  height: 34px;
+  line-height: 34px;
+  padding: 0 30px 0 10px; /* Space for the arrow */
+  border-radius: 4px;
+  cursor: pointer;
+  width: 140px;
+  box-shadow: 0 2px #333;
+  appearance: none;
+  background: #ffffff url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 20 20'%3E%3Cpath fill='%23000000' d='M0 0l10 10 10-10z'/%3E%3C/svg%3E") no-repeat right 10px center;
+  background-size: 10px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+}
+
+.filter-dropdown option {
+  font-family: 'Roboto', sans-serif;
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.welcome-message2 {
+  font-size: 2em; /* Larger font size for clear emphasis */
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  color: #ffd700; /* Gold-like color */
+  font-family: 'Press Start 2P', cursive;
+  text-shadow: 
+    1px 1px 0 #ff0047,   /* red shadow */
+    2px 2px 0 #ff8a00,   /* orange shadow */
+    3px 3px 0 #fcdc4d,   /* yellow shadow */
+    4px 4px 0 #28e0ae,   /* green shadow */
+    5px 5px 0 #0044ff;   /* blue shadow */
+  position: relative;
+  padding: 10px 0; /* Spacing around the text */
+}
+
+.wager-info {
+  font-size: 1em; /* Adjust size for good readability */
+  color: #fff;
+  margin-bottom: 2px;
+  margin-top: 4px;
+ 
+}
+
+.wager-info p {
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  text-align: center; /* Center-align the text for neatness */
+}
+
+.game-status {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  color: #ffd700;
+  text-align: center;
+  border: none; /* Ensure no borders are applied */
+  text-decoration: none; /* Remove any underlines */
+}
+
+.game-status::before,
+.game-status::after {
+  content: '';
+  display: none; /* Disable any pseudo-elements that could add lines */
+}
+
+
+.game-status span {
+  color: #32CD32; /* Green for ✔️ indicators */
+  font-weight: bold;
 }
 
 
@@ -118,12 +210,12 @@ body:before {
   justify-content: center;
   align-items: center;
   text-align: center;
-  width: 100%; /* Ensures the container takes full width */
+  width: 100%;
   margin-top: 20px;
 }
 
 .game-result p, .game-result h2 {
-  width: 100%; /* Ensure text content takes full width and aligns consistently */
+  width: 100%;
 }
 
 .return-button {
@@ -162,107 +254,28 @@ body:before {
   background-color: #2980b9;
 }
 
-.welcome-message2 {
-  font-size: 2em; /* Larger font size for clear emphasis */
-  margin-bottom: 2px;
-  text-transform: uppercase;
-  color: #ffd700; /* Gold-like color */
-  font-family: 'Press Start 2P', cursive;
-  text-shadow: 
-    1px 1px 0 #ff0047,   /* red shadow */
-    2px 2px 0 #ff8a00,   /* orange shadow */
-    3px 3px 0 #fcdc4d,   /* yellow shadow */
-    4px 4px 0 #28e0ae,   /* green shadow */
-    5px 5px 0 #0044ff;   /* blue shadow */
-  position: relative;
-  padding: 10px 0; /* Spacing around the text */
-}
-
-.wager-info {
-  font-size: 1em; /* Adjust size for good readability */
-  color: #fff;
-  margin-bottom: 4px;
-  margin-top: 4px;
- 
-}
-
-.wager-info p {
-  margin: 0;
-  padding: 0;
-  line-height: 1.6;
-  text-align: center; /* Center-align the text for neatness */
-}
-
-.game-status {
-  font-size: 1.2em;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-  color: #ffd700;
-  text-align: center;
-  border: none; /* Ensure no borders are applied */
-  text-decoration: none; /* Remove any underlines */
-}
-
-.game-status::before,
-.game-status::after {
-  content: '';
-  display: none; /* Disable any pseudo-elements that could add lines */
-}
-
-
-.game-status span {
-  color: #32CD32; /* Green for ✔️ indicators */
-  font-weight: bold;
-}
-
-.loading-screen {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 80vh; /* Full viewport height */
-}
-
-.loading-message {
-  font-family: 'Press Start 2P', cursive; /* Or any font you prefer */
-  font-size: 1.5em;
-  color: #ffd700;
-  text-shadow: 
-    1px 1px 0 #ff0047,   /* red shadow */
-    2px 2px 0 #ff8a00,   /* orange shadow */
-    3px 3px 0 #fcdc4d,   /* yellow shadow */
-    4px 4px 0 #28e0ae,   /* green shadow */
-    5px 5px 0 #0044ff;   /* blue shadow */
-}
-
-
 .welcome-message {
   text-transform: uppercase;
   text-align: left;
   width: 100%;
   font-size: 1.5em;
   margin-bottom: 20px;
-  color: #ffd700; /* Base color */
+  color: #ffd700;
   font-family: 'Press Start 2P', cursive;
   position: relative;
-  text-shadow: 
-    1px 1px 0 #ff0047,   /* red shadow */
-    2px 2px 0 #ff8a00,   /* orange shadow */
-    3px 3px 0 #fcdc4d,   /* yellow shadow */
-    4px 4px 0 #28e0ae,   /* green shadow */
-    5px 5px 0 #0044ff;   /* blue shadow */
-}
-.header-row {
-  display: flex;
-  justify-content: flex-start; /* Align buttons to the left */
-  align-items: center;
-  width: 97.4%;
-  background-color: rgba(248, 248, 245, 0.7); /* Add transparency */
-  border-radius: 0px;
-  padding: 4px 4px; /* Adjust padding for less space */
-  margin-bottom: 0px; /* Reduced margin below */
+  text-shadow:
+    1px 1px 0 #ff0047,
+    2px 2px 0 #ff8a00,
+    3px 3px 0 #fcdc4d,
+    4px 4px 0 #28e0ae,
+    5px 5px 0 #0044ff;
 }
 
-
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
 .room-list {
   width: 100%;
@@ -329,42 +342,34 @@ body:before {
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
 @media (max-width: 480px) {
   .container {
     padding: 10px;
-    max-width: 90%; /* Allow the container to fill the width on mobile */
+    max-width: 90%;
   }
 
   .welcome-message {
     font-size: 1.5em;
     margin-bottom: 15px;
-    text-transform: uppercase;
   }
 
   .header-row {
     flex-direction: row;
-    justify-content: flex-start; /* Align buttons to the left on mobile */
+    justify-content: flex-start;
     max-width: 100%;
   }
 
   .create-button {
-    font-size: 0.8em;
-    padding: 8px 24px; /* Make the create button longer */
+    font-size: 0.7em;
+    padding: 4px 12px;
     margin: 5px 0;
-    width: 60%; /* Make the Create Room button wider */
+    width: auto;
   }
 
   .refresh-button {
-    font-size: 1.4em; /* Increase font size for the refresh button */
+    font-size: 1.4em;
     padding: 8px 12px;
     margin: 5px 0;
-    width: 10%; /* Adjust width of the Refresh button */
   }
 
   .room-card {
@@ -373,52 +378,78 @@ body:before {
 
   .room-details {
     font-size: 1.1em;
-    margin-right: 60px;
   }
 
   .join-button {
     width: 60px;
     height: 40px;
     font-size: 12px;
-    bottom: 8px;
-    right: 8px;
+  }
+
+  .pixel-button.create-button {
+    font-size: 0.6em;
+    padding: 4px 12px;
+  }
+
+  .filter-dropdown {
+    font-size: 0.6em;
+    padding: 0 8px;
+    width: 140px;
   }
 }
 
 .choice-button {
-  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); /* Rainbow gradient */
+  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); 
   background-size: 200% 200%;
   color: rgb(6, 6, 6);
   font-size: 0.8em;
   border: 2px solid #333;
-  height: 40px; /* Consistent height */
-  width: 150px; /* Consistent width */
-  line-height: 46px; /* Center text vertically */
-  margin: 18px 0; /* Vertical margin for spacing */
+  height: 40px;
+  width: 150px;
+  line-height: 46px;
+  margin: 18px 0;
   border-radius: 4px;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   text-transform: uppercase;
-  font-family: 'Press Start 2P', cursive; /* Matching the pixel art style */
-  box-shadow: 0 4px #333; /* Pixelated shadow effect */
-  animation: gradientShift 2s infinite linear; /* Animate the gradient */
-  transition: background 0.2s ease, transform 0.2s ease; /* Smooth transition for hover and selected effects */
+  font-family: 'Press Start 2P', cursive;
+  box-shadow: 0 4px #333;
+  animation: gradientShift 2s infinite linear;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .choice-button:hover:not(.selected) {
-  transform: scale(1.05); /* Slightly enlarge the button on hover if it's not selected */
+  transform: scale(1.05);
 }
 
 .choice-button.selected {
-  background: #ff0047; /* Highlight selected choice with green */
+  background: #ff0047;
   color: #fff;
-  box-shadow: 0 4px #001600; /* Adjust shadow color for selected choice */
+  box-shadow: 0 4px #001600;
 }
 
 .choice-button:disabled {
   cursor: not-allowed;
-  opacity: 0.6; /* Dim the button when disabled */
+  opacity: 0.6;
 }
 
+.loading-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh; /* Full viewport height */
+}
+
+.loading-message {
+  font-family: 'Press Start 2P', cursive; /* Or any font you prefer */
+  font-size: 1.5em;
+  color: #ffd700;
+  text-shadow: 
+    1px 1px 0 #ff0047,   /* red shadow */
+    2px 2px 0 #ff8a00,   /* orange shadow */
+    3px 3px 0 #fcdc4d,   /* yellow shadow */
+    4px 4px 0 #28e0ae,   /* green shadow */
+    5px 5px 0 #0044ff;   /* blue shadow */
+}

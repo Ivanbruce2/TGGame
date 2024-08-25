@@ -94,10 +94,10 @@ const WagerModal = ({ contracts, walletAddress, onSave, onCancel }) => {
           {errorMessage && <p className="error-message">{errorMessage}</p>}
         </div>
         <div className="modal-actions">
-          <button className="pixel-button save-button" onClick={handleSave}>
+          <button className="save-button" onClick={handleSave}>
             Save
           </button>
-          <button className="pixel-button cancel-button" onClick={onCancel}>
+          <button className="cancel-button" onClick={onCancel}>
             Cancel
           </button>
         </div>
