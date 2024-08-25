@@ -6,14 +6,14 @@ import WagerModal from './components/WagerModal/WagerModal';
 import Toast from './components/Toast/Toast';
 import Stats from './components/Stats/Stats';
 import './App.css';
-import { retrieveLaunchParams } from '@telegram-apps/sdk';
+// import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
 // Define the backend WebSocket URL
 const backendURL = 'wss://60df33f333f2707aa279ec8d60924a26.serveo.net/ws';
 
 
 function App() {
-  const { initDataRaw, initData } = retrieveLaunchParams();
+  // const { initDataRaw, initData } = retrieveLaunchParams();
   const [isUserInitialized, setIsUserInitialized] = useState(false); 
   const [userID, setUserID] = useState('');
   const [username, setUsername] = useState('');
@@ -69,10 +69,10 @@ function App() {
 
 
   useEffect(() => {
-    // const retrievedUsername = "poemcryptoman";
-    // const retrievedUserID = "5199577425";
-    const retrievedUsername = initData.user.username || "Unknown Username";
-    const retrievedUserID = initData.user.id || "Unknown UserID";
+    const retrievedUsername = "poemcryptoman";
+    const retrievedUserID = "5199577425";
+    // const retrievedUsername = initData.user.username || "Unknown Username";
+    // const retrievedUserID = initData.user.id || "Unknown UserID";
     // console.log('Setting userID:', retrievedUserID);
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);
@@ -528,9 +528,7 @@ useEffect(() => {
   
     const renderGameStatusMessage = () => {
       if (gameStatus.status === 'waiting') {
-        console.log(userID)
-        console.log(gameStatus)
-        console.log(player1Choice)
+ 
         if (userID === gameStatus.player1ID && !gameStatus.player1Choice) {
           return 'You have 20 seconds to make your move else you will be kicked out.';
         }
