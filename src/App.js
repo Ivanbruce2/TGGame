@@ -513,6 +513,33 @@ useEffect(() => {
   };
 
   const joinRoom = (roomId) => {
+    const roomToJoin = rooms.find((room) => room.room_id === roomId);
+  if (!roomToJoin) {
+    setToastMessage('Room not found.');
+    setToastVisible(true);
+    return;
+  }
+
+  const contract = contractAddresses.find(
+    (contract) => contract.address === roomToJoin.contract_address
+  );
+
+  // Check if the user has enough of the wager token
+  const requiredTokens = parseFloat(roomToJoin.wager_amount) / Math.pow(10, contract.decimals);
+  const userTokenBalance = getUserTokenBalance(contract.address); // Implement a function to get the user's token balance
+
+  // Check both BONE balance and token balance
+  if (boneBalance < 1) {
+    setToastMessage('You need at least 1 BONE to join the room.');
+    setToastVisible(true);
+    return;
+  }
+
+  if (userTokenBalance < requiredTokens) {
+    setToastMessage(`You need at least ${requiredTokens.toFixed(3)} ${contract.symbol} to join this room.`);
+    setToastVisible(true);
+    return;
+  }
     sendMessage({
       type: 'JOIN_ROOM',
       userID: userID.toString(),
