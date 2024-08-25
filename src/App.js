@@ -35,6 +35,7 @@ function App() {
   const [users, setUsers] = useState([]); // New state to store users
   const [boneBalance, setBoneBalance] = useState(0);
   const [countdown, setCountdown] = useState(20);
+  const [tokenBalances, setTokenBalances] = useState([]);
   const websocketRef = useRef(null);
   const countdownInterval = useRef(null);
   const messageQueue = useRef([]); 
@@ -156,6 +157,21 @@ function App() {
     }
   }, [selectedRoom]);
   
+  useEffect(() => {
+    const fetchTokenBalances = async () => {
+      try {
+        const response = await fetch(`https://www.shibariumscan.io/api/v2/addresses/${walletAddress}/token-balances`);
+        const data = await response.json();
+        setTokenBalances(data); // Store the token balances in state
+      } catch (error) {
+        console.error('Error fetching token balances:', error);
+      }
+    };
+  
+    if (walletAddress) {
+      fetchTokenBalances();
+    }
+  }, [walletAddress]);
 
 useEffect(() => {
   // Call the fetch rooms function initially
@@ -514,32 +530,43 @@ useEffect(() => {
 
   const joinRoom = (roomId) => {
     const roomToJoin = rooms.find((room) => room.room_id === roomId);
-  if (!roomToJoin) {
-    setToastMessage('Room not found.');
-    setToastVisible(true);
-    return;
-  }
-
-  const contract = contractAddresses.find(
-    (contract) => contract.address === roomToJoin.contract_address
-  );
-
-  // Check if the user has enough of the wager token
-  const requiredTokens = parseFloat(roomToJoin.wager_amount) / Math.pow(10, contract.decimals);
-  const userTokenBalance = getUserTokenBalance(contract.address); // Implement a function to get the user's token balance
-
-  // Check both BONE balance and token balance
-  if (boneBalance < 1) {
-    setToastMessage('You need at least 1 BONE to join the room.');
-    setToastVisible(true);
-    return;
-  }
-
-  if (userTokenBalance < requiredTokens) {
-    setToastMessage(`You need at least ${requiredTokens.toFixed(3)} ${contract.symbol} to join this room.`);
-    setToastVisible(true);
-    return;
-  }
+    if (!roomToJoin) {
+      setToastMessage('Room not found.');
+      setToastVisible(true);
+      return;
+    }
+  
+    const contract = contractAddresses.find(
+      (contract) => contract.address === roomToJoin.contract_address
+    );
+  
+    if (!contract) {
+      setToastMessage('Contract not found.');
+      setToastVisible(true);
+      return;
+    }
+  
+    // Calculate required tokens for the wager
+    const requiredTokens = parseFloat(roomToJoin.wager_amount) / Math.pow(10, contract.decimals);
+  
+    // Get the user's token balance (this function should be implemented based on how you fetch token balances)
+    const userTokenBalance = getUserTokenBalance(contract.address); // This should be implemented
+  
+    // Check BONE balance first
+    if (boneBalance < 1) {
+      setToastMessage('You need at least 1 BONE to join the room.');
+      setToastVisible(true);
+      return;
+    }
+  
+    // Check if the user has enough of the wager token
+    if (userTokenBalance < requiredTokens) {
+      setToastMessage(`You need at least ${requiredTokens.toFixed(3)} ${contract.symbol} to join this room.`);
+      setToastVisible(true);
+      return;
+    }
+  
+    // Proceed to send the message if all conditions are met
     sendMessage({
       type: 'JOIN_ROOM',
       userID: userID.toString(),
@@ -547,6 +574,13 @@ useEffect(() => {
       roomId,
       walletAddress,
     });
+  };
+  
+  // Implement this function to get the user's token balance
+  const getUserTokenBalance = (contractAddress) => {
+    const tokenData = tokenBalances.find(token => token.token.address === contractAddress);
+    if (!tokenData) return 0;
+    return parseFloat(tokenData.value) / Math.pow(10, contractAddresses.find(c => c.address === contractAddress).decimals);
   };
 
   const handleChoice = (choice) => {
