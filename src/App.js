@@ -157,6 +157,7 @@ useEffect(() => {
   // Set up an interval to refresh rooms every 10 seconds (adjust the interval as needed)
   const intervalId = setInterval(() => {
     fetchRooms();
+    console.log("pullign game status")
   }, 1000); // 10000 ms = 10 seconds
 
   // Cleanup the interval when the component unmounts
