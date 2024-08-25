@@ -195,7 +195,7 @@ const renderGameStatusMessage = () => {
 console.log("game status render:"+gameStatus.status)
 console.log(userID)
 console.log(gameStatus.player1ID)
-console.log(gameStatus.player1Choice)
+console.log("player choice"+gameStatus.player1Choice)
   if (gameStatus.status === 'waiting') {
     console.log("here?")
     if (userID === gameStatus.player1ID && (gameStatus.player1Choice === '' || gameStatus.player1Choice === null || gameStatus.player1Choice === undefined)) {
