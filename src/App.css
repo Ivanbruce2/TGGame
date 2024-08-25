@@ -134,7 +134,7 @@ body:before {
   padding: 0 30px 0 10px; /* Space for the arrow */
   border-radius: 4px;
   cursor: pointer;
-  width: 140px;
+  width: 120px;
   box-shadow: 0 2px #333;
   appearance: none;
   background: #ffffff url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 20 20'%3E%3Cpath fill='%23000000' d='M0 0l10 10 10-10z'/%3E%3C/svg%3E") no-repeat right 10px center;
@@ -360,7 +360,7 @@ body:before {
   }
 
   .create-button {
-    font-size: 0.7em;
+    font-size: 0.6em;
     padding: 4px 12px;
     margin: 5px 0;
     width: auto;
@@ -392,9 +392,9 @@ body:before {
   }
 
   .filter-dropdown {
-    font-size: 0.6em;
+    font-size: 0.7em;
     padding: 0 8px;
-    width: 140px;
+    width: 120px;
   }
 }
 
