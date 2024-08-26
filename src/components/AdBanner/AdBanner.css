@@ -1,31 +1,34 @@
-/* AdBanner.css */
 .ad-banner-container {
     position: fixed;
-    bottom: 10px;
+    bottom: 0;
     left: 0;
     width: 100%;
-    background-color: #f9f9f900;
+    background-color: transparent;
     padding: 5px 0;
     text-align: center;
-    z-index: 100; /* Ensure the banner stays on top */
-    font-family: 'Roboto', sans-serif; /* Apply Roboto font */
+    z-index: 100;
   }
   
   .ad-banner {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%; /* Ensure the ad fills the container width */
   }
   
-  .ad-banner-image {
-    width: 300px; /* Adjust for smaller devices */
-    height: 50px; /* Shorter height for mobile */
+  .ad-banner-image,
+  .ad-banner-video {
+    width: 100%; /* Stretch the ad horizontally to fill the available space */
+    height: 50px; /* Adjust this height value as needed */
+    object-fit: contain; /* Ensures the video/image stretches while maintaining aspect ratio */
+    border-radius: 5px; /* Optional: round corners */
   }
   
   .ad-caption {
     margin: 5px 0 0;
-    font-size: 12px; /* Smaller font size for the caption */
-    color: #cdff06;
-    font-family: 'Roboto', sans-serif; /* Apply Roboto font */
+    font-size: 12px;
+    color: #ffffff;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
   }
   

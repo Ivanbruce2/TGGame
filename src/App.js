@@ -37,6 +37,8 @@ function App() {
   const [boneBalance, setBoneBalance] = useState(0);
   const [countdown, setCountdown] = useState(20);
   const [tokenBalances, setTokenBalances] = useState([]);
+  const [ads, setAds] = useState([]);
+  const [currentAdIndex, setCurrentAdIndex] = useState(0);
   const websocketRef = useRef(null);
   const countdownInterval = useRef(null);
   const messageQueue = useRef([]); 
@@ -106,6 +108,7 @@ function App() {
           initializeUser(userID, username);
           fetchRooms();
           fetchUsers();
+          fetchAds();
         };
 
         websocketRef.current.onmessage = (event) => {
@@ -289,7 +292,13 @@ useEffect(() => {
 }, [gameStatus]);
 
 
+useEffect(() => {
+  const rotationInterval = setInterval(() => {
+    setCurrentAdIndex((prevIndex) => (prevIndex + 1) % ads.length);
+  }, 10000); // Change ad every 10 seconds
 
+  return () => clearInterval(rotationInterval);
+}, [ads.length]);
 
 
   const handleBeforeUnload = (event) => {
@@ -301,6 +310,11 @@ useEffect(() => {
     // console.log('Received WebSocket message:', message);
 
     switch (message.type) {
+      case 'ADS_LIST':
+        console.log(message)
+        setAds(message.ads); // Update ads from WebSocket response
+        break;
+  
       case 'KICKOUT':
         // console.log(message.room_id)
         // console.log(selectedRoom)
@@ -484,7 +498,10 @@ useEffect(() => {
     }
   }, [selectedRoom]);
 
-  
+  const fetchAds = () => {
+    sendMessage({ type: 'FETCH_ADS' });
+  };
+
   const sendMessage = (message) => {
     if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
       websocketRef.current.send(JSON.stringify(message));
@@ -937,7 +954,7 @@ useEffect(() => {
         )}
   
         {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
-        <AdBanner />
+        <AdBanner ads={ads} />
       </div>
     </Router>
   );
@@ -945,3 +962,4 @@ useEffect(() => {
 }
 
 export default App;
+
