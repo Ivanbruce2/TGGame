@@ -1,0 +1,31 @@
+/* AdBanner.css */
+.ad-banner-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f9f9f900;
+    padding: 5px 0;
+    text-align: center;
+    z-index: 100; /* Ensure the banner stays on top */
+    font-family: 'Roboto', sans-serif; /* Apply Roboto font */
+  }
+  
+  .ad-banner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .ad-banner-image {
+    width: 300px; /* Adjust for smaller devices */
+    height: 50px; /* Shorter height for mobile */
+  }
+  
+  .ad-caption {
+    margin: 5px 0 0;
+    font-size: 12px; /* Smaller font size for the caption */
+    color: #cdff06;
+    font-family: 'Roboto', sans-serif; /* Apply Roboto font */
+  }
+  

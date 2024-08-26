@@ -937,7 +937,7 @@ useEffect(() => {
         )}
   
         {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
-          
+        <AdBanner />
       </div>
     </Router>
   );
