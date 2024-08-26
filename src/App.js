@@ -427,7 +427,7 @@ useEffect(() => {
         
 
  case 'GAME_STATUS':
-        console.log('Updating game status:', message);
+        // console.log('Updating game status:', message);
         setGameStatus({
           roomId: message.roomId,
           player1ID: message.player1ID,
