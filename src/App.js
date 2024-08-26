@@ -365,9 +365,9 @@ useEffect(() => {
         
         break;
         case 'ROOMS_LIST':
+          console.log(message.rooms)
           // Ensure message.rooms is not null or undefined
           if (!message.rooms) {
-            console.Log("here ah?")
             setRooms([]);
             console.error('Rooms data is null or undefined.');
             return;
