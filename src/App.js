@@ -493,6 +493,43 @@ useEffect(() => {
     sendMessage({ type: 'FETCH_ROOMS' });
   };
 
+  const refreshWebSocketConnection = () => {
+    // Close the existing WebSocket connection if it's open
+    if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
+      websocketRef.current.close();
+    }
+  
+    // Re-establish the WebSocket connection
+    websocketRef.current = new WebSocket(backendURL);
+  
+    websocketRef.current.onopen = () => {
+      console.log('WebSocket connection re-established');
+      // Process queued messages
+      while (messageQueue.current.length > 0) {
+        const message = messageQueue.current.shift();
+        sendMessage(message);
+      }
+      // Send initialization messages
+      initializeUser(userID, username);
+      // Fetch rooms after re-establishing the WebSocket connection
+      fetchRooms();
+    };
+  
+    websocketRef.current.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      handleWebSocketMessage(message);
+    };
+  
+    websocketRef.current.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+  
+    websocketRef.current.onclose = (event) => {
+      console.log('WebSocket connection closed:', event);
+    };
+  };
+  
+
   const initializeUser = (userID, username) => {
   
     sendMessage({
@@ -802,7 +839,7 @@ useEffect(() => {
     <button className="pixel-button create-button" onClick={handleOpenModal}>
       Create Room
     </button>
-    <button className="pixel-button refresh-button" onClick={fetchRooms}>
+    <button className="pixel-button refresh-button" onClick={refreshWebSocketConnection}>
       ↻
     </button>
   </div>
