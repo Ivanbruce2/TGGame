@@ -173,18 +173,15 @@ function App() {
     }
   }, [walletAddress]);
 
-useEffect(() => {
-  // Call the fetch rooms function initially
-  fetchRooms();
-
-  // Set up an interval to refresh rooms every 10 seconds (adjust the interval as needed)
-  const intervalId = setInterval(() => {
+  useEffect(() => {
     fetchRooms();
-  }, 1000); // 10000 ms = 10 seconds
 
-  // Cleanup the interval when the component unmounts
-  return () => clearInterval(intervalId);
-}, []);
+    const intervalId = setInterval(() => {
+      fetchRooms();
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
 const fetchGameStatus = (roomId) => {
   sendMessage({ type: 'GAME_STATUS', roomId });
@@ -217,6 +214,13 @@ const filterRooms = (rooms) => {
   }
   return rooms;
 };
+
+useEffect(() => {
+  const filtered = selectedContract
+    ? allRooms.filter((room) => room.contract_address === selectedContract)
+    : allRooms;
+  setFilteredRooms(filtered);
+}, [allRooms, selectedContract]);
 
 // Handle changes in the filter dropdown
 const handleContractChange = (event) => {
@@ -860,7 +864,7 @@ useEffect(() => {
 </div>
 
                   <div className="room-list">
-                    {Object.values(rooms).map((room) => {
+                  {filteredRooms.map((room) => {
                       const contract = contractAddresses.find((c) => c.address === room.contract_address);
                       const decimals = contract ? contract.decimals : 1;
                       const formattedWagerAmount = room.wager_amount
