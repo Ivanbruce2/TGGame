@@ -143,8 +143,8 @@ function App() {
   // Listening to game status updates when players join or make a move
   useEffect(() => {
     if (selectedRoom) {
-      console.log("game status")
-      console.log(selectedRoom)
+      // console.log("game status")
+      // console.log(selectedRoom)
       const interval = setInterval(() => {
         if (selectedRoom) { // Check if selectedRoom still exists before polling
           fetchGameStatus(selectedRoom);
@@ -236,14 +236,12 @@ const renderGameStatusMessage = () => {
   const player1ID = gameStatus.player1ID?.toString().trim();
   const player2ID = gameStatus.player2ID?.toString().trim();
 
-  console.log("userID (type):", typeof currentUserID);
-  console.log("gameStatus.player1ID (type):", typeof player1ID);
-  console.log("IDs Match (string):", currentUserID === player1ID);
+
 
   if (gameStatus.status === 'waiting') {
     // Check if the current user is player 1 and hasn't made a choice yet
     if (currentUserID === player1ID && !gameStatus.player1Choice) {
-      console.log("You have X seconds to make your move.");
+
       return `You have ${countdown} seconds to make your move else you will be kicked out.`;
     }
     return 'Waiting for opponent...';
@@ -286,7 +284,7 @@ const renderGameStatusMessage = () => {
 
 
 useEffect(() => {
-  console.log("Updated game status state:", gameStatus);
+  // console.log("Updated game status state:", gameStatus);
 }, [gameStatus]);
 
 
@@ -303,8 +301,8 @@ useEffect(() => {
 
     switch (message.type) {
       case 'KICKOUT':
-        console.log(message.room_id)
-        console.log(selectedRoom)
+        // console.log(message.room_id)
+        // console.log(selectedRoom)
 
           setToastMessage(message.message);
           setSelectedRoom('');
