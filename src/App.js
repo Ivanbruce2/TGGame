@@ -650,7 +650,7 @@ useEffect(() => {
   };
 
   const leaveGame = () => {
-    if (selectedRoom) {
+    // if (selectedRoom) {
       setSelectedRoom('');
       setGameStatus('');
       setUserChoice('');
@@ -660,7 +660,7 @@ useEffect(() => {
         username,
         roomId: selectedRoom,
       });
-    }
+    // }
   };
 
   const handleOpenModal = () => {
