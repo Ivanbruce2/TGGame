@@ -253,7 +253,7 @@ const renderGameStatusMessage = () => {
     }
     return 'Waiting for the game result...';
   } else if (gameStatus.status === 'completed') {
-    if (gameStatus.result?.includes('draw')) {
+    if (gameStatus.result === '') {
       return (
         <>
           <p>It's a Draw! Both players chose {gameStatus.player1Choice}.</p>
@@ -264,7 +264,7 @@ const renderGameStatusMessage = () => {
           )} */}
         </>
       );
-    } else {
+    }else {
       return (
         <>
           <p>{gameStatus.result?.split('! ')[1]}</p>
