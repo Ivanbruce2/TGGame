@@ -6,14 +6,15 @@ import WagerModal from './components/WagerModal/WagerModal';
 import Toast from './components/Toast/Toast';
 import Stats from './components/Stats/Stats';
 import './App.css';
-import { retrieveLaunchParams } from '@telegram-apps/sdk';
+import AdBanner from './components/AdBanner/AdBanner';
+// import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
 // Define the backend WebSocket URL
 const backendURL = 'wss://3188054a514d6919b4672725ddf437c5.serveo.net/ws';
 
 
 function App() {
-  const { initDataRaw, initData } = retrieveLaunchParams();
+  // const { initDataRaw, initData } = retrieveLaunchParams();
   const [allRooms, setAllRooms] = useState([]); // Store all rooms fetched from the backend
   const [filteredRooms, setFilteredRooms] = useState([]); // Store filtered rooms based on selected contract
   const [selectedContract, setSelectedContract] = useState('');  const [isUserInitialized, setIsUserInitialized] = useState(false); 
@@ -77,10 +78,10 @@ function App() {
 
 
   useEffect(() => {
-    // const retrievedUsername = "poemcryptoman";
-    // const retrievedUserID = "5199577425";
-    const retrievedUsername = initData.user.username || "Unknown Username";
-    const retrievedUserID = initData.user.id || "Unknown UserID";
+    const retrievedUsername = "poemcryptoman";
+    const retrievedUserID = "5199577425";
+    // const retrievedUsername = initData.user.username || "Unknown Username";
+    // const retrievedUserID = initData.user.id || "Unknown UserID";
     // console.log('Setting userID:', retrievedUserID);
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);
@@ -936,6 +937,7 @@ useEffect(() => {
         )}
   
         {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
+        <AdBanner />
       </div>
     </Router>
   );
