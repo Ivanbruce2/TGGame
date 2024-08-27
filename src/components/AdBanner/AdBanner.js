@@ -45,7 +45,7 @@ const AdBanner = ({ ads }) => {
   return (
     <div className="ad-banner-container">
       <div className="ad-banner">
-        <p className="ad-caption">{currentAd.caption}</p>
+        <p className="ad-caption"><b>Ads: </b> {currentAd.caption}</p>
         <a href={currentAd.link} target="_blank" rel="noopener noreferrer">
           {renderAdContent(currentAd)}
         </a>

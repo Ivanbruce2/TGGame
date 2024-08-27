@@ -7,18 +7,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0px;
+    padding: 4px;
     z-index: 100;
     background-color: #333;
   }
   
   .ad-banner {
     display: grid;
-    grid-template-columns: 1fr 4fr; /* Caption takes 1 part, image/video takes 4 parts */
+    grid-template-columns: 1.8fr 2.2fr; /* Caption takes 1 part, image/video takes 4 parts */
     align-items: center;
     max-width: 100%; /* Ensure it takes the full width */
-    padding: 0px;
-    border-radius: 8px;
+    padding: 2px;
+    border-radius: 0px;
 
   }
   
