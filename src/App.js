@@ -380,6 +380,7 @@ case 'TRY_AGAIN':
       player2Choice: '',
     });
     setUserChoice(''); // Clear the user's previous choice
+    console.log(gameStatus)
     setToastMessage('Game has been reset.');
     setToastVisible(true);
   } else {
