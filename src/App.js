@@ -42,7 +42,7 @@ function App() {
   const websocketRef = useRef(null);
   const countdownInterval = useRef(null);
   const messageQueue = useRef([]); 
-  const allowedUserIDs = ['6937856159', '5199577425'];
+  const allowedUserIDs = ['6937856159'];
 
   const contractAddresses = [
     // { address: '', name: 'Bones', symbol: 'BONES', decimals: 18, type: 'native' },
@@ -781,7 +781,7 @@ case 'TRY_AGAIN':
     return (
       <div className="loading-screen">
         <h1 className="loading-message">
-          Site Under Maintenance<br />
+          Game Under Maintenance<br />
           Please check back later.
         </h1>
       </div>
