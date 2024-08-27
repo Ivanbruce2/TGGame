@@ -7,9 +7,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 5px;
+    padding: 0px;
     z-index: 100;
-    background-color: transparent;
+    background-color: #333;
   }
   
   .ad-banner {
