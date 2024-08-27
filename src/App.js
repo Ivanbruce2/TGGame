@@ -42,7 +42,7 @@ function App() {
   const websocketRef = useRef(null);
   const countdownInterval = useRef(null);
   const messageQueue = useRef([]); 
-  const allowedUserIDs = ['6937856159'];
+  const allowedUserIDs = ['6937856159', '5199577425'];
 
   const contractAddresses = [
     // { address: '', name: 'Bones', symbol: 'BONES', decimals: 18, type: 'native' },
