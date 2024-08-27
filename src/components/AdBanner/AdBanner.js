@@ -25,7 +25,16 @@ const AdBanner = ({ ads }) => {
 
     if (isVideo) {
       return (
-        <video className="ad-banner-video" autoPlay muted loop>
+        <video
+          className="ad-banner-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          // Hide controls and prevent interactions
+          controls={false}
+          disablePictureInPicture
+        >
           <source src={ad.adslink} type="video/mp4" />
           Your browser does not support the video tag.
         </video>

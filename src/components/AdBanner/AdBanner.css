@@ -23,6 +23,15 @@
     object-fit: contain; /* Ensures the video/image stretches while maintaining aspect ratio */
     border-radius: 5px; /* Optional: round corners */
   }
+
+  /* AdBanner.css */
+.ad-banner-video {
+    width: 100%;
+    height: auto;
+    pointer-events: none; /* Prevent any controls or interaction */
+    object-fit: cover; /* Ensures the video scales properly */
+  }
+  
   
   .ad-caption {
     margin: 5px 0 0;
