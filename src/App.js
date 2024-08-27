@@ -10,7 +10,7 @@ import AdBanner from './components/AdBanner/AdBanner';
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
 // Define the backend WebSocket URL
-const backendURL = 'wss://3188054a514d6919b4672725ddf437c5.serveo.net/ws';
+const backendURL = 'wss://f141c9cefcc93c0a9cdff3945660eec4.serveo.net/ws';
 
 
 function App() {
@@ -954,7 +954,7 @@ useEffect(() => {
         )}
   
         {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
-        {/* <AdBanner ads={ads} /> */}
+        <AdBanner ads={ads} />
       </div>
     </Router>
   );
