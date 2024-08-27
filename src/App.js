@@ -850,7 +850,7 @@ case 'TRY_AGAIN':
                   key={choice}
                   className="choice-button"
                   onClick={() => handleChoice(choice)}
-                  disabled={!!userChoice || gameStatus.status !== 'in_progress'} 
+                  disabled={!!userChoice} 
                 >
                   {choice}
                 </button>
