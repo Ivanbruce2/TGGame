@@ -1,5 +1,3 @@
-// AdBanner.js
-
 import React, { useState, useEffect } from 'react';
 import './AdBanner.css';
 
@@ -47,11 +45,11 @@ const AdBanner = ({ ads }) => {
   return (
     <div className="ad-banner-container">
       <div className="ad-banner">
+        <p className="ad-caption">{currentAd.caption}</p>
         <a href={currentAd.link} target="_blank" rel="noopener noreferrer">
           {renderAdContent(currentAd)}
         </a>
       </div>
-      <p className="ad-caption">{currentAd.caption}</p>
     </div>
   );
 };
