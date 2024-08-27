@@ -20,19 +20,17 @@
   .ad-banner video {
     width: 100%; /* Make the image fill the container */
     height: auto; /* Keep the aspect ratio */
-    object-fit: cover; /* Ensure the content scales properly within the bounds */
-    max-height: 50px;
+    object-fit: contain; /* Ensure the content scales properly within the bounds */
+    max-height: 80px; /* Increase the max height slightly */
   }
   
-
   /* AdBanner.css */
-.ad-banner-video {
+  .ad-banner-video {
     width: 100%;
     height: auto;
     pointer-events: none; /* Prevent any controls or interaction */
-    object-fit: cover; /* Ensures the video scales properly */
+    object-fit: contain; /* Ensures the video scales properly */
   }
-  
   
   .ad-caption {
     margin: 5px 0 0;
