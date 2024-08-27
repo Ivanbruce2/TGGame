@@ -36,7 +36,7 @@
   .ad-banner img,
   .ad-banner video {
     width: 100%; /* Fully stretch to fill the container's width */
-    height: 80px; /* Fixed height for the banner content */
+    height: 50px; /* Fixed height for the banner content */
     object-fit: fill; /* Stretch the content to completely fill the container */
     border-radius: 4px;
   }
