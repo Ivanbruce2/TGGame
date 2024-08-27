@@ -195,12 +195,13 @@ useEffect(() => {
   const interval = setInterval(() => {
 
     if (gameStatus?.tryAgain2 === "yes") {
+      
       setUserChoice(''); // Clear the user's previous choice if the game is reset
       
       // Update gameStatus properly using setGameStatus
      
     }
-  }, 1000); // Run every 1 second
+  }, 500); // Run every 1 second
 
   // Cleanup the interval when the component unmounts
   return () => clearInterval(interval);
@@ -398,8 +399,12 @@ case 'TRY_AGAIN':
       player2Choice: '',
     });
     setUserChoice(''); // Clear the user's previous choice
-
-  } 
+    setToastMessage('Game has been reset.');
+    setToastVisible(true);
+  } else {
+    setToastMessage('Failed to reset the game.');
+    setToastVisible(true);
+  }
   break;
       case 'LEAVE_ROOM':
         console.log('Left room:', message.room_id);
@@ -493,14 +498,14 @@ case 'TRY_AGAIN':
               tryAgain: message.tryAgain,       // Add this line
               tryAgain2: message.tryAgain2,     // Add this line
             });
-
             if (gameStatus?.tryAgain2 === "yes") {
               setToastMessage('Game has been reset.');
               setToastVisible(true);
             }
             break;
           
-      
+       
+
       case 'TOKEN_TRANSFER':
         if (message.success) {
           setToastMessage('Game completed! Tokens have been transferred.');
