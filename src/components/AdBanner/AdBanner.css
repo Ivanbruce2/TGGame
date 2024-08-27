@@ -14,9 +14,9 @@
   
   .ad-banner {
     display: grid;
-    grid-template-columns: 1fr 3fr; /* Caption takes 1 part, image/video takes 3 parts */
+    grid-template-columns: 1fr 4fr; /* Caption takes 1 part, image/video takes 4 parts */
     align-items: center;
-    max-width: 350px; /* Propose a max width for the entire banner */
+    max-width: 100%; /* Ensure it takes the full width */
     background-color: #333;
     padding: 8px;
     border-radius: 8px;
@@ -24,7 +24,7 @@
   }
   
   .ad-caption {
-    font-size: 10px;
+    font-size: 12px;
     color: #ffffff;
     font-family: 'Roboto', sans-serif;
     font-weight: bold;
@@ -35,23 +35,21 @@
   
   .ad-banner img,
   .ad-banner video {
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-    max-width: 350px; /* Propose a max width for the image/video */
-    max-height: 50px; /* Propose a max height for the image/video */
+    width: 100%; /* Fully stretch to fill the container's width */
+    height: 80px; /* Fixed height for the banner content */
+    object-fit: fill; /* Stretch the content to completely fill the container */
     border-radius: 4px;
   }
   
   .ad-banner-video {
     pointer-events: none;
-    object-fit: contain;
+    object-fit: fill;
   }
   
   @media (max-width: 768px) {
     .ad-banner {
       max-width: 100%;
-      grid-template-columns: 1fr 2fr; /* Adjust for smaller screens */
+      grid-template-columns: 1fr 3fr; /* Adjust for smaller screens */
     }
   }
   
