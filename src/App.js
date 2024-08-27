@@ -369,24 +369,24 @@ useEffect(() => {
           setToastVisible(true);
           break;
         
-          case 'TRY_AGAIN':
-            console.log(message);
-            if (message.success) {
-              // Reset game status and user choice
-              setGameStatus({
-                ...gameStatus,
-                status: 'in_progress',
-                player1Choice: '',
-                player2Choice: '',
-              });
-              setUserChoice(''); // Clear the user's previous choice
-              setToastMessage('Game has been reset.');
-              setToastVisible(true);
-            } else {
-              setToastMessage('Failed to reset the game.');
-              setToastVisible(true);
-            }
-            break;
+case 'TRY_AGAIN':
+  console.log(message);
+  if (message.success) {
+    // Reset game status and user choice
+    setGameStatus({
+      ...gameStatus,
+      status: 'in_progress',
+      player1Choice: '',
+      player2Choice: '',
+    });
+    setUserChoice(''); // Clear the user's previous choice
+    setToastMessage('Game has been reset.');
+    setToastVisible(true);
+  } else {
+    setToastMessage('Failed to reset the game.');
+    setToastVisible(true);
+  }
+  break;
       case 'LEAVE_ROOM':
         console.log('Left room:', message.room_id);
         setSelectedRoom('');
@@ -849,7 +849,7 @@ useEffect(() => {
                   key={choice}
                   className="choice-button"
                   onClick={() => handleChoice(choice)}
-                  disabled={!!userChoice}
+                  disabled={!!userChoice || gameStatus.status !== 'in_progress'} 
                 >
                   {choice}
                 </button>
