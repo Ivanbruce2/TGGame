@@ -193,7 +193,7 @@ const fetchGameStatus = (roomId) => {
 
 useEffect(() => {
   const interval = setInterval(() => {
-    if (gameStatus?.TryAgain2 === "yes") {
+    if (gameStatus?.tryAgain2 === "yes") {
       console.log("here???")
       setUserChoice(''); // Clear the user's previous choice if the game is reset
       
