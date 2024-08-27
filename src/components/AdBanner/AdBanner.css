@@ -17,20 +17,22 @@
     grid-template-columns: 1fr 3fr; /* Caption takes 1 part, image/video takes 3 parts */
     align-items: center;
     width: 100%;
-    max-width: 400px; /* Adjust based on your design */
+    max-width: 350px; /* Adjust based on your design */
     background-color: #333; /* Background color for better visibility */
-    padding: 10px;
+    padding: 8px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    max-height: 100px; /* Set a maximum height */
   }
   
   .ad-caption {
-    font-size: 12px;
+    font-size: 10px; /* Reduce font size for better fit */
     color: #ffffff;
     font-family: 'Roboto', sans-serif;
     font-weight: bold;
-    padding-right: 10px;
+    padding-right: 8px;
     text-align: left;
+    line-height: 1.2;
   }
   
   .ad-banner img,
@@ -38,6 +40,7 @@
     width: 100%;
     height: auto;
     object-fit: contain; /* Ensure content scales properly */
+    max-height: 50px; /* Adjust for a compact height */
     border-radius: 4px;
   }
   
@@ -46,7 +49,7 @@
     object-fit: contain;
   }
   
-  @media (max-width: 768px) {
+  @media (max-width: 500px) {
     .ad-banner {
       max-width: 100%;
       grid-template-columns: 1fr 2fr; /* Adjust for smaller screens */
