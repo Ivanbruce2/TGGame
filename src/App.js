@@ -146,21 +146,21 @@ function App() {
   
 
   // Listening to game status updates when players join or make a move
-  useEffect(() => {
-    if (selectedRoom) {
-      // console.log("game status")
-      // console.log(selectedRoom)
-      const interval = setInterval(() => {
-        if (selectedRoom) { // Check if selectedRoom still exists before polling
-          fetchGameStatus(selectedRoom);
-        } else {
-          clearInterval(interval); // Stop polling if selectedRoom becomes invalid
-        }
-      }, 1000); // Polling every 1 second
+  // useEffect(() => {
+  //   if (selectedRoom) {
+  //     // console.log("game status")
+  //     // console.log(selectedRoom)
+  //     const interval = setInterval(() => {
+  //       if (selectedRoom) { // Check if selectedRoom still exists before polling
+  //         fetchGameStatus(selectedRoom);
+  //       } else {
+  //         clearInterval(interval); // Stop polling if selectedRoom becomes invalid
+  //       }
+  //     }, 1000); // Polling every 1 second
   
-      return () => clearInterval(interval); // Clean up interval on component unmount
-    }
-  }, [selectedRoom]);
+  //     return () => clearInterval(interval); // Clean up interval on component unmount
+  //   }
+  // }, [selectedRoom]);
   
   useEffect(() => {
     const fetchTokenBalances = async () => {
@@ -526,17 +526,32 @@ case 'TRY_AGAIN':
             setToastMessage(message.error);
             setToastVisible(true);
           } else {
-            console.log(message)
+            console.log(message);
+        
+            // Update the state for the user who joined the room
             setSelectedRoom(message.room_id);
             setGameStatus({
+              roomId: message.room_id,
               player1ID: message.player1ID,
+              player1Username: message.player1Username,
               player1Choice: message.player1Choice,
               player2ID: message.player2ID,
+              player2Username: message.player2Username,
               player2Choice: message.player2Choice,
-              status: message.status, // Make sure to pass the correct status here
+              status: message.status, // Pass the correct status here
             });
+        
+            // Check if the current user is the creator or the joiner and update their state accordingly
+            if (userID.toString() === message.player1ID.toString()) {
+              // This is the room creator, update their state
+              setUserChoice(message.player1Choice);
+            } else if (userID.toString() === message.player2ID.toString()) {
+              // This is the joiner, update their state
+              setUserChoice(message.player2Choice);
+            }
           }
           break;
+        
       default:
         console.log('Unknown message type received:', message.type);
     }
