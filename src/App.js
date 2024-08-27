@@ -483,21 +483,25 @@ case 'TRY_AGAIN':
           break;
         
 
- case 'GAME_STATUS':
-        console.log('Updating game status:', message);
-        setGameStatus({
-          roomId: message.roomId,
-          player1ID: message.player1ID,
-          player1Username: message.player1Username,
-          player1Choice: message.player1Choice,
-          player2ID: message.player2ID,
-          player2Username: message.player2Username,
-          player2Choice: message.player2Choice,
-          status: message.status,
-          contractAddress: message.contractAddress,
-          wagerAmount: message.wagerAmount,
-          result: message.result,
-        });
+          case 'GAME_STATUS':
+            console.log('Updating game status:', message);
+            setGameStatus({
+              roomId: message.roomId,
+              player1ID: message.player1ID,
+              player1Username: message.player1Username,
+              player1Choice: message.player1Choice,
+              player2ID: message.player2ID,
+              player2Username: message.player2Username,
+              player2Choice: message.player2Choice,
+              status: message.status,
+              contractAddress: message.contractAddress,
+              wagerAmount: message.wagerAmount,
+              result: message.result,
+              tryAgain: message.tryAgain,       // Add this line
+              tryAgain2: message.tryAgain2,     // Add this line
+            });
+            break;
+          
        
         
         break;
