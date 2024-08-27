@@ -193,16 +193,14 @@ const fetchGameStatus = (roomId) => {
 
 useEffect(() => {
   const interval = setInterval(() => {
-    console.log("try again")
-    console.log(gameStatus)
+
     if (gameStatus?.tryAgain2 === "yes") {
-      console.log("here???")
       setUserChoice(''); // Clear the user's previous choice if the game is reset
       
       // Update gameStatus properly using setGameStatus
      
     }
-  }, 500); // Run every 1 second
+  }, 1000); // Run every 1 second
 
   // Cleanup the interval when the component unmounts
   return () => clearInterval(interval);
@@ -400,7 +398,6 @@ case 'TRY_AGAIN':
       player2Choice: '',
     });
     setUserChoice(''); // Clear the user's previous choice
-    console.log(gameStatus)
     setToastMessage('Game has been reset.');
     setToastVisible(true);
   } else {
