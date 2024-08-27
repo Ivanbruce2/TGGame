@@ -38,8 +38,8 @@
     width: 100%;
     height: auto;
     object-fit: contain;
-    max-width: 250px; /* Propose a max width for the image/video */
-    max-height: 80px; /* Propose a max height for the image/video */
+    max-width: 150px; /* Propose a max width for the image/video */
+    max-height: 50px; /* Propose a max height for the image/video */
     border-radius: 4px;
   }
   
