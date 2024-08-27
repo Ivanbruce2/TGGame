@@ -355,9 +355,9 @@ useEffect(() => {
       case 'TRY_AGAIN':
         console.log(message);
         if (message.success) {
-          setGameStatus('waiting');
+          setGameStatus('in_progress');
           setUserChoice('');
-          setToastMessage('Game has been reset. Waiting for a new player...');
+          setToastMessage('Game has been reset.');
           setToastVisible(true);
         } else {
           setToastMessage('Failed to reset the game.');
