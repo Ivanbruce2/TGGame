@@ -200,7 +200,7 @@ useEffect(() => {
       // Update gameStatus properly using setGameStatus
       setGameStatus((prevStatus) => ({
         ...prevStatus,
-        TryAgain2: "", // Reset the tryAgain flag correctly
+        tryAgain2: "", // Reset the tryAgain flag correctly
       }));
     }
   }, 1000); // Run every 1 second
