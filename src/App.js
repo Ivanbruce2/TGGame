@@ -192,6 +192,13 @@ const fetchGameStatus = (roomId) => {
 };
 
 useEffect(() => {
+  if (gameStatus && gameStatus.player1Choice === '' && gameStatus.player2Choice === '') {
+    setUserChoice(''); // Clear the user's previous choice if the game is reset
+  }
+}, [gameStatus]);
+
+
+useEffect(() => {
   if (gameStatus?.status === 'waiting' || gameStatus?.status === 'in_progress') {
     // Reset and start the countdown timer
     setCountdown(20);
