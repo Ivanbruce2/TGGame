@@ -192,10 +192,22 @@ const fetchGameStatus = (roomId) => {
 };
 
 useEffect(() => {
-  if (gameStatus && gameStatus.player1Choice === '' && gameStatus.player2Choice === '') {
-    setUserChoice(''); // Clear the user's previous choice if the game is reset
-  }
+  const interval = setInterval(() => {
+    if (gameStatus?.tryAgain === "yes") {
+      setUserChoice(''); // Clear the user's previous choice if the game is reset
+
+      // Optional: Reset the tryAgain flag to prevent repeated triggers
+      setGameStatus((prevStatus) => ({
+        ...prevStatus,
+        tryAgain: "",
+      }));
+    }
+  }, 5000); // Run every 5 seconds
+
+  // Cleanup the interval when the component unmounts
+  return () => clearInterval(interval);
 }, [gameStatus]);
+
 
 
 useEffect(() => {
