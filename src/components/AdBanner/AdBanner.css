@@ -17,7 +17,7 @@
     grid-template-columns: 1.8fr 2.2fr; /* Caption takes 1 part, image/video takes 4 parts */
     align-items: center;
     max-width: 100%; /* Ensure it takes the full width */
-    padding-right: 4px;
+    padding-right: 8px;
     border-radius: 0px;
 
   }
@@ -27,7 +27,7 @@
     color: #ffffff;
     font-family: 'Roboto', sans-serif;
     font-weight: bold;
-    padding-left: 4px;
+    padding-left: 8px;
     text-align: left;
     line-height: 1.2;
   }
