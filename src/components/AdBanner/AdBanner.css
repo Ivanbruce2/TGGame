@@ -10,19 +10,20 @@
   }
   
   .ad-banner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%; /* Ensure the ad fills the container width */
+    width: 100%;
+    max-width: 100%; /* Ensures it doesn't overflow */
+    margin: 0 auto;
+    padding: 10px 0;
   }
   
-  .ad-banner-image,
-  .ad-banner-video {
-    width: 100%; /* Stretch the ad horizontally to fill the available space */
-    height: 50px; /* Adjust this height value as needed */
-    object-fit: contain; /* Ensures the video/image stretches while maintaining aspect ratio */
-    border-radius: 5px; /* Optional: round corners */
+  .ad-banner img,
+  .ad-banner video {
+    width: 100%; /* Make the image fill the container */
+    height: auto; /* Keep the aspect ratio */
+    object-fit: cover; /* Ensure the content scales properly within the bounds */
+    max-height: 50px;
   }
+  
 
   /* AdBanner.css */
 .ad-banner-video {
