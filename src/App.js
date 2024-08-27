@@ -240,27 +240,34 @@ const renderGameStatusMessage = () => {
   const player1ID = gameStatus.player1ID?.toString().trim();
   const player2ID = gameStatus.player2ID?.toString().trim();
 
-
-
+  // Handle "waiting" status
   if (gameStatus.status === 'waiting') {
-    // Check if the current user is player 1 and hasn't made a choice yet
     if (currentUserID === player1ID && !gameStatus.player1Choice) {
-
-      return `You have ${countdown} seconds to make your move else you will be kicked out.`;
+      return `You have ${countdown} seconds to make your move or you will be kicked out.`;
     }
     return 'Waiting for opponent...';
-  } else if (gameStatus.status === 'in_progress') {
+  }
+
+  // Handle "in_progress" status
+  else if (gameStatus.status === 'in_progress') {
     if (currentUserID === player1ID && !gameStatus.player1Choice) {
-      return `You have ${countdown} seconds to make your move else you will be kicked out.`;
+      return `You have ${countdown} seconds to make your move or you will be kicked out.`;
     } else if (currentUserID === player2ID && !gameStatus.player2Choice) {
-      return `You have ${countdown} seconds to make your move else you will be kicked out.`;
+      return `You have ${countdown} seconds to make your move or you will be kicked out.`;
     }
     return 'Waiting for the game result...';
-  } else if (gameStatus.status === 'completed') {
+  }
+
+  // Handle "completed" status
+  else if (gameStatus.status === 'completed') {
+    const player1Choice = gameStatus.player1Choice || 'None';
+    const player2Choice = gameStatus.player2Choice || 'None';
+
+    // Display message for a draw
     if (gameStatus.result === '') {
       return (
         <>
-          <p>It's a Draw! Both players chose {gameStatus.player1Choice}.</p>
+          <p>It's a Draw! Both players chose {player1Choice}.</p>
           {username === gameStatus.player1Username && (
             <button className="return-button" onClick={handleTryAgain}>
               Try Again
@@ -268,11 +275,19 @@ const renderGameStatusMessage = () => {
           )}
         </>
       );
-    }else {
+    } 
+
+    // Display message for a win/loss, including player choices
+    else {
       return (
         <>
           <p>{gameStatus.result?.split('! ')[1]}</p>
           <h2>{gameStatus.result?.includes(username) ? 'You Win!' : 'You Lose...'}</h2>
+          <p>
+            {gameStatus.player1Username} chose {player1Choice}.<br />
+            {gameStatus.player2Username} chose {player2Choice}.
+          </p>
+          {/* Optionally include the Try Again button */}
           {/* {username === gameStatus.player1Username && (
             <button className="return-button" onClick={handleTryAgain}>
               Try Again
@@ -282,8 +297,10 @@ const renderGameStatusMessage = () => {
       );
     }
   }
+
   return null;
 };
+
 
 
 
