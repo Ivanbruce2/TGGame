@@ -261,11 +261,11 @@ const renderGameStatusMessage = () => {
       return (
         <>
           <p>It's a Draw! Both players chose {gameStatus.player1Choice}.</p>
-          {/* {username === gameStatus.player1Username && (
+          {username === gameStatus.player1Username && (
             <button className="return-button" onClick={handleTryAgain}>
               Try Again
             </button>
-          )} */}
+          )}
         </>
       );
     }else {
