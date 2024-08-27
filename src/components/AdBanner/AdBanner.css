@@ -49,7 +49,7 @@
   @media (max-width: 768px) {
     .ad-banner {
       max-width: 100%;
-      grid-template-columns: 1fr 3fr; /* Adjust for smaller screens */
+      grid-template-columns: 2fr 2fr; /* Adjust for smaller screens */
     }
   }
   
