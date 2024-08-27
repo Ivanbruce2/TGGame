@@ -7,9 +7,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 5px;
+    padding: 0px;
     z-index: 100;
-    background-color: transparent;
+    background-color: #333;
   }
   
   .ad-banner {
@@ -17,10 +17,9 @@
     grid-template-columns: 1fr 4fr; /* Caption takes 1 part, image/video takes 4 parts */
     align-items: center;
     max-width: 100%; /* Ensure it takes the full width */
-    background-color: #333;
-    padding: 8px;
+    padding: 0px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
   }
   
   .ad-caption {
@@ -49,7 +48,7 @@
   @media (max-width: 768px) {
     .ad-banner {
       max-width: 100%;
-      grid-template-columns: 2fr 2fr; /* Adjust for smaller screens */
+      grid-template-columns: 1.8fr 2.2fr; /* Adjust for smaller screens */
     }
   }
   
