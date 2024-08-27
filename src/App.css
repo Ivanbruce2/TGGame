@@ -239,16 +239,29 @@ body:before {
   align-items: center;
 }
 
+.try-again-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
 .try-again-button {
   padding: 10px 20px;
-  margin-top: 10px;
   font-size: 16px;
   background-color: #3498db;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-family: 'Press Start 2P', cursive;
 }
+
+.try-again-button:hover {
+  background-color: #2980b9;
+}
+
 
 .try-again-button:hover {
   background-color: #2980b9;
