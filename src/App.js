@@ -585,6 +585,8 @@ case 'TRY_AGAIN':
   };
   
   const handleRoomsList = (message) => {
+    console.log('handleRoomsList called');  // Log whenever the function is called
+  
     // Ensure message.rooms is not null or undefined
     if (!message.rooms) {
       setRooms([]);
@@ -595,6 +597,7 @@ case 'TRY_AGAIN':
   
     // Store all rooms in state (for filtering purposes)
     setAllRooms(message.rooms);
+    console.log('Rooms data stored');  // Log after storing rooms
   
     // Filter the rooms based on the selected contract
     const filteredRooms = filterRooms(message.rooms);
@@ -602,10 +605,15 @@ case 'TRY_AGAIN':
   
     // Perform the active room check only if it hasn't been done yet
     if (!hasCheckedActiveRoom) {
+      console.log('Checking for active room...');  // Log before checking
       checkForActiveRoom(filteredRooms);
       setHasCheckedActiveRoom(true);  // Set the flag to true immediately after the first check
+      console.log('Active room checked and flag set to true');  // Log after setting the flag
+    } else {
+      console.log('Already checked for active room, skipping...');  // Log if the check is skipped
     }
   };
+  
   
   const checkForActiveRoom = (filteredRooms) => {
     // Log the current userID for debugging
