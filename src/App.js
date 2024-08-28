@@ -601,7 +601,7 @@ case 'TRY_AGAIN':
   
   const handleRoomsList = (message) => {
     console.log('handleRoomsList called');  // Log whenever the function is called
-  
+  console.log(message)
     // Ensure message.rooms is not null or undefined
     if (!message.rooms) {
       setRooms([]);
