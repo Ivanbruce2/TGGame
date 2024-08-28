@@ -603,6 +603,9 @@ case 'TRY_AGAIN':
     const filteredRooms = filterRooms(message.rooms);
     setRooms(filteredRooms);
   
+    // Log the value of `hasCheckedActiveRoom`
+    console.log('hasCheckedActiveRoom before check:', hasCheckedActiveRoom);
+  
     // Perform the active room check only if it hasn't been done yet
     if (!hasCheckedActiveRoom) {
       console.log('Checking for active room...');  // Log before checking
@@ -612,7 +615,11 @@ case 'TRY_AGAIN':
     } else {
       console.log('Already checked for active room, skipping...');  // Log if the check is skipped
     }
+  
+    // Log the value of `hasCheckedActiveRoom` after the check
+    console.log('hasCheckedActiveRoom after check:', hasCheckedActiveRoom);
   };
+  
   
   
   const checkForActiveRoom = (filteredRooms) => {
