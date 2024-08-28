@@ -499,9 +499,12 @@ case 'TRY_AGAIN':
               tryAgain: message.tryAgain,       // Add this line
               tryAgain2: message.tryAgain2,     // Add this line
             });
-            if (gameStatus?.tryAgain2 === "yes") {
-              setToastMessage('Game has been reset.');
-              setToastVisible(true);
+            if (userID.toString() === message.player1ID.toString()) {
+              // Update the state for Player 1
+              setUserChoice(message.player1Choice);
+            } else if (userID.toString() === message.player2ID.toString()) {
+              // Update the state for Player 2
+              setUserChoice(message.player2Choice);
             }
             break;
           
