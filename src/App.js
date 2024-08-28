@@ -604,12 +604,12 @@ case 'TRY_AGAIN':
   console.log(message)
     // Ensure message.rooms is not null or undefined
     if (!message.rooms) {
-      // setRooms([]);
-      // setAllRooms([]); 
+      setRooms([]);
+      setAllRooms([]); 
       console.error('Rooms data is null or undefined.');
       return;
     }
-  
+  console.log(message.rooms)
     // Store all rooms in state (for filtering purposes)
     setAllRooms(message.rooms);
     console.log('Rooms data stored');  // Log after storing rooms
