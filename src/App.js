@@ -485,11 +485,15 @@ case 'TRY_AGAIN':
           case 'GAME_STATUS':
             console.log('Updating game status:', message);
         
-            if (message.status === "") {
-                // Reset the selected room and game status if status is empty
+            if (message.status === "" || 
+                (userID.toString() !== message.player1ID?.toString() && userID.toString() !== message.player2ID?.toString())) {
+                
+                // Reset the selected room and game status if status is empty or if the userID is not found in the game
                 setSelectedRoom('');
                 setGameStatus(null);
                 setUserChoice('');  // Reset user choice as well
+                
+                console.log('User has been removed from the game or game has ended.');
             } else {
                 // Update the game status as usual
                 setGameStatus({
@@ -510,14 +514,13 @@ case 'TRY_AGAIN':
         
                 // Update the user choice based on player ID
                 if (userID.toString() === message.player1ID.toString()) {
-                    // Update the state for Player 1
                     setUserChoice(message.player1Choice);
                 } else if (userID.toString() === message.player2ID.toString()) {
-                    // Update the state for Player 2
                     setUserChoice(message.player2Choice);
                 }
             }
             break;
+        
           
        
 
