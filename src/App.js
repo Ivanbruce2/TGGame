@@ -433,7 +433,7 @@ case 'TRY_AGAIN':
         break;
       
           case 'GAME_STATUS':
-            console.log('Updating game status:', message);
+            // console.log('Updating game status:', message);
         
             if (message.status === "" || 
                 (userID.toString() !== message.player1ID?.toString() && userID.toString() !== message.player2ID?.toString())) {
