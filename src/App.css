@@ -249,23 +249,27 @@ body:before {
 
 .try-again-button {
   padding: 10px 20px;
-  font-size: 16px;
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 5px;
+  font-size: 0.9em;
+  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff);
+  background-size: 200% 200%;
+  color: rgb(6, 6, 6);
+  border: 2px solid #333;
+  height: 40px;
+  line-height: 46px;
+  border-radius: 4px;
   cursor: pointer;
+  text-transform: uppercase;
   font-family: 'Press Start 2P', cursive;
+  box-shadow: 0 4px #333;
+  animation: gradientShift 2s infinite linear;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.try-again-button:hover {
-  background-color: #2980b9;
-}
 
 
-.try-again-button:hover {
-  background-color: #2980b9;
-}
+
 
 .welcome-message {
   text-transform: uppercase;
