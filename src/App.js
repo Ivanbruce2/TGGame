@@ -108,7 +108,7 @@ function App() {
           }
           // Send initialization messages
           initializeUser(userID, username);
-
+          fetchRooms();
           fetchUsers();
           fetchAds();
         };
