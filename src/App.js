@@ -620,6 +620,10 @@ case 'TRY_AGAIN':
   
   };
   
+  useEffect(() => {
+    console.log('allRooms updated:', allRooms);
+  }, [allRooms]);
+  
   const checkForActiveRoomOnConnect = () => {
     console.log("come here?")
     console.log(allRooms)  
