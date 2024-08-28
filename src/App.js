@@ -108,10 +108,13 @@ function App() {
           }
           // Send initialization messages
           initializeUser(userID, username);
-          fetchRooms();
+          fetchRooms().then(() => {
+            // This will be called after fetchRooms has updated allRooms
+            checkForActiveRoomOnConnect();
+          });
           fetchUsers();
           fetchAds();
-          checkForActiveRoomOnConnect();
+          // checkForActiveRoomOnConnect();
         };
 
         websocketRef.current.onmessage = (event) => {
@@ -623,7 +626,7 @@ case 'TRY_AGAIN':
   useEffect(() => {
     console.log('allRooms updated:', allRooms);
   }, [allRooms]);
-  
+
   const checkForActiveRoomOnConnect = () => {
     console.log("come here?")
     console.log(allRooms)  
