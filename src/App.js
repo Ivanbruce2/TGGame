@@ -185,7 +185,7 @@ function App() {
   
     const intervalId = setInterval(() => {
       fetchRooms();
-    }, 1000);
+    }, 2000);
   
     return () => clearInterval(intervalId);
   }, []);
@@ -1103,9 +1103,7 @@ case 'TRY_AGAIN':
           />
         )}
   
-  {toastVisible && (
-  <Toast message={toastMessage} link={toastLink} onClose={handleToastClose} />
-)}
+{toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
         <AdBanner ads={ads} />
       </div>
     </Router>
