@@ -111,7 +111,7 @@ function App() {
           fetchRooms();
           fetchUsers();
           fetchAds();
-          checkForActiveRoomOnConnect();
+          // checkForActiveRoomOnConnect();
         };
 
         websocketRef.current.onmessage = (event) => {
@@ -459,6 +459,9 @@ case 'TRY_AGAIN':
                 
                 console.log('User has been removed from the game or game has ended.');
             } else {
+                if (message.reconnect === "yes"){
+                  setSelectedRoom(message.roomId);
+                }
                 // Update the game status as usual
                 setGameStatus({
                     roomId: message.roomId,
@@ -601,7 +604,7 @@ case 'TRY_AGAIN':
   
   const handleRoomsList = (message) => {
     console.log('handleRoomsList called');  // Log whenever the function is called
-  console.log(message)
+
     // Ensure message.rooms is not null or undefined
     if (!message.rooms) {
       setRooms([]);
@@ -609,10 +612,10 @@ case 'TRY_AGAIN':
       console.error('Rooms data is null or undefined.');
       return;
     }
-  console.log(message.rooms)
+
     // Store all rooms in state (for filtering purposes)
     setAllRooms(message.rooms);
-    console.log('Rooms data stored');  // Log after storing rooms
+
   console.log(allRooms)
     // Filter the rooms based on the selected contract
     const filteredRooms = filterRooms(message.rooms);
@@ -620,9 +623,6 @@ case 'TRY_AGAIN':
   
   };
   
-  useEffect(() => {
-    console.log('allRooms updated:', allRooms);
-  }, [allRooms]);
   
   const checkForActiveRoomOnConnect = () => {
     console.log("come here?")
