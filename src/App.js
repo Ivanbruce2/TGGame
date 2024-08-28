@@ -539,8 +539,8 @@ case 'TRY_AGAIN':
               player2Username: message.player2Username,
               player2Choice: message.player2Choice,
               status: message.status, // Pass the correct status here
-              contractAddress: message.contract_address,
-              wagerAmount: message.wager_amount,
+              contractAddress: message.contractAddress,
+              wagerAmount: message.wagerAmount,
             });
         
             // Check if the current user is the creator or the joiner and update their state accordingly
