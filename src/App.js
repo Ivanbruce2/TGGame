@@ -292,7 +292,7 @@ const renderGameStatusMessage = () => {
         <>
           <p>It's a Draw! Both players chose {player1Choice}.</p>
         
-            <button className="try-again-button" onClick={handleTryAgain}>
+            <button className="return-button" onClick={handleTryAgain}>
               Try Again
             </button>
           
@@ -316,7 +316,7 @@ const renderGameStatusMessage = () => {
               : '[Player left]'}
           </p>
           
-            <button className="try-again-button" onClick={handleTryAgain}>
+            <button className="return-button" onClick={handleTryAgain}>
               Try Again
             </button>
        
