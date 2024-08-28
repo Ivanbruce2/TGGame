@@ -425,6 +425,7 @@ case 'TRY_AGAIN':
         break;
         case 'CREATE_ROOM':
           console.log('Room created with ID:', message.room_id);
+          console.log(message)
           setSelectedRoom(message.room_id);
           setGameStatus({
             roomId: message.room_id,
