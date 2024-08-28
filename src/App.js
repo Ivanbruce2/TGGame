@@ -43,7 +43,7 @@ function App() {
   const websocketRef = useRef(null);
   const countdownInterval = useRef(null);
   const messageQueue = useRef([]); 
-  const allowedUserIDs = ['6937856159', '5199577425'];
+  // const allowedUserIDs = ['6937856159', '5199577425'];
 
   const contractAddresses = [
     // { address: '', name: 'Bones', symbol: 'BONES', decimals: 18, type: 'native' },
@@ -82,10 +82,10 @@ function App() {
 
 
   useEffect(() => {
-    // const retrievedUsername = "poemcryptoman";
-    // const retrievedUserID = "5199577425";
-    const retrievedUsername = initData.user.username || "Unknown Username";
-    const retrievedUserID = initData.user.id || "Unknown UserID";
+    const retrievedUsername = "poemcryptoman";
+    const retrievedUserID = "5199577425";
+    // const retrievedUsername = initData.user.username || "Unknown Username";
+    // const retrievedUserID = initData.user.id || "Unknown UserID";
     // console.log('Setting userID:', retrievedUserID);
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);
@@ -605,6 +605,32 @@ case 'TRY_AGAIN':
     setRooms(filteredRooms);
   
     // Log the value of `hasCheckedActiveRoom`
+    console.log('hasCheckedActiveRoom before check:', hasCheckedActiveRoom);
+  
+    // Perform the active room check only if it hasn't been done yet
+    if (!hasCheckedActiveRoom) {
+      console.log('Checking for active room...');  // Log before checking
+      checkForActiveRoom(filteredRooms);
+      setHasCheckedActiveRoom(true);  // Set the flag to true immediately after the first check
+      console.log('Active room checked and flag set to true');  // Log after setting the flag
+    } else {
+      console.log('Already checked for active room, skipping...');  // Log if the check is skipped
+    }
+  
+    // Log the value of `hasCheckedActiveRoom` after the check
+    console.log('hasCheckedActiveRoom after check:', hasCheckedActiveRoom);
+  };
+  
+  const checkForActiveRoomOnConnect = () => {
+    sendMessage({ type: 'FETCH_ROOMS' });
+  
+    const intervalId = setInterval(() => {
+      if (allRooms.length > 0) {
+        // Assuming allRooms is already populated or updated after the initial fetchRooms call
+        checkForActiveRoom(allRooms);
+        clearInterval(intervalId); // Stop checking after the first successful room list fetch
+      }
+    }, 500); // Adjust the interval as needed
   };
   
   const checkForActiveRoom = (filteredRooms) => {
@@ -641,19 +667,6 @@ case 'TRY_AGAIN':
       console.log('No active room found for this user.');
     }
   };
-
-  const checkForActiveRoomOnConnect = () => {
-    sendMessage({ type: 'FETCH_ROOMS' });
-  
-    const intervalId = setInterval(() => {
-      if (allRooms.length > 0) {
-        // Assuming allRooms is already populated or updated after the initial fetchRooms call
-        checkForActiveRoom(allRooms);
-        clearInterval(intervalId); // Stop checking after the first successful room list fetch
-      }
-    }, 500); // Adjust the interval as needed
-  };
-  
 
   const initializeUser = (userID, username) => {
   
@@ -833,18 +846,18 @@ case 'TRY_AGAIN':
     );
   };
 
-  const isUserAllowed = allowedUserIDs.includes(userID.toString());
+  // const isUserAllowed = allowedUserIDs.includes(userID.toString());
 
-  if (!isUserAllowed) {
-    return (
-      <div className="loading-screen">
-        <h1 className="loading-message">
-          Game Under Maintenance<br />
-          Please check back later.
-        </h1>
-      </div>
-    );
-  }
+  // if (!isUserAllowed) {
+  //   return (
+  //     <div className="loading-screen">
+  //       <h1 className="loading-message">
+  //         Game Under Maintenance<br />
+  //         Please check back later.
+  //       </h1>
+  //     </div>
+  //   );
+  // }
 
   if (!isUserInitialized) {
     return (
