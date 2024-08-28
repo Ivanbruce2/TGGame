@@ -753,17 +753,27 @@ case 'TRY_AGAIN':
 
   const leaveGame = () => {
     if (selectedRoom) {
-      setSelectedRoom('');
-      setGameStatus('');
-      setUserChoice('');
-      sendMessage({
-        type: 'LEAVE_ROOM',
-        userID: userID.toString(),
-        username,
-        roomId: selectedRoom,
-      });
+      // If the game is completed, do not send the LEAVE_ROOM message
+      if (gameStatus && gameStatus.status === 'completed') {
+        console.log('Game is completed. Not sending LEAVE_ROOM message.');
+        setSelectedRoom('');
+        setGameStatus('');
+        setUserChoice('');
+      } else {
+        // If the game is not completed, proceed as usual
+        setSelectedRoom('');
+        setGameStatus('');
+        setUserChoice('');
+        sendMessage({
+          type: 'LEAVE_ROOM',
+          userID: userID.toString(),
+          username,
+          roomId: selectedRoom,
+        });
+      }
     }
   };
+  
 
   const handleOpenModal = () => {
     if (boneBalance < 1) {
