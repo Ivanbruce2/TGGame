@@ -621,8 +621,7 @@ case 'TRY_AGAIN':
   };
   
   const checkForActiveRoomOnConnect = () => {
-    sendMessage({ type: 'FETCH_ROOMS' });
-  
+    console.log(allRooms)  
     const intervalId = setInterval(() => {
       if (allRooms.length > 0) {
         // Assuming allRooms is already populated or updated after the initial fetchRooms call
