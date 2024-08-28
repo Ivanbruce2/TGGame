@@ -288,11 +288,11 @@ const renderGameStatusMessage = () => {
       return (
         <>
           <p>It's a Draw! Both players chose {player1Choice}.</p>
-          {username === gameStatus.player1Username && (
+        
             <button className="try-again-button" onClick={handleTryAgain}>
               Try Again
             </button>
-          )}
+          
         </>
       );
     } 
