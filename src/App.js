@@ -459,9 +459,9 @@ case 'TRY_AGAIN':
                 
                 console.log('User has been removed from the game or game has ended.');
             } else {
-              
+                if (message.reconnect === "yes"){
                   setSelectedRoom(message.roomId);
-                
+                }
                 // Update the game status as usual
                 setGameStatus({
                     roomId: message.roomId,
