@@ -91,7 +91,7 @@ const TokenCard = ({ token, value, userID, sendMessage, users, refreshTokens }) 
           <div className="modal-content">
             <h3>Transfer {token.symbol}</h3>
             <select onChange={handleUserSelect}>
-              <option value="">Select a user</option>
+              <option value="">Select a user (Optional)</option>
               {users.map((user) => (
                 <option key={user.user_id} value={user.user_id}>
                   {user.username}

@@ -289,7 +289,7 @@ const renderGameStatusMessage = () => {
         <>
           <p>It's a Draw! Both players chose {player1Choice}.</p>
           {username === gameStatus.player1Username && (
-            <button className="return-button" onClick={handleTryAgain}>
+            <button className="try-again-button" onClick={handleTryAgain}>
               Try Again
             </button>
           )}
@@ -307,6 +307,11 @@ const renderGameStatusMessage = () => {
             {gameStatus.player1Username} chose {player1Choice}.<br />
             {gameStatus.player2Username} chose {player2Choice}.
           </p>
+          {username === gameStatus.player1Username && (
+            <button className="try-again-button" onClick={handleTryAgain}>
+              Try Again
+            </button>
+          )}
           {/* Optionally include the Try Again button */}
           {/* {username === gameStatus.player1Username && (
             <button className="return-button" onClick={handleTryAgain}>
@@ -857,6 +862,7 @@ case 'TRY_AGAIN':
       : 'N/A';
 
   
+      
     return (
       <div className="App">
         <h1 className="welcome-message2">Room {selectedRoom}</h1>
