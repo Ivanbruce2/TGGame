@@ -111,6 +111,7 @@ function App() {
           fetchRooms();
           fetchUsers();
           fetchAds();
+          checkForActiveRoomOnConnect();
         };
 
         websocketRef.current.onmessage = (event) => {
@@ -604,58 +605,20 @@ case 'TRY_AGAIN':
     setRooms(filteredRooms);
   
     // Log the value of `hasCheckedActiveRoom`
-    console.log('hasCheckedActiveRoom before check:', hasCheckedActiveRoom);
-  
-    // Perform the active room check only if it hasn't been done yet
-    if (!hasCheckedActiveRoom) {
-      console.log('Checking for active room...');  // Log before checking
-      checkForActiveRoom(filteredRooms);
-      setHasCheckedActiveRoom(true);  // Set the flag to true immediately after the first check
-      console.log('Active room checked and flag set to true');  // Log after setting the flag
-    } else {
-      console.log('Already checked for active room, skipping...');  // Log if the check is skipped
-    }
-  
-    // Log the value of `hasCheckedActiveRoom` after the check
-    console.log('hasCheckedActiveRoom after check:', hasCheckedActiveRoom);
   };
   
+  const checkForActiveRoomOnConnect = () => {
+    sendMessage({ type: 'FETCH_ROOMS' });
   
-  
-  const checkForActiveRoom = (filteredRooms) => {
-    console.log('Current userID:', userID);
-    const currentUserID = userID.toString().trim();
-  
-    const activeRoom = filteredRooms.find(
-      (room) => room.player1_id?.toString().trim() === currentUserID && room.status === 'waiting'
-    );
-  
-    if (activeRoom) {
-      console.log('Active room found:', activeRoom);
-      setSelectedRoom(activeRoom.room_id);
-      setGameStatus({
-        roomId: activeRoom.room_id,
-        player1ID: activeRoom.player1_id?.toString().trim(),
-        player1Username: activeRoom.player1_username,
-        player1Choice: activeRoom.player1_choice,
-        player2ID: activeRoom.player2_id?.toString().trim(),
-        player2Username: activeRoom.player2_username,
-        player2Choice: activeRoom.player2_choice,
-        status: activeRoom.status,
-        contractAddress: activeRoom.contract_address,
-        wagerAmount: activeRoom.wager_amount,
-        result: activeRoom.result,
-      });
-  
-      if (currentUserID === activeRoom.player1_id?.toString().trim()) {
-        setUserChoice(activeRoom.player1_choice);
-      } else if (currentUserID === activeRoom.player2_id?.toString().trim()) {
-        setUserChoice(activeRoom.player2_choice);
+    const intervalId = setInterval(() => {
+      if (allRooms.length > 0) {
+        // Assuming allRooms is already populated or updated after the initial fetchRooms call
+        checkForActiveRoom(allRooms);
+        clearInterval(intervalId); // Stop checking after the first successful room list fetch
       }
-    } else {
-      console.log('No active room found for this user.');
-    }
+    }, 500); // Adjust the interval as needed
   };
+  
 
   const initializeUser = (userID, username) => {
   
