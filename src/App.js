@@ -613,7 +613,7 @@ case 'TRY_AGAIN':
     // Store all rooms in state (for filtering purposes)
     setAllRooms(message.rooms);
     console.log('Rooms data stored');  // Log after storing rooms
-  
+  console.log(allRooms)
     // Filter the rooms based on the selected contract
     const filteredRooms = filterRooms(message.rooms);
     setRooms(filteredRooms);
