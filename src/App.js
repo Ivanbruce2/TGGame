@@ -190,6 +190,10 @@ function App() {
     return () => clearInterval(intervalId);
   }, []);
   
+  const handleToastClose = () => {
+    setToastVisible(false);  // Hide the toast
+  };
+  
 
 const fetchGameStatus = (roomId) => {
   sendMessage({ type: 'GAME_STATUS', roomId });
@@ -840,6 +844,7 @@ case 'TRY_AGAIN':
     const copyToClipboard = () => {
       navigator.clipboard.writeText(walletAddress).then(() => {
         setToastMessage('Wallet address copied to clipboard!');
+        setToastVisible(true); // Show the toast
       }, (err) => {
         console.error('Failed to copy text:', err);
       });
@@ -1098,7 +1103,9 @@ case 'TRY_AGAIN':
           />
         )}
   
-        {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
+  {toastVisible && (
+  <Toast message={toastMessage} link={toastLink} onClose={handleToastClose} />
+)}
         <AdBanner ads={ads} />
       </div>
     </Router>
