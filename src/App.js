@@ -621,9 +621,12 @@ case 'TRY_AGAIN':
   };
   
   const checkForActiveRoomOnConnect = () => {
+    console.log("come here?")
     console.log(allRooms)  
+    console.log("maybe?")
     const intervalId = setInterval(() => {
       if (allRooms.length > 0) {
+        log.Print("here?")
         // Assuming allRooms is already populated or updated after the initial fetchRooms call
         checkForActiveRoom(allRooms);
         clearInterval(intervalId); // Stop checking after the first successful room list fetch
