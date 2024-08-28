@@ -607,6 +607,41 @@ case 'TRY_AGAIN':
     // Log the value of `hasCheckedActiveRoom`
   };
   
+  const checkForActiveRoom = (filteredRooms) => {
+    console.log('Current userID:', userID);
+    const currentUserID = userID.toString().trim();
+  
+    const activeRoom = filteredRooms.find(
+      (room) => room.player1_id?.toString().trim() === currentUserID && room.status === 'waiting'
+    );
+  
+    if (activeRoom) {
+      console.log('Active room found:', activeRoom);
+      setSelectedRoom(activeRoom.room_id);
+      setGameStatus({
+        roomId: activeRoom.room_id,
+        player1ID: activeRoom.player1_id?.toString().trim(),
+        player1Username: activeRoom.player1_username,
+        player1Choice: activeRoom.player1_choice,
+        player2ID: activeRoom.player2_id?.toString().trim(),
+        player2Username: activeRoom.player2_username,
+        player2Choice: activeRoom.player2_choice,
+        status: activeRoom.status,
+        contractAddress: activeRoom.contract_address,
+        wagerAmount: activeRoom.wager_amount,
+        result: activeRoom.result,
+      });
+  
+      if (currentUserID === activeRoom.player1_id?.toString().trim()) {
+        setUserChoice(activeRoom.player1_choice);
+      } else if (currentUserID === activeRoom.player2_id?.toString().trim()) {
+        setUserChoice(activeRoom.player2_choice);
+      }
+    } else {
+      console.log('No active room found for this user.');
+    }
+  };
+
   const checkForActiveRoomOnConnect = () => {
     sendMessage({ type: 'FETCH_ROOMS' });
   
