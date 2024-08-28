@@ -15,6 +15,7 @@ const backendURL = 'wss://549d54a0ef4bd98639ce334f7ce7e8b1.serveo.net/ws';
 
 function App() {
   const { initDataRaw, initData } = retrieveLaunchParams();
+  const [hasCheckedActiveRoom, setHasCheckedActiveRoom] = useState(false);
   const [allRooms, setAllRooms] = useState([]); // Store all rooms fetched from the backend
   const [filteredRooms, setFilteredRooms] = useState([]); // Store filtered rooms based on selected contract
   const [selectedContract, setSelectedContract] = useState('');  const [isUserInitialized, setIsUserInitialized] = useState(false); 
@@ -426,39 +427,41 @@ case 'TRY_AGAIN':
         
         break;
         case 'ROOMS_LIST':
-          
-          // Ensure message.rooms is not null or undefined
-          if (!message.rooms) {
-            setRooms([]);
-            setAllRooms([]); 
-            console.error('Rooms data is null or undefined.');
-            return;
-          }
-        
-          // Store all rooms in state (for filtering purposes)
-          setAllRooms(message.rooms);
-        
-          // Filter the rooms based on the selected contract
-          const filteredRooms = filterRooms(message.rooms);
-          setRooms(filteredRooms);
-        
+
+        // Ensure message.rooms is not null or undefined
+        if (!message.rooms) {
+          setRooms([]);
+          setAllRooms([]); 
+          console.error('Rooms data is null or undefined.');
+          return;
+        }
+      
+        // Store all rooms in state (for filtering purposes)
+        setAllRooms(message.rooms);
+      
+        // Filter the rooms based on the selected contract
+        const filteredRooms = filterRooms(message.rooms);
+        setRooms(filteredRooms);
+      
+        // Perform the active room check only if it hasn't been done yet
+        if (!hasCheckedActiveRoom) {
           // Log the current userID for debugging
           console.log('Current userID:', userID);
-        
+      
           // Convert userID to a string for consistent comparison
           const currentUserID = userID.toString().trim();
-        
+      
           // Check if there's an active room where the user is player1 and the status is 'waiting'
           const activeRoom = filteredRooms.find(
             (room) => room.player1_id?.toString().trim() === currentUserID && room.status === 'waiting'
           );
-        
+      
           console.log('Active room found:', activeRoom); // Log the active room if found
-        
+      
           if (activeRoom) {
             // Automatically join the room if found
             console.log('Automatically joining room with ID:', activeRoom.room_id);
-        
+      
             setSelectedRoom(activeRoom.room_id);
             setGameStatus({
               roomId: activeRoom.room_id,
@@ -473,7 +476,7 @@ case 'TRY_AGAIN':
               wagerAmount: activeRoom.wager_amount,
               result: activeRoom.result,
             });
-        
+      
             // Determine the correct choice based on whether the current user is player1 or player2
             if (currentUserID === activeRoom.player1_id?.toString().trim()) {
               setUserChoice(activeRoom.player1_choice);
@@ -483,10 +486,13 @@ case 'TRY_AGAIN':
           } else {
             console.log('No active room found for this user.');
           }
-        
-          break;
-        
-
+      
+          // Set the flag to indicate the check has been done
+          setHasCheckedActiveRoom(true);
+        }
+      
+        break;
+      
           case 'GAME_STATUS':
             console.log('Updating game status:', message);
         
