@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import './Stats.css';
 
-function Stats({ overallStats, gameLogs, leaderboard, view, setView, contractAddresses,fetchGameStats,fetchLeaderboard }) {
+function Stats({ overallStats, gameLogs, leaderboard, view, setView, contractAddresses, fetchGameStats, fetchLeaderboard }) {
   const getTokenSymbol = (address) => {
     const token = contractAddresses.find((contract) => contract.address === address);
     return token ? token.symbol : address;
@@ -12,6 +12,7 @@ function Stats({ overallStats, gameLogs, leaderboard, view, setView, contractAdd
     const decimals = token ? token.decimals : 1;
     return (parseFloat(amount) / Math.pow(10, decimals)).toFixed(2);
   };
+
   useEffect(() => {
     // Fetch the initial data when the component is mounted
     if (view === 'history') {
@@ -65,6 +66,9 @@ function Stats({ overallStats, gameLogs, leaderboard, view, setView, contractAdd
                   <th>Token</th>
                   <th>Amount</th>
                   <th>Result</th>
+                  <th>Your Choice</th>
+                  <th>Opponent</th>
+                  <th>Opponent's Choice</th>
                 </tr>
               </thead>
               <tbody>
@@ -82,6 +86,9 @@ function Stats({ overallStats, gameLogs, leaderboard, view, setView, contractAdd
                         {log.result}
                       </a>
                     </td>
+                    <td>{log.your_choice}</td> {/* Your choice */}
+                    <td>{log.opponent_username}</td> {/* Opponent's username */}
+                    <td>{log.opponent_choice}</td> {/* Opponent's choice */}
                   </tr>
                 ))}
               </tbody>

@@ -312,11 +312,11 @@ const renderGameStatusMessage = () => {
               ? `${gameStatus.player2Username} chose ${player2Choice}.`
               : '[Player left]'}
           </p>
-          {username === gameStatus.player1Username && (
+          
             <button className="try-again-button" onClick={handleTryAgain}>
               Try Again
             </button>
-          )}
+       
         </>
       );
     }
