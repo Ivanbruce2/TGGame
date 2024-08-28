@@ -623,23 +623,15 @@ case 'TRY_AGAIN':
   
   
   const checkForActiveRoom = (filteredRooms) => {
-    // Log the current userID for debugging
     console.log('Current userID:', userID);
-  
-    // Convert userID to a string for consistent comparison
     const currentUserID = userID.toString().trim();
   
-    // Check if there's an active room where the user is player1 and the status is 'waiting'
     const activeRoom = filteredRooms.find(
       (room) => room.player1_id?.toString().trim() === currentUserID && room.status === 'waiting'
     );
   
-    console.log('Active room found:', activeRoom); // Log the active room if found
-  
     if (activeRoom) {
-      // Automatically join the room if found
-      console.log('Automatically joining room with ID:', activeRoom.room_id);
-  
+      console.log('Active room found:', activeRoom);
       setSelectedRoom(activeRoom.room_id);
       setGameStatus({
         roomId: activeRoom.room_id,
@@ -655,7 +647,6 @@ case 'TRY_AGAIN':
         result: activeRoom.result,
       });
   
-      // Determine the correct choice based on whether the current user is player1 or player2
       if (currentUserID === activeRoom.player1_id?.toString().trim()) {
         setUserChoice(activeRoom.player1_choice);
       } else if (currentUserID === activeRoom.player2_id?.toString().trim()) {
@@ -664,9 +655,6 @@ case 'TRY_AGAIN':
     } else {
       console.log('No active room found for this user.');
     }
-  
-    // Set the flag to indicate the check has been done
-    setHasCheckedActiveRoom(true);
   };
 
   const initializeUser = (userID, username) => {
