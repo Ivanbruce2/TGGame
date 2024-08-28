@@ -919,6 +919,7 @@ case 'TRY_AGAIN':
                     onClose={() => {
                       setToastMessage('');
                       setToastLink('');
+                      setToastVisible(false);
                     }}
                   />
                 )}
