@@ -425,23 +425,25 @@ case 'TRY_AGAIN':
         break;
         case 'CREATE_ROOM':
           console.log('Room created with ID:', message.room_id);
-          console.log(message)
+          console.log('Full message:', message);
+          console.log('Wager Amount:', message.wagerAmount); // Check if this logs the expected value
+          
           setSelectedRoom(message.room_id);
           setGameStatus({
-            roomId: message.room_id,
-            player1ID: message.player1ID,
-            player1Username: message.player1Username,
-            player1Choice: message.player1Choice,
-            player2ID: message.player2ID,
-            player2Username: message.player2Username,
-            player2Choice: message.player2Choice,
-            status: message.status,
-            contractAddress: message.contractAddress,
-            wagerAmount: message.wagerAmount,
-            result: message.result,
- 
+              roomId: message.room_id,
+              player1ID: message.player1ID,
+              player1Username: message.player1Username,
+              player1Choice: message.player1Choice,
+              player2ID: message.player2ID,
+              player2Username: message.player2Username,
+              player2Choice: message.player2Choice,
+              status: message.status,
+              contractAddress: message.contractAddress,
+              wagerAmount: message.wagerAmount, // Ensure this line is correct
+              result: message.result,
           });
           break;
+      
         
         case 'ROOMS_LIST':
         handleRoomsList(message);    
