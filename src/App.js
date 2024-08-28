@@ -423,11 +423,26 @@ case 'TRY_AGAIN':
         setToastMessage(message.message);
         setToastVisible(true);
         break;
-      case 'CREATE_ROOM':
-        console.log('Room created with ID:', message.room_id);
-        setSelectedRoom(message.room_id);
+        case 'CREATE_ROOM':
+          console.log('Room created with ID:', message.room_id);
+          setSelectedRoom(message.room_id);
+          setGameStatus({
+            roomId: message.room_id,
+            player1ID: message.player1ID,
+            player1Username: message.player1Username,
+            player1Choice: message.player1Choice,
+            player2ID: message.player2ID,
+            player2Username: message.player2Username,
+            player2Choice: message.player2Choice,
+            status: message.status,
+            contractAddress: message.contractAddress,
+            wagerAmount: message.wagerAmount,
+            result: message.result,
+            tryAgain: message.tryAgain,
+            tryAgain2: message.tryAgain2,
+          });
+          break;
         
-        break;
         case 'ROOMS_LIST':
         handleRoomsList(message);    
         break;
