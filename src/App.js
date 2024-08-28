@@ -15,11 +15,7 @@ const backendURL = 'wss://549d54a0ef4bd98639ce334f7ce7e8b1.serveo.net/ws';
 
 function App() {
   const { initDataRaw, initData } = retrieveLaunchParams();
-  const [hasCheckedActiveRoom, setHasCheckedActiveRoom] = useState(() => {
-    console.log("Initializing hasCheckedActiveRoom state");
-    return false;
-  });
-  
+  const [hasCheckedActiveRoom, setHasCheckedActiveRoom] = useState(false);
   const [allRooms, setAllRooms] = useState([]); // Store all rooms fetched from the backend
   const [filteredRooms, setFilteredRooms] = useState([]); // Store filtered rooms based on selected contract
   const [selectedContract, setSelectedContract] = useState('');  const [isUserInitialized, setIsUserInitialized] = useState(false); 
@@ -112,7 +108,7 @@ function App() {
           }
           // Send initialization messages
           initializeUser(userID, username);
-          fetchRooms();
+
           fetchUsers();
           fetchAds();
         };
