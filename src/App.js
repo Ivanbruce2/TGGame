@@ -484,27 +484,38 @@ case 'TRY_AGAIN':
 
           case 'GAME_STATUS':
             console.log('Updating game status:', message);
-            setGameStatus({
-              roomId: message.roomId,
-              player1ID: message.player1ID,
-              player1Username: message.player1Username,
-              player1Choice: message.player1Choice,
-              player2ID: message.player2ID,
-              player2Username: message.player2Username,
-              player2Choice: message.player2Choice,
-              status: message.status,
-              contractAddress: message.contractAddress,
-              wagerAmount: message.wagerAmount,
-              result: message.result,
-              tryAgain: message.tryAgain,       // Add this line
-              tryAgain2: message.tryAgain2,     // Add this line
-            });
-            if (userID.toString() === message.player1ID.toString()) {
-              // Update the state for Player 1
-              setUserChoice(message.player1Choice);
-            } else if (userID.toString() === message.player2ID.toString()) {
-              // Update the state for Player 2
-              setUserChoice(message.player2Choice);
+        
+            if (message.status === "") {
+                // Reset the selected room and game status if status is empty
+                setSelectedRoom('');
+                setGameStatus(null);
+                setUserChoice('');  // Reset user choice as well
+            } else {
+                // Update the game status as usual
+                setGameStatus({
+                    roomId: message.roomId,
+                    player1ID: message.player1ID,
+                    player1Username: message.player1Username,
+                    player1Choice: message.player1Choice,
+                    player2ID: message.player2ID,
+                    player2Username: message.player2Username,
+                    player2Choice: message.player2Choice,
+                    status: message.status,
+                    contractAddress: message.contractAddress,
+                    wagerAmount: message.wagerAmount,
+                    result: message.result,
+                    tryAgain: message.tryAgain,       // Add this line
+                    tryAgain2: message.tryAgain2,     // Add this line
+                });
+        
+                // Update the user choice based on player ID
+                if (userID.toString() === message.player1ID.toString()) {
+                    // Update the state for Player 1
+                    setUserChoice(message.player1Choice);
+                } else if (userID.toString() === message.player2ID.toString()) {
+                    // Update the state for Player 2
+                    setUserChoice(message.player2Choice);
+                }
             }
             break;
           
