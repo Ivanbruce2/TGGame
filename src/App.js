@@ -759,13 +759,8 @@ case 'TRY_AGAIN':
   const leaveGame = () => {
     if (selectedRoom) {
       // If the game is completed, do not send the LEAVE_ROOM message
-      if (gameStatus && gameStatus.status === 'completed') {
-        console.log('Game is completed. Not sending LEAVE_ROOM message.');
-        setSelectedRoom('');
-        setGameStatus('');
-        setUserChoice('');
-      } else {
-        // If the game is not completed, proceed as usual
+    
+    
         setSelectedRoom('');
         setGameStatus('');
         setUserChoice('');
@@ -775,7 +770,7 @@ case 'TRY_AGAIN':
           username,
           roomId: selectedRoom,
         });
-      }
+      
     }
   };
   
