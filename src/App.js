@@ -304,20 +304,19 @@ const renderGameStatusMessage = () => {
           <p>{gameStatus.result?.split('! ')[1]}</p>
           <h2>{gameStatus.result?.includes(username) ? 'You Win!' : 'You Lose...'}</h2>
           <p>
-            {gameStatus.player1Username} chose {player1Choice}.<br />
-            {gameStatus.player2Username} chose {player2Choice}.
+            {gameStatus.player1Username
+              ? `${gameStatus.player1Username} chose ${player1Choice}.`
+              : '[Player left]'}
+            <br />
+            {gameStatus.player2Username
+              ? `${gameStatus.player2Username} chose ${player2Choice}.`
+              : '[Player left]'}
           </p>
           {username === gameStatus.player1Username && (
             <button className="try-again-button" onClick={handleTryAgain}>
               Try Again
             </button>
           )}
-          {/* Optionally include the Try Again button */}
-          {/* {username === gameStatus.player1Username && (
-            <button className="return-button" onClick={handleTryAgain}>
-              Try Again
-            </button>
-          )} */}
         </>
       );
     }
@@ -325,6 +324,7 @@ const renderGameStatusMessage = () => {
 
   return null;
 };
+
 
 
 
