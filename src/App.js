@@ -108,13 +108,10 @@ function App() {
           }
           // Send initialization messages
           initializeUser(userID, username);
-          fetchRooms().then(() => {
-            // This will be called after fetchRooms has updated allRooms
-            checkForActiveRoomOnConnect();
-          });
+          fetchRooms();
           fetchUsers();
           fetchAds();
-          // checkForActiveRoomOnConnect();
+          checkForActiveRoomOnConnect();
         };
 
         websocketRef.current.onmessage = (event) => {
@@ -607,8 +604,8 @@ case 'TRY_AGAIN':
   console.log(message)
     // Ensure message.rooms is not null or undefined
     if (!message.rooms) {
-      setRooms([]);
-      setAllRooms([]); 
+      // setRooms([]);
+      // setAllRooms([]); 
       console.error('Rooms data is null or undefined.');
       return;
     }
@@ -626,7 +623,7 @@ case 'TRY_AGAIN':
   useEffect(() => {
     console.log('allRooms updated:', allRooms);
   }, [allRooms]);
-
+  
   const checkForActiveRoomOnConnect = () => {
     console.log("come here?")
     console.log(allRooms)  
