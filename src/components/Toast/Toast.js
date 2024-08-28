@@ -1,10 +1,12 @@
-// Toast.js
 import React, { useEffect } from 'react';
 import './Toast.css';
 
 const Toast = ({ message, link, onClose }) => {
   useEffect(() => {
-    const timer = setTimeout(onClose, 5000); // Automatically close the toast after 5 seconds
+    const timer = setTimeout(() => {
+      onClose(); // Close the toast after 5 seconds
+    }, 5000);
+
     return () => clearTimeout(timer); // Clean up the timer on component unmount
   }, [onClose]);
 
@@ -22,4 +24,4 @@ const Toast = ({ message, link, onClose }) => {
   );
 };
 
-export default Toast; // Ensure that you are using default export here
+export default Toast;
