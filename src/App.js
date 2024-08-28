@@ -181,13 +181,14 @@ function App() {
 
   useEffect(() => {
     fetchRooms();
-
+  
     const intervalId = setInterval(() => {
       fetchRooms();
     }, 1000);
-
+  
     return () => clearInterval(intervalId);
   }, []);
+  
 
 const fetchGameStatus = (roomId) => {
   sendMessage({ type: 'GAME_STATUS', roomId });
@@ -602,6 +603,7 @@ case 'TRY_AGAIN':
     // Perform the active room check only if it hasn't been done yet
     if (!hasCheckedActiveRoom) {
       checkForActiveRoom(filteredRooms);
+      setHasCheckedActiveRoom(true);  // Set the flag to true immediately after the first check
     }
   };
   
