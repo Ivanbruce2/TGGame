@@ -605,6 +605,7 @@ case 'TRY_AGAIN':
             setToastMessage(message.error);
             setToastVisible(true);
           } else {
+            console.log("Joined room")
             console.log(message);
         
             // Update the state for the user who joined the room
