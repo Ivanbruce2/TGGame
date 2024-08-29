@@ -247,7 +247,7 @@ function App() {
   
     const intervalId = setInterval(() => {
       fetchRooms();
-    }, 3000);
+    }, 8000);
   
     return () => clearInterval(intervalId);
   }, []);
