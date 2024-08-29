@@ -607,7 +607,7 @@ case 'TRY_AGAIN':
           } else {
             console.log("Joined room")
             console.log(message);
-        
+        console.log(selectedRoom)
             // Update the state for the user who joined the room
             setSelectedRoom(message.room_id);
             setGameStatus({
