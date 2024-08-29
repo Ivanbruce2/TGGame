@@ -132,6 +132,65 @@ function App() {
   }, [userID]);
 
   useEffect(() => {
+    let pingInterval;
+  
+    const sendPing = () => {
+      if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
+        websocketRef.current.send(JSON.stringify({ type: 'PING' }));
+      }
+    };
+  
+    if (userID) {
+      if (!websocketRef.current || websocketRef.current.readyState > WebSocket.OPEN) {
+        console.log('Establishing WebSocket connection');
+        websocketRef.current = new WebSocket(backendURL);
+  
+        websocketRef.current.onopen = () => {
+          console.log('WebSocket connection established');
+          while (messageQueue.current.length > 0) {
+            const message = messageQueue.current.shift();
+            sendMessage(message);
+          }
+          initializeUser(userID, username);
+          fetchRooms();
+          fetchUsers();
+          fetchAds();
+  
+          // Start sending ping messages every 30 seconds
+          pingInterval = setInterval(sendPing, 30000);
+        };
+  
+        websocketRef.current.onmessage = (event) => {
+          const message = JSON.parse(event.data);
+          handleWebSocketMessage(message);
+        };
+  
+        websocketRef.current.onerror = (error) => {
+          console.error('WebSocket error:', error);
+          clearInterval(pingInterval); // Stop pinging on error
+          reconnectWebSocket(); // Retry connection on error
+        };
+  
+        websocketRef.current.onclose = (event) => {
+          console.log('WebSocket connection closed:', event);
+          clearInterval(pingInterval); // Stop pinging on close
+          if (!isSessionTerminated) {
+            reconnectWebSocket(); // Retry connection on close unless session is terminated
+          }
+        };
+      }
+    }
+  
+    return () => {
+      clearInterval(pingInterval); // Cleanup on component unmount
+      if (websocketRef.current) {
+        websocketRef.current.close();
+      }
+    };
+  }, [userID]);
+  
+
+  useEffect(() => {
     // Automatically fetch users when the app loads
     fetchUsers();
   }, []);
@@ -257,6 +316,45 @@ useEffect(() => {
 // Handle changes in the filter dropdown
 const handleContractChange = (event) => {
   setSelectedContract(event.target.value);
+};
+
+const reconnectWebSocket = () => {
+  // Wait for 3 seconds before attempting to reconnect
+  setTimeout(() => {
+    console.log('Attempting to reconnect WebSocket...');
+    websocketRef.current = new WebSocket(backendURL);
+
+    websocketRef.current.onopen = () => {
+      console.log('WebSocket connection re-established');
+      // Process queued messages
+      while (messageQueue.current.length > 0) {
+        const message = messageQueue.current.shift();
+        sendMessage(message);
+      }
+      // Re-initialize the user and fetch necessary data
+      initializeUser(userID, username);
+      fetchRooms();
+      fetchUsers();
+      fetchAds();
+    };
+
+    websocketRef.current.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      handleWebSocketMessage(message);
+    };
+
+    websocketRef.current.onerror = (error) => {
+      console.error('WebSocket error:', error);
+      reconnectWebSocket(); // Retry connection on error
+    };
+
+    websocketRef.current.onclose = (event) => {
+      console.log('WebSocket connection closed:', event);
+      if (!isSessionTerminated) {
+        reconnectWebSocket(); // Retry connection on close
+      }
+    };
+  }, 3000); // Reconnect after 3 seconds
 };
 
 
