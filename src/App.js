@@ -428,7 +428,7 @@ useEffect(() => {
 
     switch (message.type) {
       case 'SESSION_TERMINATED':
-        alert('Your session was terminated because you have opened the app elsewhere.');
+        // alert('Your session was terminated because you have opened the app elsewhere.');
         // You may want to reset the state or redirect the user to a specific page
         setSelectedRoom(null);
         setGameStatus(null);
@@ -685,9 +685,11 @@ case 'TRY_AGAIN':
       console.log('WebSocket connection closed:', event);
       // Display the reason for closure
       if (event.reason) {
-        alert(`Connection closed: ${event.reason}`);
+        console.log(`Connection closed: ${event.reason}`)
+        // alert(`Connection closed: ${event.reason}`);
       } else {
-        alert("Connection closed by the server.");
+        console.log("Connection closed by the server.")
+        // alert("Connection closed by the server.");
       }
     };
   };
