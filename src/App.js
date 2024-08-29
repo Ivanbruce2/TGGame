@@ -199,15 +199,15 @@ function App() {
     }
   }, [walletAddress]);
 
-  // useEffect(() => {
-  //   fetchRooms();
+  useEffect(() => {
+    fetchRooms();
   
-  //   const intervalId = setInterval(() => {
-  //     fetchRooms();
-  //   }, 3000);
+    const intervalId = setInterval(() => {
+      fetchRooms();
+    }, 3000);
   
-  //   return () => clearInterval(intervalId);
-  // }, []);
+    return () => clearInterval(intervalId);
+  }, []);
 
   useEffect(() => {
   
