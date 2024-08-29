@@ -209,6 +209,16 @@ function App() {
   
     return () => clearInterval(intervalId);
   }, []);
+
+  useEffect(() => {
+  
+    const intervalId = setInterval(() => {
+
+      sendPing();
+    }, 10000);
+  
+    return () => clearInterval(intervalId);
+  }, []);
   
   const handleToastClose = () => {
     setToastVisible(false);  // Hide the toast
