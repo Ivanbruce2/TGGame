@@ -606,6 +606,12 @@ case 'TRY_AGAIN':
   
     websocketRef.current.onclose = (event) => {
       console.log('WebSocket connection closed:', event);
+      // Display the reason for closure
+      if (event.reason) {
+        alert(`Connection closed: ${event.reason}`);
+      } else {
+        alert("Connection closed by the server.");
+      }
     };
   };
   
