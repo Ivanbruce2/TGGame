@@ -133,7 +133,8 @@ function App() {
 
   useEffect(() => {
     let pingInterval;
-  console.log("here got anot?")
+    console.log("Running useEffect for WebSocket initialization");
+  
     const sendPing = () => {
       if (websocketRef.current) {
         console.log('WebSocket state:', websocketRef.current.readyState);
@@ -147,47 +148,49 @@ function App() {
         console.log('WebSocket reference is null');
       }
     };
-    
   
     if (userID) {
-      if (!websocketRef.current || websocketRef.current.readyState > WebSocket.OPEN) {
-        console.log('Establishing WebSocket connection');
-        websocketRef.current = new WebSocket(backendURL);
+      console.log('Establishing WebSocket connection');
+      websocketRef.current = new WebSocket(backendURL);
   
-        websocketRef.current.onopen = () => {
-          console.log('WebSocket connection established');
-          while (messageQueue.current.length > 0) {
-            const message = messageQueue.current.shift();
-            sendMessage(message);
-          }
-          initializeUser(userID, username);
-          fetchRooms();
-          fetchUsers();
-          fetchAds();
+      websocketRef.current.onopen = () => {
+        console.log('WebSocket connection established');
+        while (messageQueue.current.length > 0) {
+          const message = messageQueue.current.shift();
+          sendMessage(message);
+        }
+        initializeUser(userID, username);
+        fetchRooms();
+        fetchUsers();
+        fetchAds();
   
-          // Start sending ping messages every 5 seconds
-          pingInterval = setInterval(sendPing, 1000);
-        };
+        // Start sending ping messages every 5 seconds
+        pingInterval = setInterval(() => {
+          console.log('Interval running');
+          sendPing();
+        }, 5000);
+      };
   
-        websocketRef.current.onmessage = (event) => {
-          const message = JSON.parse(event.data);
-          handleWebSocketMessage(message);
-        };
+      websocketRef.current.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        handleWebSocketMessage(message);
+      };
   
-        websocketRef.current.onerror = (error) => {
-          console.error('WebSocket error:', error);
-          clearInterval(pingInterval); // Stop pinging on error
-          reconnectWebSocket(); // Retry connection on error
-        };
+      websocketRef.current.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        clearInterval(pingInterval); // Stop pinging on error
+        reconnectWebSocket(); // Retry connection on error
+      };
   
-        websocketRef.current.onclose = (event) => {
-          console.log('WebSocket connection closed:', event);
-          clearInterval(pingInterval); // Stop pinging on close
-          if (!isSessionTerminated) {
-            reconnectWebSocket(); // Retry connection on close unless session is terminated
-          }
-        };
-      }
+      websocketRef.current.onclose = (event) => {
+        console.log('WebSocket connection closed:', event);
+        clearInterval(pingInterval); // Stop pinging on close
+        if (!isSessionTerminated) {
+          reconnectWebSocket(); // Retry connection on close unless session is terminated
+        }
+      };
+    } else {
+      console.log("No userID available; WebSocket connection will not be established.");
     }
   
     return () => {
@@ -195,8 +198,10 @@ function App() {
       if (websocketRef.current) {
         websocketRef.current.close();
       }
+      console.log("Cleanup: WebSocket closed and pingInterval cleared.");
     };
-  }, [userID]);
+  }, []); // Empty array ensures this runs once on mount
+  
   
   
   
