@@ -705,12 +705,18 @@ case 'TRY_AGAIN':
   };
   
   const handleRoomsList = (message) => {
-    console.log('handleRoomsList called');  // Log whenever the function is called
-    console.log('Received message:', message); // Log the entire message to inspect its content
+    console.log('handleRoomsList called');
+    console.log('Received message:', message);
+
+    // Prevent updating the room list if the user is already in a game
+    if (selectedRoom) {
+        console.log('User is in a game. Not updating the room list.');
+        return;
+    }
 
     if (!message.rooms) {
         setRooms([]);
-        setAllRooms([]); 
+        setAllRooms([]);
         console.error('Rooms data is null or undefined.');
         return;
     }
@@ -721,9 +727,10 @@ case 'TRY_AGAIN':
 
     // Filter the rooms based on the selected contract
     const filteredRooms = filterRooms(message.rooms);
-    console.log('Filtered rooms:', filteredRooms); // Log the filtered rooms
+    console.log('Filtered rooms:', filteredRooms);
     setRooms(filteredRooms);
 };
+
 
   
   
@@ -1140,6 +1147,7 @@ case 'TRY_AGAIN':
 </div>
 
                   <div className="room-list">
+
                   {filteredRooms.map((room) => {
                       const contract = contractAddresses.find((c) => c.address === room.contract_address);
                       const decimals = contract ? contract.decimals : 1;
