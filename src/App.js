@@ -136,8 +136,10 @@ function App() {
   
     const sendPing = () => {
       if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
-        console.log('Sending ping to server');
+        console.log('Sending ping to server'); // This should now log the message
         websocketRef.current.send(JSON.stringify({ type: 'PING' }));
+      } else {
+        console.log('WebSocket is not open; ping not sent');
       }
     };
   
@@ -157,7 +159,7 @@ function App() {
           fetchUsers();
           fetchAds();
   
-          // Start sending ping messages every 30 seconds
+          // Start sending ping messages every 5 seconds
           pingInterval = setInterval(sendPing, 5000);
         };
   
@@ -189,6 +191,7 @@ function App() {
       }
     };
   }, [userID]);
+  
   
   
 
