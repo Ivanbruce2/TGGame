@@ -199,15 +199,15 @@ function App() {
     }
   }, [walletAddress]);
 
-  useEffect(() => {
-    fetchRooms();
+  // useEffect(() => {
+  //   fetchRooms();
   
-    const intervalId = setInterval(() => {
-      fetchRooms();
-    }, 3000);
+  //   const intervalId = setInterval(() => {
+  //     fetchRooms();
+  //   }, 3000);
   
-    return () => clearInterval(intervalId);
-  }, []);
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   useEffect(() => {
   
@@ -427,6 +427,9 @@ useEffect(() => {
     // console.log('Received WebSocket message:', message);
 
     switch (message.type) {
+      case 'ROOMS_LIST_UPDATE':
+        handleRoomsList(message);
+
       case 'SESSION_TERMINATED':
         // alert('Your session was terminated because you have opened the app elsewhere.');
         // You may want to reset the state or redirect the user to a specific page
