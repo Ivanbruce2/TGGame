@@ -16,6 +16,7 @@ const backendURL = 'wss://549d54a0ef4bd98639ce334f7ce7e8b1.serveo.net/ws';
 function App() {
   const { initDataRaw, initData } = retrieveLaunchParams();
   const [hasCheckedActiveRoom, setHasCheckedActiveRoom] = useState(false);
+  const [isSessionTerminated, setIsSessionTerminated] = useState(false);
   const [allRooms, setAllRooms] = useState([]); // Store all rooms fetched from the backend
   const [filteredRooms, setFilteredRooms] = useState([]); // Store filtered rooms based on selected contract
   const [selectedContract, setSelectedContract] = useState('');  const [isUserInitialized, setIsUserInitialized] = useState(false); 
@@ -359,6 +360,15 @@ useEffect(() => {
     // console.log('Received WebSocket message:', message);
 
     switch (message.type) {
+      case 'SESSION_TERMINATED':
+        alert('Your session was terminated because you have opened the app elsewhere.');
+        // You may want to reset the state or redirect the user to a specific page
+        setSelectedRoom(null);
+        setGameStatus(null);
+        setUserChoice('');
+        setIsSessionTerminated(true);
+        break;
+
       case 'ADS_LIST':
         console.log(message)
         setAds(message.ads); // Update ads from WebSocket response
@@ -888,6 +898,18 @@ case 'TRY_AGAIN':
       </div>
     );
   }
+
+  if (isSessionTerminated) {
+    return (
+      <div className="loading-screen">
+        <h1 className="loading-message">
+          Session Terminated<br />
+          The app is open elsewhere.
+        </h1>
+      </div>
+    );
+  }
+  
   
   
 
