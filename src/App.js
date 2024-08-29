@@ -166,7 +166,7 @@ function App() {
           fetchAds();
   
           // Start sending ping messages every 5 seconds
-          pingInterval = setInterval(sendPing, 5000);
+          pingInterval = setInterval(sendPing, 1000);
         };
   
         websocketRef.current.onmessage = (event) => {
