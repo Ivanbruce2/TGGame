@@ -84,6 +84,18 @@ function App() {
     console.log("selectedRoom changed:", selectedRoom);
 }, [selectedRoom]);
 
+useEffect(() => {
+  console.log("Component mounted or re-rendered");
+
+  return () => {
+      console.log("Component unmounted");
+  };
+}, []); // An empty dependency array runs the effect only on mount and unmount.
+
+
+useEffect(() => {
+  console.log("Component re-rendered due to selectedRoom change:", selectedRoom);
+}, [selectedRoom]);
 
 
   useEffect(() => {
