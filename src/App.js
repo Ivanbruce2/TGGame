@@ -269,11 +269,18 @@ useEffect(() => {
 }, [gameStatus]);
 
 const filterRooms = (rooms) => {
+  console.log('Rooms before filtering:', rooms);
+  console.log('Selected contract:', selectedContract);
+
   if (selectedContract) {
-    return rooms.filter((room) => room.contract_address === selectedContract);
+    const filtered = rooms.filter((room) => room.contractAddress === selectedContract);
+    console.log('Filtered rooms:', filtered);
+    return filtered;
   }
+
   return rooms;
 };
+
 
 useEffect(() => {
   const filtered = selectedContract
@@ -699,24 +706,25 @@ case 'TRY_AGAIN':
   
   const handleRoomsList = (message) => {
     console.log('handleRoomsList called');  // Log whenever the function is called
+    console.log('Received message:', message); // Log the entire message to inspect its content
 
-    // Ensure message.rooms is not null or undefined
     if (!message.rooms) {
-      setRooms([]);
-      setAllRooms([]); 
-      console.error('Rooms data is null or undefined.');
-      return;
+        setRooms([]);
+        setAllRooms([]); 
+        console.error('Rooms data is null or undefined.');
+        return;
     }
 
     // Store all rooms in state (for filtering purposes)
+    console.log('Storing rooms:', message.rooms);
     setAllRooms(message.rooms);
 
-  console.log(allRooms)
     // Filter the rooms based on the selected contract
     const filteredRooms = filterRooms(message.rooms);
+    console.log('Filtered rooms:', filteredRooms); // Log the filtered rooms
     setRooms(filteredRooms);
-  
-  };
+};
+
   
   
   const checkForActiveRoomOnConnect = () => {
