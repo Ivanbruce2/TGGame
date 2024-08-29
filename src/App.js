@@ -147,19 +147,19 @@ useEffect(() => {
     }
   }, [userID]);
 
-  // const sendPing = () => {
-  //   if (websocketRef.current) {
-  //     console.log('WebSocket state:', websocketRef.current.readyState);
-  //     if (websocketRef.current.readyState === WebSocket.OPEN) {
-  //       console.log('Sending ping to server');
-  //       websocketRef.current.send(JSON.stringify({ type: 'PING' }));
-  //     } else {
-  //       console.log('WebSocket is not open; ping not sent');
-  //     }
-  //   } else {
-  //     console.log('WebSocket reference is null');
-  //   }
-  // };
+  const sendPing = () => {
+    if (websocketRef.current) {
+      console.log('WebSocket state:', websocketRef.current.readyState);
+      if (websocketRef.current.readyState === WebSocket.OPEN) {
+        console.log('Sending ping to server');
+        websocketRef.current.send(JSON.stringify({ type: 'PING' }));
+      } else {
+        console.log('WebSocket is not open; ping not sent');
+      }
+    } else {
+      console.log('WebSocket reference is null');
+    }
+  };
   
   
   
@@ -224,15 +224,15 @@ useEffect(() => {
   //   return () => clearInterval(intervalId);
   // }, []);
 
-  // useEffect(() => {
+  useEffect(() => {
   
-  //   const intervalId = setInterval(() => {
+    const intervalId = setInterval(() => {
 
-  //     sendPing();
-  //   }, 10000);
+      sendPing();
+    }, 10000);
   
-  //   return () => clearInterval(intervalId);
-  // }, []);
+    return () => clearInterval(intervalId);
+  }, []);
   
   const handleToastClose = () => {
     setToastVisible(false);  // Hide the toast
@@ -453,12 +453,13 @@ useEffect(() => {
         handleRoomsList(message);
 
       case 'SESSION_TERMINATED':
+        console.log("session terminated...")
         // alert('Your session was terminated because you have opened the app elsewhere.');
         // You may want to reset the state or redirect the user to a specific page
-        setSelectedRoom(null);
-        setGameStatus(null);
-        setUserChoice('');
-        setIsSessionTerminated(true);
+        // setSelectedRoom(null);
+        // setGameStatus(null);
+        // setUserChoice('');
+        // setIsSessionTerminated(true);
         break;
 
       case 'ADS_LIST':
