@@ -707,6 +707,7 @@ case 'TRY_AGAIN':
   const handleRoomsList = (message) => {
     console.log('handleRoomsList called');
     console.log('Received message:', message);
+    console.log(selectedRoom)
 
     // Prevent updating the room list if the user is already in a game
     if (selectedRoom) {
