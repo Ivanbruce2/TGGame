@@ -541,8 +541,8 @@ case 'TRY_AGAIN':
         break;
       
           case 'GAME_STATUS':
-            // console.log('Updating game status:', message);
-        
+            console.log('Updating game status:', message);
+            console.log(selectedRoom)
             if (message.status === "" || 
                 (userID.toString() !== message.player1ID?.toString() && userID.toString() !== message.player2ID?.toString())) {
                 
@@ -556,6 +556,7 @@ case 'TRY_AGAIN':
                 if (message.reconnect === "yes"){
                   setSelectedRoom(message.roomId);
                 }
+                
                 // Update the game status as usual
                 setGameStatus({
                     roomId: message.roomId,
