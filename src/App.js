@@ -644,6 +644,13 @@ case 'TRY_AGAIN':
     }
   }, [selectedRoom]);
 
+  useEffect(() => {
+    if (selectedRoom === null) {
+        console.log('selectedRoom was reset to null');
+    }
+}, [selectedRoom]);
+
+
   const fetchAds = () => {
     sendMessage({ type: 'FETCH_ADS' });
   };
