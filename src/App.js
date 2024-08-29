@@ -80,6 +80,9 @@ function App() {
     }
   }, [walletAddress]);
 
+  useEffect(() => {
+    console.log("selectedRoom changed:", selectedRoom);
+}, [selectedRoom]);
 
 
 
