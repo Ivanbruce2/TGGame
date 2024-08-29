@@ -204,7 +204,6 @@ function App() {
   
     const intervalId = setInterval(() => {
       fetchRooms();
-      sendPing();
     }, 3000);
   
     return () => clearInterval(intervalId);
