@@ -133,7 +133,7 @@ function App() {
 
   useEffect(() => {
     let pingInterval;
-  
+  console.log("here got anot?")
     const sendPing = () => {
       if (websocketRef.current) {
         console.log('WebSocket state:', websocketRef.current.readyState);
