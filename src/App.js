@@ -135,13 +135,19 @@ function App() {
     let pingInterval;
   
     const sendPing = () => {
-      if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
-        console.log('Sending ping to server'); // This should now log the message
-        websocketRef.current.send(JSON.stringify({ type: 'PING' }));
+      if (websocketRef.current) {
+        console.log('WebSocket state:', websocketRef.current.readyState);
+        if (websocketRef.current.readyState === WebSocket.OPEN) {
+          console.log('Sending ping to server');
+          websocketRef.current.send(JSON.stringify({ type: 'PING' }));
+        } else {
+          console.log('WebSocket is not open; ping not sent');
+        }
       } else {
-        console.log('WebSocket is not open; ping not sent');
+        console.log('WebSocket reference is null');
       }
     };
+    
   
     if (userID) {
       if (!websocketRef.current || websocketRef.current.readyState > WebSocket.OPEN) {
