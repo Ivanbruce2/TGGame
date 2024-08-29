@@ -136,6 +136,7 @@ function App() {
   
     const sendPing = () => {
       if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
+        console.log('Sending ping to server');
         websocketRef.current.send(JSON.stringify({ type: 'PING' }));
       }
     };
@@ -157,7 +158,7 @@ function App() {
           fetchAds();
   
           // Start sending ping messages every 30 seconds
-          pingInterval = setInterval(sendPing, 30000);
+          pingInterval = setInterval(sendPing, 5000);
         };
   
         websocketRef.current.onmessage = (event) => {
@@ -188,6 +189,7 @@ function App() {
       }
     };
   }, [userID]);
+  
   
 
   useEffect(() => {
