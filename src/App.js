@@ -1012,16 +1012,16 @@ case 'TRY_AGAIN':
     );
   }
 
-  // if (isSessionTerminated) {
-  //   return (
-  //     <div className="loading-screen">
-  //       <h1 className="loading-message">
-  //         Session Terminated<br />
-  //         The app is open elsewhere.
-  //       </h1>
-  //     </div>
-  //   );
-  // }
+  if (isSessionTerminated) {
+    return (
+      <div className="loading-screen">
+        <h1 className="loading-message">
+          Session Terminated<br />
+          The app is open elsewhere.
+        </h1>
+      </div>
+    );
+  }
   
   
   
