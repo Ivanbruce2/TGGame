@@ -45,7 +45,7 @@ function App() {
   const countdownInterval = useRef(null);
   const messageQueue = useRef([]); 
   const pingIntervalRef = useRef(null);
-  const allowedUserIDs = ['6937856159', '5199577425'];
+  // const allowedUserIDs = ['6937856159', '5199577425'];
 
   const contractAddresses = [
     // { address: '', name: 'Bones', symbol: 'BONES', decimals: 18, type: 'native' },
@@ -988,18 +988,18 @@ case 'TRY_AGAIN':
     );
   };
 
-  const isUserAllowed = allowedUserIDs.includes(userID.toString());
+  // const isUserAllowed = allowedUserIDs.includes(userID.toString());
 
-  if (!isUserAllowed) {
-    return (
-      <div className="loading-screen">
-        <h1 className="loading-message">
-          Game Under Maintenance<br />
-          Please check back later.
-        </h1>
-      </div>
-    );
-  }
+  // if (!isUserAllowed) {
+  //   return (
+  //     <div className="loading-screen">
+  //       <h1 className="loading-message">
+  //         Game Under Maintenance<br />
+  //         Please check back later.
+  //       </h1>
+  //     </div>
+  //   );
+  // }
 
   if (!isUserInitialized) {
     return (
