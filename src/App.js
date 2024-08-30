@@ -459,7 +459,7 @@ useEffect(() => {
         // setSelectedRoom(null);
         // setGameStatus(null);
         // setUserChoice('');
-        // setIsSessionTerminated(true);
+        setIsSessionTerminated(true);
         break;
 
       case 'ADS_LIST':
