@@ -451,7 +451,7 @@ useEffect(() => {
     switch (message.type) {
       case 'ROOMS_LIST_UPDATE':
         handleRoomsList(message);
-
+break;
       case 'SESSION_TERMINATED':
         console.log("session terminated...")
         // alert('Your session was terminated because you have opened the app elsewhere.');
