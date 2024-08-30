@@ -45,16 +45,10 @@ function App() {
   const countdownInterval = useRef(null);
   const messageQueue = useRef([]); 
   const pingIntervalRef = useRef(null);
+  const [contractAddresses, setContractAddresses] = useState([]);
+
   // const allowedUserIDs = ['6937856159', '5199577425'];
 
-  const contractAddresses = [
-    // { address: '', name: 'Bones', symbol: 'BONES', decimals: 18, type: 'native' },
-    { address: '0xA77241231a899b69725F2e2e092cf666286Ced7E', name: 'ShibWare', symbol: 'ShibWare', decimals: 18, type: 'erc20' },
-    { address: '0x2761723006d3Eb0d90B19B75654DbE543dcd974f', name: 'ChewySwap', symbol: 'CHEWY', decimals: 18, type: 'erc20' },
-    { address: '0x5212B42ef96A47Af93F3a6c801227b650EDEb12f', name: 'Sideshow 404', symbol: 'SKULLZ', decimals: 18, type: 'erc20' },
-    { address: '0x8cC82045E761329FA13C9b0A0a31d76615fEc109', name: 'CorruptFun', symbol: 'CFUN', decimals: 18, type: 'erc20' },
-
-  ];
 
   
 
@@ -125,9 +119,11 @@ useEffect(() => {
           }
           // Send initialization messages
           initializeUser(userID, username);
+          fetchContract();
           fetchRooms();
           fetchUsers();
           fetchAds();
+          
           // checkForActiveRoomOnConnect();
         };
 
@@ -599,7 +595,10 @@ case 'TRY_AGAIN':
             }
             break;
         
-          
+            case 'FETCH_CONTRACT':
+              console.log('Received contract addresses:', message.contractAddresses);
+              setContractAddresses(message.contractAddresses); // Store the contract addresses in state
+              break;
        
 
       case 'TOKEN_TRANSFER':
@@ -670,6 +669,10 @@ case 'TRY_AGAIN':
 
   const fetchAds = () => {
     sendMessage({ type: 'FETCH_ADS' });
+  };
+
+  const fetchContract = () => {
+    sendMessage({ type: 'FETCH_CONTRACT' });
   };
 
   const sendMessage = (message) => {
