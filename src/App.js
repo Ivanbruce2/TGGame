@@ -99,10 +99,10 @@ useEffect(() => {
 
 
   useEffect(() => {
-    const retrievedUsername = "poemcryptoman";
-    const retrievedUserID = "5199577425";
-    // const retrievedUsername = initData.user.username || "Unknown Username";
-    // const retrievedUserID = initData.user.id || "Unknown UserID";
+    // const retrievedUsername = "poemcryptoman";
+    // const retrievedUserID = "5199577425";
+    const retrievedUsername = initData.user.username || "Unknown Username";
+    const retrievedUserID = initData.user.id || "Unknown UserID";
     // console.log('Setting userID:', retrievedUserID);
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);
