@@ -34,7 +34,7 @@
 
 /* Token list container */
 .token-list-container {
-  max-height: 380px;
+  max-height: 330px;
   overflow-y: auto;
   border: 0px solid #e0e0e0;
   padding: 8px;

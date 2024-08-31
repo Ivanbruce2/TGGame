@@ -73,7 +73,7 @@ const TokenCard = ({ token, value, userID, sendMessage, users, refreshTokens }) 
   const copyTokenAddressToClipboard = () => {
     if (token.address) {
       navigator.clipboard.writeText(token.address).then(() => {
-        setToastMessage(`${token.symbol} address copied: ${token.address}`);
+        setToastMessage(`${token.symbol} address copied!`);
         setToastLink('');
       }, (err) => {
         console.error(`Failed to copy ${token.symbol} address: `, err);
