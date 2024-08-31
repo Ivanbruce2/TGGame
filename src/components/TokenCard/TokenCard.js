@@ -19,18 +19,16 @@ const TokenCard = ({ token, value, userID, sendMessage, users, refreshTokens }) 
   };
 
   const handleTransfer = () => {
-    // Validate that a wallet address is provided
     if (!walletAddress) {
       setToastMessage('Please provide a valid wallet address.');
       setToastLink('');
-      return; // Prevent further execution
+      return;
     }
 
-    // Validate that the transfer amount is within the available balance
     if (parseFloat(transferAmount) > maxTokenValue) {
       setToastMessage(`Insufficient balance. You only have ${tokenValue} ${token.symbol}.`);
       setToastLink('');
-      return; // Prevent further execution
+      return;
     }
 
     setToastMessage('Please wait...');
@@ -40,20 +38,18 @@ const TokenCard = ({ token, value, userID, sendMessage, users, refreshTokens }) 
     const amountToTransferStr = Math.floor(amountToTransfer).toString();
 
     if (token.type === 'native') {
-      // Special handling for Bones (native token)
       const payload = {
         userID: userID.toString(),
         toAddress: walletAddress,
         amount: amountToTransferStr,
-        tokenType: 'native', // Distinguish that this is a native transfer
+        tokenType: 'native',
       };
 
       sendMessage({
-        type: 'TRANSFER_NATIVE', // Specify a different type for native transfers
+        type: 'TRANSFER_NATIVE',
         ...payload,
       });
     } else {
-      // Handling for ERC-20 tokens
       const payload = {
         userID: userID.toString(),
         toAddress: walletAddress,
@@ -67,19 +63,36 @@ const TokenCard = ({ token, value, userID, sendMessage, users, refreshTokens }) 
       });
     }
 
-    // Close modal and wait for WebSocket response
     setIsModalOpen(false);
 
-    // Trigger the token refresh after transfer (optional delay can be added if needed)
     setTimeout(() => {
-      refreshTokens(); // Refresh token data after successful transfer
+      refreshTokens(); 
     }, 1000);
+  };
+
+  const copyTokenAddressToClipboard = () => {
+    if (token.address) {
+      navigator.clipboard.writeText(token.address).then(() => {
+        setToastMessage('Token address copied!');
+        setToastLink('');
+      }, (err) => {
+        console.error('Failed to copy token address: ', err);
+        setToastMessage('Failed to copy the token address.');
+        setToastLink('');
+      });
+    }
   };
 
   return (
     <div className="token-card">
       <div className="token-column">
-        <h3 className="token-symbol">{token.symbol}</h3>
+        <h3 
+          className="token-symbol" 
+          onClick={copyTokenAddressToClipboard} 
+          style={{ cursor: 'pointer' }}
+        >
+          {token.symbol}
+        </h3>
         <p className="token-amount">{tokenValue}</p>
       </div>
       <div className="token-column token-action">
