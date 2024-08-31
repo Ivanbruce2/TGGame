@@ -1107,13 +1107,23 @@ console.log('activeRoomId:', activeRoomId);
             )}
   
   <div className="button-group">
-  <button className="return-button" onClick={returnToLobby}>
-    Return to Lobby
-  </button>
-  <button className="exit-button" onClick={leaveGame}>
-    Exit Game
-  </button>
+  {currentGameStatus.status !== 'completed' && (
+    <>
+      {currentGameStatus.status !== 'waiting' || currentGameStatus.player1Choice ? (
+        <button className="return-button" onClick={returnToLobby}>
+          Return to Lobby
+        </button>
+      ) : null}
+
+      {currentGameStatus.status === 'in_progress' && (
+        <button className="exit-button" onClick={leaveGame}>
+          Exit Game
+        </button>
+      )}
+    </>
+  )}
 </div>
+
   
             {currentGameStatus.status === 'completed' && (
               <div>
