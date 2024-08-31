@@ -7,14 +7,14 @@ import Toast from './components/Toast/Toast';
 import Stats from './components/Stats/Stats';
 import './App.css';
 import AdBanner from './components/AdBanner/AdBanner';
-import { retrieveLaunchParams } from '@telegram-apps/sdk';
+// import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
 // Define the backend WebSocket URL
 const backendURL = 'wss://cc7d703c66f562688d4a3f842682970b.serveo.net/ws';
 
 
 function App() {
-  const { initDataRaw, initData } = retrieveLaunchParams();
+  // const { initDataRaw, initData } = retrieveLaunchParams();
   const [hasCheckedActiveRoom, setHasCheckedActiveRoom] = useState(false);
   const [isSessionTerminated, setIsSessionTerminated] = useState(false);
   const [allRooms, setAllRooms] = useState([]); // Store all rooms fetched from the backend
@@ -99,10 +99,10 @@ useEffect(() => {
 
 
   useEffect(() => {
-    // const retrievedUsername = "poemcryptoman";
-    // const retrievedUserID = "5199577425";
-    const retrievedUsername = initData.user.username || "Unknown Username";
-    const retrievedUserID = initData.user.id || "Unknown UserID";
+    const retrievedUsername = "poemcryptoman";
+    const retrievedUserID = "5199577425";
+    // const retrievedUsername = initData.user.username || "Unknown Username";
+    // const retrievedUserID = initData.user.id || "Unknown UserID";
     // console.log('Setting userID:', retrievedUserID);
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);
@@ -425,6 +425,9 @@ const renderGameStatusMessage = (currentGameStatus) => {
 };
 
 
+useEffect(() => {
+  console.log('gameStatuses updated:', gameStatuses);
+}, [gameStatuses]);
 
 
 useEffect(() => {
@@ -523,14 +526,27 @@ case 'TRY_AGAIN':
     setToastVisible(true);
   }
   break;
-      case 'LEAVE_ROOM':
-        console.log('Left room:', message.room_id);
-        setSelectedRoom('');
-        setGameStatus('');
-        setUserChoice('');
-        setToastMessage(message.message);
-        setToastVisible(true);
-        break;
+  case 'LEAVE_ROOM':
+    console.log('Left room:', message.room_id);
+  
+    // Update the game statuses by removing the room that was exited
+    setGameStatuses((prevStatuses) => {
+      const updatedStatuses = { ...prevStatuses };
+      delete updatedStatuses[message.room_id];
+      return updatedStatuses;
+    });
+  
+    // Clear the selected room and related states
+    setActiveRoomId(null);
+    setSelectedRoom(null);
+    setUserChoice('');
+    setToastMessage(message.message || 'You have left the room.');
+    setToastVisible(true);
+  
+    // Navigate back to the lobby view
+    setCurrentView('lobby');
+    break;
+  
         case 'CREATE_ROOM':
           console.log('Room created with ID:', message.room_id);
           console.log('Full message:', message);
@@ -563,28 +579,58 @@ case 'TRY_AGAIN':
         handleRoomsList(message);    
         break;
       
-          case 'GAME_STATUS':
-            console.log('Updating game status:', message);
-            setRoomStatuses((prevStatuses) => ({
-              ...prevStatuses,
-              [message.roomId]: {
-                roomId: message.roomId,
-                player1ID: message.player1ID,
-                player1Username: message.player1Username,
-                player1Choice: message.player1Choice,
-                player2ID: message.player2ID,
-                player2Username: message.player2Username,
-                player2Choice: message.player2Choice,
-                status: message.status,
-                contractAddress: message.contractAddress,
-                wagerAmount: message.wagerAmount,
-                result: message.result,
-                tryAgain: message.tryAgain,
-                tryAgain2: message.tryAgain2,
-              },
-            }));
-            break;
-        
+        case 'GAME_STATUS':
+          console.log('Updating game status:', message);
+      
+          // If the status is empty or if the current user is not a player in the game, reset the game status for that room
+          if (message.status === "" || 
+              (userID.toString() !== message.player1ID?.toString() && userID.toString() !== message.player2ID?.toString())) {
+              
+              // Reset the game status for this room if the game has ended or the user is not in the game
+              setGameStatuses((prevStatuses) => {
+                  const updatedStatuses = { ...prevStatuses };
+                  delete updatedStatuses[message.room_id]; // Remove the game status for this room
+                  return updatedStatuses;
+              });
+      
+              // If the current active room is the room being updated, reset the active room and view
+              if (activeRoomId === message.room_id) {
+                  setActiveRoomId(null);
+                  setCurrentView('lobby');  // Send the user back to the lobby
+                  setUserChoice('');  // Reset user choice
+              }
+      
+              console.log('User has been removed from the game or game has ended.');
+          } else {
+              // Update the game statuses as usual for the specific room
+              setGameStatuses((prevStatuses) => ({
+                  ...prevStatuses,
+                  [message.room_id]: {
+                      roomId: message.room_id,
+                      player1ID: message.player1ID,
+                      player1Username: message.player1Username,
+                      player1Choice: message.player1Choice,
+                      player2ID: message.player2ID,
+                      player2Username: message.player2Username,
+                      player2Choice: message.player2Choice,
+                      status: message.status,
+                      contractAddress: message.contractAddress,
+                      wagerAmount: message.wagerAmount,
+                      result: message.result,
+                      tryAgain: message.tryAgain,
+                      tryAgain2: message.tryAgain2,
+                  },
+              }));
+      
+              // Update the user choice based on the player's ID
+              if (userID.toString() === message.player1ID.toString()) {
+                  setUserChoice(message.player1Choice);
+              } else if (userID.toString() === message.player2ID.toString()) {
+                  setUserChoice(message.player2Choice);
+              }
+          }
+          break;
+      
             case 'FETCH_CONTRACT':
               console.log('Received contract addresses:', message.contractAddresses);
               setContractAddresses(message.contractAddresses); // Store the contract addresses in state
@@ -624,12 +670,22 @@ case 'TRY_AGAIN':
                       player2ID: message.player2ID,
                       player2Username: message.player2Username,
                       player2Choice: message.player2Choice,
-                      status: message.status, // Pass the correct status here
+                      status: message.status,
                       contractAddress: message.contractAddress,
                       wagerAmount: message.wagerAmount,
                       result: message.result,
                   },
               }));
+      
+              // Handle reconnection scenario
+              if (message.reconnect === "yes") {
+                console.log("Nnnn")
+                  setActiveRoomId(message.room_id);
+                  setCurrentView('game');
+                  setToastMessage('Reconnected to your room.');
+                  setToastVisible(true);
+                  return;
+              }
       
               // Check if the user is Player 1 and someone else (Player 2) has joined
               if (userID.toString() === message.player1ID.toString() && message.player2ID) {
@@ -904,19 +960,19 @@ case 'TRY_AGAIN':
     if (!tokenData) return 0;
     return parseFloat(tokenData.value) / Math.pow(10, contractAddresses.find(c => c.address === contractAddress).decimals);
   };
-
   const handleChoice = (choice) => {
+    console.log(choice)
+    console.log("choice")
     setUserChoice(choice);
     sendMessage({
       type: 'MAKE_CHOICE',
       userID: userID.toString(),
       username,
-      roomId: selectedRoom,
+      roomId: activeRoomId,  // Use activeRoomId here
       choice,
     });
-    
-    
   };
+  
 
   const triggerTransfer = (roomId) => {
     sendMessage({ type: 'TRIGGER_TRANSFER', roomId });
@@ -931,22 +987,20 @@ case 'TRY_AGAIN':
   };
 
   const leaveGame = () => {
-    if (selectedRoom) {
-      // If the game is completed, do not send the LEAVE_ROOM message
-    
-    
-        setSelectedRoom('');
-        setGameStatus('');
-        setUserChoice('');
-        sendMessage({
-          type: 'LEAVE_ROOM',
-          userID: userID.toString(),
-          username,
-          roomId: selectedRoom,
-        });
-      
+    if (activeRoomId) {
+      // Reset the active room and game status
+      setActiveRoomId(null);
+      setGameStatus('');
+      setUserChoice('');
+      sendMessage({
+        type: 'LEAVE_ROOM',
+        userID: userID.toString(),
+        username,
+        roomId: activeRoomId,  // Use activeRoomId here
+      });
     }
   };
+  
   
 
   const handleOpenModal = () => {
@@ -1039,128 +1093,124 @@ case 'TRY_AGAIN':
       </div>
     );
   }
-  console.log('roomStatuses:', roomStatuses);
-console.log('activeRoomId:', activeRoomId);
 
   if (currentView === 'game' && activeRoomId) {
     const currentGameStatus = gameStatuses[activeRoomId];
-  
+
     if (!currentGameStatus) {
-      return <div>Loading game status...</div>;
+        // If the game status for the active room is null, redirect to the lobby
+        setCurrentView('lobby');
+        return null;
     }
-  
+
     const contract = contractAddresses.find(
-      (c) => c.address === currentGameStatus.contractAddress
+        (c) => c.address === currentGameStatus.contractAddress
     );
     const contractSymbol = contract?.symbol || 'Unknown Symbol';
     const decimals = contract?.decimals || 1;
     const formattedWagerAmount = currentGameStatus?.wagerAmount
-      ? (parseFloat(currentGameStatus.wagerAmount) / Math.pow(10, decimals)).toFixed(3)
-      : 'N/A';
-  
+        ? (parseFloat(currentGameStatus.wagerAmount) / Math.pow(10, decimals)).toFixed(3)
+        : 'N/A';
+
     return (
-      <div className="App">
-        <h1 className="welcome-message2">Room {activeRoomId}</h1>
-  
-        {/* Display the wager contract and amount */}
-        <div className="wager-info">
-          <p>
-            [{contractSymbol}: {formattedWagerAmount}]
-          </p>
+        <div className="App">
+            <h1 className="welcome-message2">Room {activeRoomId}</h1>
+
+            {/* Display the wager contract and amount */}
+            <div className="wager-info">
+                <p>
+                    [{contractSymbol}: {formattedWagerAmount}]
+                </p>
+            </div>
+
+            {currentGameStatus ? (
+                <>
+                    <h2 className="game-status">
+                        {currentGameStatus.player1Username
+                            ? `${currentGameStatus.player1Username}${
+                                currentGameStatus.player1Choice ? '[✔️]' : '[❓]'
+                            }`
+                            : '[Pending]'}
+                        {' vs '}
+                        {currentGameStatus.player2Username
+                            ? `${currentGameStatus.player2Username}${
+                                currentGameStatus.player2Choice ? '[✔️]' : '[❓]'
+                            }`
+                            : '[Pending]'}
+                    </h2>
+
+                    <div className="game-status-message">
+                        {renderGameStatusMessage(currentGameStatus)}
+                    </div>
+
+                    {currentGameStatus.status !== 'completed' && (
+                        <>
+                            <div className="choices">
+                                {['Scissors', 'Paper', 'Stone'].map((choice) => (
+                                    <button
+                                        key={choice}
+                                        className={`choice-button ${userChoice === choice ? 'selected' : ''}`}
+                                        onClick={() => handleChoice(choice)}
+                                        disabled={!!userChoice}
+                                    >
+                                        {choice}
+                                    </button>
+                                ))}
+                            </div>
+                        </>
+                    )}
+
+                    <div className="button-group">
+                        {(currentGameStatus.status === 'waiting' && currentGameStatus.player1Choice) || currentGameStatus.status === 'in_progress' ? (
+                            <button className="return-button" onClick={returnToLobby}>
+                                Return to Lobby
+                            </button>
+                        ) : null}
+
+                        {currentGameStatus.status === 'waiting' || currentGameStatus.status === 'completed' ? (
+                            <button className="exit-button" onClick={leaveGame}>
+                                Exit Game
+                            </button>
+                        ) : null}
+                    </div>
+
+                    {currentGameStatus.status === 'completed' && (
+                        <div>
+                            {toastMessage && (
+                                <Toast
+                                    message={toastMessage}
+                                    link={toastLink}
+                                    onClose={() => {
+                                        setToastMessage('');
+                                        setToastLink('');
+                                        setToastVisible(false);
+                                    }}
+                                />
+                            )}
+                        </div>
+                    )}
+                </>
+            ) : (
+                <>
+                    <p>Select your choice below:</p>
+                    <div className="choices">
+                        {['Scissors', 'Paper', 'Stone'].map((choice) => (
+                            <button
+                                key={choice}
+                                className="choice-button"
+                                onClick={() => handleChoice(choice)}
+                                disabled={!!userChoice}
+                            >
+                                {choice}
+                            </button>
+                        ))}
+                    </div>
+                </>
+            )}
         </div>
-  
-        {currentGameStatus ? (
-          <>
-            <h2 className="game-status">
-              {currentGameStatus.player1Username
-                ? `${currentGameStatus.player1Username}${
-                    currentGameStatus.player1Choice ? '[✔️]' : '[❓]'
-                  }`
-                : '[Pending]'}
-              {' vs '}
-              {currentGameStatus.player2Username
-                ? `${currentGameStatus.player2Username}${
-                    currentGameStatus.player2Choice ? '[✔️]' : '[❓]'
-                  }`
-                : '[Pending]'}
-            </h2>
-  
-            <div className="game-status-message">
-              {renderGameStatusMessage(currentGameStatus)}
-            </div>
-  
-            {currentGameStatus.status !== 'completed' && (
-              <>
-                <div className="choices">
-                  {['Scissors', 'Paper', 'Stone'].map((choice) => (
-                    <button
-                      key={choice}
-                      className={`choice-button ${userChoice === choice ? 'selected' : ''}`}
-                      onClick={() => handleChoice(choice)}
-                      disabled={!!userChoice}
-                    >
-                      {choice}
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-  
-  <div className="button-group">
-  {currentGameStatus.status !== 'completed' && (
-    <>
-      {currentGameStatus.status !== 'waiting' || currentGameStatus.player1Choice ? (
-        <button className="return-button" onClick={returnToLobby}>
-          Return to Lobby
-        </button>
-      ) : null}
-
-      {currentGameStatus.status === 'in_progress' && (
-        <button className="exit-button" onClick={leaveGame}>
-          Exit Game
-        </button>
-      )}
-    </>
-  )}
-</div>
-
-  
-            {currentGameStatus.status === 'completed' && (
-              <div>
-                {toastMessage && (
-                  <Toast
-                    message={toastMessage}
-                    link={toastLink}
-                    onClose={() => {
-                      setToastMessage('');
-                      setToastLink('');
-                      setToastVisible(false);
-                    }}
-                  />
-                )}
-              </div>
-            )}
-          </>
-        ) : (
-          <>
-            <p>Select your choice below:</p>
-            <div className="choices">
-              {['Scissors', 'Paper', 'Stone'].map((choice) => (
-                <button
-                  key={choice}
-                  className="choice-button"
-                  onClick={() => handleChoice(choice)}
-                  disabled={!!userChoice}
-                >
-                  {choice}
-                </button>
-              ))}
-            </div>
-          </>
-        )}
-      </div>
     );
-  }
+}
+
   
   
   

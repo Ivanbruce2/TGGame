@@ -552,49 +552,58 @@ case 'TRY_AGAIN':
         handleRoomsList(message);    
         break;
       
-          case 'GAME_STATUS':
-            console.log('Updating game status:', message);
-            console.log(selectedRoom)
-            if (message.status === "" || 
-                (userID.toString() !== message.player1ID?.toString() && userID.toString() !== message.player2ID?.toString())) {
-                
-                // Reset the selected room and game status if status is empty or if the userID is not found in the game
-                setSelectedRoom('');
-                setGameStatus(null);
-                setUserChoice('');  // Reset user choice as well
-                
-                console.log('User has been removed from the game or game has ended.');
-            } else {
-                if (message.reconnect === "yes"){
-                  setSelectedRoom(message.roomId);
-                }
-                
-                // Update the game status as usual
-                setGameStatus({
-                    roomId: message.roomId,
-                    player1ID: message.player1ID,
-                    player1Username: message.player1Username,
-                    player1Choice: message.player1Choice,
-                    player2ID: message.player2ID,
-                    player2Username: message.player2Username,
-                    player2Choice: message.player2Choice,
-                    status: message.status,
-                    contractAddress: message.contractAddress,
-                    wagerAmount: message.wagerAmount,
-                    result: message.result,
-                    tryAgain: message.tryAgain,       // Add this line
-                    tryAgain2: message.tryAgain2,     // Add this line
-                });
-        
-                // Update the user choice based on player ID
-                if (userID.toString() === message.player1ID.toString()) {
-                    setUserChoice(message.player1Choice);
-                } else if (userID.toString() === message.player2ID.toString()) {
-                    setUserChoice(message.player2Choice);
-                }
-            }
-            break;
-        
+        case 'GAME_STATUS':
+          console.log('Updating game status:', message);
+      
+          // If the status is empty or if the current user is not a player in the game, reset the game status for that room
+          if (message.status === "" || 
+              (userID.toString() !== message.player1ID?.toString() && userID.toString() !== message.player2ID?.toString())) {
+              
+              // Reset the game status for this room if the game has ended or the user is not in the game
+              setGameStatuses((prevStatuses) => {
+                  const updatedStatuses = { ...prevStatuses };
+                  delete updatedStatuses[message.room_id]; // Remove the game status for this room
+                  return updatedStatuses;
+              });
+      
+              // If the current active room is the room being updated, reset the active room and view
+              if (activeRoomId === message.room_id) {
+                  setActiveRoomId(null);
+                  setCurrentView('lobby');  // Send the user back to the lobby
+                  setUserChoice('');  // Reset user choice
+              }
+      
+              console.log('User has been removed from the game or game has ended.');
+          } else {
+              // Update the game statuses as usual for the specific room
+              setGameStatuses((prevStatuses) => ({
+                  ...prevStatuses,
+                  [message.room_id]: {
+                      roomId: message.room_id,
+                      player1ID: message.player1ID,
+                      player1Username: message.player1Username,
+                      player1Choice: message.player1Choice,
+                      player2ID: message.player2ID,
+                      player2Username: message.player2Username,
+                      player2Choice: message.player2Choice,
+                      status: message.status,
+                      contractAddress: message.contractAddress,
+                      wagerAmount: message.wagerAmount,
+                      result: message.result,
+                      tryAgain: message.tryAgain,
+                      tryAgain2: message.tryAgain2,
+                  },
+              }));
+      
+              // Update the user choice based on the player's ID
+              if (userID.toString() === message.player1ID.toString()) {
+                  setUserChoice(message.player1Choice);
+              } else if (userID.toString() === message.player2ID.toString()) {
+                  setUserChoice(message.player2Choice);
+              }
+          }
+          break;
+      
             case 'FETCH_CONTRACT':
               console.log('Received contract addresses:', message.contractAddresses);
               setContractAddresses(message.contractAddresses); // Store the contract addresses in state
@@ -653,18 +662,6 @@ case 'TRY_AGAIN':
         console.log('Unknown message type received:', message.type);
     }
   };
-
-  useEffect(() => {
-    if (selectedRoom) {
-      console.log('selectedRoom updated:', selectedRoom);
-    }
-  }, [selectedRoom]);
-
-  useEffect(() => {
-    if (selectedRoom === null) {
-        console.log('selectedRoom was reset to null');
-    }
-}, [selectedRoom]);
 
 
   const fetchAds = () => {
@@ -762,20 +759,6 @@ case 'TRY_AGAIN':
 
 
   
-  
-  const checkForActiveRoomOnConnect = () => {
-    console.log("come here?")
-    console.log(allRooms)  
-    console.log("maybe?")
-    const intervalId = setInterval(() => {
-      if (allRooms.length > 0) {
-        console.log("how about now?")
-        // Assuming allRooms is already populated or updated after the initial fetchRooms call
-        checkForActiveRoom(allRooms);
-        clearInterval(intervalId); // Stop checking after the first successful room list fetch
-      }
-    }, 500); // Adjust the interval as needed
-  };
   
   const checkForActiveRoom = (filteredRooms) => {
     console.log('Current userID:', userID);
