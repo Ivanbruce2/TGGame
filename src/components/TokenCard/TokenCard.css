@@ -24,7 +24,15 @@
   font-size: 18px;
   margin: 0;
   line-height: 1;
+  text-decoration: underline; /* Adds underline */
+  cursor: pointer; /* Changes cursor to pointer on hover */
 }
+
+/* Optional: Change color on hover */
+.token-symbol:hover {
+  color: #007bff; /* Changes color on hover to indicate interactivity */
+}
+
 
 .token-amount {
   font-family: monospace;
