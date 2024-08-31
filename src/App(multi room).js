@@ -10,7 +10,7 @@ import AdBanner from './components/AdBanner/AdBanner';
 // import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
 // Define the backend WebSocket URL
-const backendURL = 'wss://703a33d469d343850f41f1cee5a487b6.serveo.net/ws';
+const backendURL = 'wss://cc7d703c66f562688d4a3f842682970b.serveo.net/ws';
 
 
 function App() {
@@ -46,6 +46,12 @@ function App() {
   const messageQueue = useRef([]); 
   const pingIntervalRef = useRef(null);
   const [contractAddresses, setContractAddresses] = useState([]);
+  const [currentView, setCurrentView] = useState('lobby'); // 'lobby', 'game', etc.
+const [activeRoomId, setActiveRoomId] = useState(null);
+const [roomStatuses, setRoomStatuses] = useState({});
+const [gameStatuses, setGameStatuses] = useState({});
+
+
 
   // const allowedUserIDs = ['6937856159', '5199577425'];
 
@@ -531,68 +537,52 @@ case 'TRY_AGAIN':
           console.log('Full message:', message);
           console.log('Wager Amount:', message.wagerAmount); // Check if this logs the expected value
           
-          setSelectedRoom(message.room_id);
-          setGameStatus({
-              roomId: message.room_id,
-              player1ID: message.player1ID,
-              player1Username: message.player1Username,
-              player1Choice: message.player1Choice,
-              player2ID: message.player2ID,
-              player2Username: message.player2Username,
-              player2Choice: message.player2Choice,
-              status: message.status,
-              contractAddress: message.contractAddress,
-              wagerAmount: message.wagerAmount, // Ensure this line is correct
-              result: message.result,
-          });
+          // Update the game status for the specific room
+          setGameStatuses((prevStatuses) => ({
+              ...prevStatuses,
+              [message.room_id]: {
+                  roomId: message.room_id,
+                  player1ID: message.player1ID,
+                  player1Username: message.player1Username,
+                  player1Choice: message.player1Choice,
+                  player2ID: message.player2ID,
+                  player2Username: message.player2Username,
+                  player2Choice: message.player2Choice,
+                  status: message.status,
+                  contractAddress: message.contractAddress,
+                  wagerAmount: message.wagerAmount, // Ensure this line is correct
+                  result: message.result,
+              },
+          }));
+      
+          // Set the currently active room ID if needed
+          setActiveRoomId(message.room_id);
           break;
       
-        
         case 'ROOMS_LIST':
         handleRoomsList(message);    
         break;
       
           case 'GAME_STATUS':
             console.log('Updating game status:', message);
-            console.log(selectedRoom)
-            if (message.status === "" || 
-                (userID.toString() !== message.player1ID?.toString() && userID.toString() !== message.player2ID?.toString())) {
-                
-                // Reset the selected room and game status if status is empty or if the userID is not found in the game
-                setSelectedRoom('');
-                setGameStatus(null);
-                setUserChoice('');  // Reset user choice as well
-                
-                console.log('User has been removed from the game or game has ended.');
-            } else {
-                if (message.reconnect === "yes"){
-                  setSelectedRoom(message.roomId);
-                }
-                
-                // Update the game status as usual
-                setGameStatus({
-                    roomId: message.roomId,
-                    player1ID: message.player1ID,
-                    player1Username: message.player1Username,
-                    player1Choice: message.player1Choice,
-                    player2ID: message.player2ID,
-                    player2Username: message.player2Username,
-                    player2Choice: message.player2Choice,
-                    status: message.status,
-                    contractAddress: message.contractAddress,
-                    wagerAmount: message.wagerAmount,
-                    result: message.result,
-                    tryAgain: message.tryAgain,       // Add this line
-                    tryAgain2: message.tryAgain2,     // Add this line
-                });
-        
-                // Update the user choice based on player ID
-                if (userID.toString() === message.player1ID.toString()) {
-                    setUserChoice(message.player1Choice);
-                } else if (userID.toString() === message.player2ID.toString()) {
-                    setUserChoice(message.player2Choice);
-                }
-            }
+            setRoomStatuses((prevStatuses) => ({
+              ...prevStatuses,
+              [message.roomId]: {
+                roomId: message.roomId,
+                player1ID: message.player1ID,
+                player1Username: message.player1Username,
+                player1Choice: message.player1Choice,
+                player2ID: message.player2ID,
+                player2Username: message.player2Username,
+                player2Choice: message.player2Choice,
+                status: message.status,
+                contractAddress: message.contractAddress,
+                wagerAmount: message.wagerAmount,
+                result: message.result,
+                tryAgain: message.tryAgain,
+                tryAgain2: message.tryAgain2,
+              },
+            }));
             break;
         
             case 'FETCH_CONTRACT':
@@ -617,38 +607,54 @@ case 'TRY_AGAIN':
         break;
         case 'JOIN_ROOM':
           if (message.error) {
-            setToastMessage(message.error);
-            setToastVisible(true);
+              setToastMessage(message.error);
+              setToastVisible(true);
           } else {
-            console.log("Joined room")
-            console.log(message);
-        console.log(selectedRoom)
-            // Update the state for the user who joined the room
-            setSelectedRoom(message.room_id);
-            setGameStatus({
-              roomId: message.room_id,
-              player1ID: message.player1ID,
-              player1Username: message.player1Username,
-              player1Choice: message.player1Choice,
-              player2ID: message.player2ID,
-              player2Username: message.player2Username,
-              player2Choice: message.player2Choice,
-              status: message.status, // Pass the correct status here
-              contractAddress: message.contractAddress,
-              wagerAmount: message.wagerAmount,
-            });
-        
-            // Check if the current user is the creator or the joiner and update their state accordingly
-            if (userID.toString() === message.player1ID.toString()) {
-              // This is the room creator, update their state
-              setUserChoice(message.player1Choice);
-            } else if (userID.toString() === message.player2ID.toString()) {
-              // This is the joiner, update their state
-              setUserChoice(message.player2Choice);
-            }
+              console.log("Joined room");
+              console.log(message);
+              console.log(selectedRoom);
+      
+              // Check if the user is already in the room
+              if (gameStatuses[message.room_id]) {
+                  // If the user is already in the room, navigate to it
+                  setActiveRoomId(message.room_id);
+                  setCurrentView('game');
+              } else {
+                  // If the user is not in the room, update the state for the new room
+                  setSelectedRoom(message.room_id);
+                  setGameStatuses((prevStatuses) => ({
+                      ...prevStatuses,
+                      [message.room_id]: {
+                          roomId: message.room_id,
+                          player1ID: message.player1ID,
+                          player1Username: message.player1Username,
+                          player1Choice: message.player1Choice,
+                          player2ID: message.player2ID,
+                          player2Username: message.player2Username,
+                          player2Choice: message.player2Choice,
+                          status: message.status, // Pass the correct status here
+                          contractAddress: message.contractAddress,
+                          wagerAmount: message.wagerAmount,
+                          result: message.result,
+                      },
+                  }));
+              
+                  // Check if the current user is the creator or the joiner and update their state accordingly
+                  if (userID.toString() === message.player1ID.toString()) {
+                      // This is the room creator, update their state
+                      setUserChoice(message.player1Choice);
+                  } else if (userID.toString() === message.player2ID.toString()) {
+                      // This is the joiner, update their state
+                      setUserChoice(message.player2Choice);
+                  }
+      
+                  // Navigate to the game page after joining the room
+                  setActiveRoomId(message.room_id);
+                  setCurrentView('game');
+              }
           }
           break;
-        
+      
       default:
         console.log('Unknown message type received:', message.type);
     }
@@ -991,6 +997,17 @@ case 'TRY_AGAIN':
     );
   };
 
+  const navigateToGamePage = (roomId) => {
+    setActiveRoomId(roomId);
+    setCurrentView('game');
+  };
+  
+  
+  const returnToLobby=()=> {
+    setCurrentView('lobby');
+    setActiveRoomId(null);
+  };
+
   // const isUserAllowed = allowedUserIDs.includes(userID.toString());
 
   // if (!isUserAllowed) {
@@ -1026,52 +1043,54 @@ case 'TRY_AGAIN':
     );
   }
   
+  if (currentView === 'game' && activeRoomId) {
+    const currentGameStatus = roomStatuses[activeRoomId];
   
+    if (!currentGameStatus) {
+      return <div>Loading game status...</div>;
+    }
   
-
-  if (selectedRoom) {
-    // Extract the relevant contract information based on the stored contract address
     const contract = contractAddresses.find(
-      (c) => c.address === gameStatus?.contractAddress
+      (c) => c.address === currentGameStatus.contractAddress
     );
     const contractSymbol = contract?.symbol || 'Unknown Symbol';
     const decimals = contract?.decimals || 1;
-    const formattedWagerAmount = gameStatus?.wagerAmount
-      ? (parseFloat(gameStatus.wagerAmount) / Math.pow(10, decimals)).toFixed(3)
+    const formattedWagerAmount = currentGameStatus?.wagerAmount
+      ? (parseFloat(currentGameStatus.wagerAmount) / Math.pow(10, decimals)).toFixed(3)
       : 'N/A';
-
   
-      
     return (
       <div className="App">
-        <h1 className="welcome-message2">Room {selectedRoom}</h1>
+        <h1 className="welcome-message2">Room {activeRoomId}</h1>
   
-        {/* Display the wager contract and amount immediately below the room information */}
+        {/* Display the wager contract and amount */}
         <div className="wager-info">
           <p>
             [{contractSymbol}: {formattedWagerAmount}]
           </p>
         </div>
   
-        {gameStatus ? (
+        {currentGameStatus ? (
           <>
             <h2 className="game-status">
-              {gameStatus.player1Username
-                ? `${gameStatus.player1Username}${
-                    gameStatus.player1Choice ? '[✔️]' : '[❓]'
+              {currentGameStatus.player1Username
+                ? `${currentGameStatus.player1Username}${
+                    currentGameStatus.player1Choice ? '[✔️]' : '[❓]'
                   }`
                 : '[Pending]'}
               {' vs '}
-              {gameStatus.player2Username
-                ? `${gameStatus.player2Username}${
-                    gameStatus.player2Choice ? '[✔️]' : '[❓]'
+              {currentGameStatus.player2Username
+                ? `${currentGameStatus.player2Username}${
+                    currentGameStatus.player2Choice ? '[✔️]' : '[❓]'
                   }`
                 : '[Pending]'}
             </h2>
   
-            <div className="game-status-message">{renderGameStatusMessage()}</div>
+            <div className="game-status-message">
+              {renderGameStatusMessage(currentGameStatus)}
+            </div>
   
-            {gameStatus.status !== 'completed' && (
+            {currentGameStatus.status !== 'completed' && (
               <>
                 <div className="choices">
                   {['Scissors', 'Paper', 'Stone'].map((choice) => (
@@ -1079,23 +1098,25 @@ case 'TRY_AGAIN':
                       key={choice}
                       className={`choice-button ${userChoice === choice ? 'selected' : ''}`}
                       onClick={() => handleChoice(choice)}
-                      disabled={!!userChoice} // Disable buttons after a choice is made
+                      disabled={!!userChoice}
                     >
                       {choice}
                     </button>
                   ))}
                 </div>
-  
-
-
               </>
             )}
   
-            <button className="return-button" onClick={leaveGame}>
-              Return to Lobby
-            </button>
+  <div className="button-group">
+  <button className="return-button" onClick={returnToLobby}>
+    Return to Lobby
+  </button>
+  <button className="exit-button" onClick={leaveGame}>
+    Exit Game
+  </button>
+</div>
   
-            {gameStatus.status === 'completed' && (
+            {currentGameStatus.status === 'completed' && (
               <div>
                 {toastMessage && (
                   <Toast
@@ -1120,7 +1141,7 @@ case 'TRY_AGAIN':
                   key={choice}
                   className="choice-button"
                   onClick={() => handleChoice(choice)}
-                  disabled={!!userChoice} 
+                  disabled={!!userChoice}
                 >
                   {choice}
                 </button>
