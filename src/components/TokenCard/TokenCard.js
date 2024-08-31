@@ -87,13 +87,13 @@ const TokenCard = ({ token, value, userID, sendMessage, users, refreshTokens }) 
   return (
     <div className="token-card">
       <div className="token-column">
-        <h3 
+        <u><h3 
           className="token-symbol" 
           onClick={copyTokenAddressToClipboard} 
           style={{ cursor: 'pointer' }}
         >
           {token.symbol}
-        </h3>
+        </h3></u>
         <p className="token-amount">{tokenValue}</p>
       </div>
       <div className="token-column token-action">
