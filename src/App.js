@@ -831,9 +831,9 @@ const handleRoomsList = (message) => {
 
     // Filter the rooms based on the selected contract and current user ID
     const filteredRooms = message.rooms.filter(
-        room => room.status === 'waiting' || room.player1_id === userID
-    );
-
+      room => room.status === 'waiting' || room.player1_id.toString() === userID.toString()
+  );
+  
     console.log('Filtered rooms:', filteredRooms);
     setRooms(filteredRooms);
 };
