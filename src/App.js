@@ -923,6 +923,9 @@ const handleRoomsList = (message) => {
   };
 
   const joinRoom = (roomId) => {
+    console.log("Attempting to join room with ID:", roomId);
+    console.log("Current rooms array:", rooms);
+
     const roomToJoin = rooms.find((room) => room.room_id === roomId);
     if (!roomToJoin) {
       setToastMessage('Room not found.');
@@ -1314,9 +1317,6 @@ const handleRoomsList = (message) => {
                         : 'N/A';
                         const isPlayer1 = room.player1_id.toString() === userID.toString();
 
-                        console.log(isPlayer1)
-                        console.log(userID)
-                        console.log(room.player1_id)
                       return (
                         <div className="room-card" key={room.room_id}>
                           <div className="room-details">
