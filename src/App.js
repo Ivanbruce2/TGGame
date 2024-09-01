@@ -999,10 +999,11 @@ break;
   const handleTryAgain = () => {
     sendMessage({
       type: 'TRY_AGAIN',
-      roomId: selectedRoom,
+      roomId: activeRoomId,  // Use activeRoomId here
       userID: userID.toString(),
     });
   };
+  
 
   const leaveGame = () => {
     if (activeRoomId) {
