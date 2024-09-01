@@ -838,10 +838,6 @@ break;
     setRooms(filteredRooms);
 };
 
-
-
-  
-  
   const checkForActiveRoomOnConnect = () => {
     console.log("come here?")
     console.log(allRooms)  
