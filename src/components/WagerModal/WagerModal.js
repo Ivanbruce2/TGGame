@@ -7,16 +7,22 @@ const WagerModal = ({ contracts, walletAddress, onSave, onCancel }) => {
   const [availableBalance, setAvailableBalance] = useState(0); // Default balance to 0
   const [tokenBalances, setTokenBalances] = useState([]); // Store all token balances
   const [errorMessage, setErrorMessage] = useState('');
+  const [apiError, setApiError] = useState(''); // Track API errors
 
   useEffect(() => {
     // Fetch token balances when the modal opens
     const fetchTokenBalances = async () => {
       try {
         const response = await fetch(`https://www.shibariumscan.io/api/v2/addresses/${walletAddress}/token-balances`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch token balances');
+        }
         const data = await response.json();
         setTokenBalances(data);
+        setApiError(''); // Clear any previous API errors
       } catch (error) {
         console.error('Error fetching token balances:', error);
+        setApiError('Unable to load token balances. Please try again later.');
       }
     };
 
@@ -66,6 +72,7 @@ const WagerModal = ({ contracts, walletAddress, onSave, onCancel }) => {
     <div className="modal-overlay">
       <div className="modal-content">
         <h2>Select Contract & Wager Amount</h2>
+        {apiError && <p className="api-error-message">{apiError}</p>}
         <div className="form-group">
           <label>Contract Address:</label>
           <select
@@ -88,7 +95,7 @@ const WagerModal = ({ contracts, walletAddress, onSave, onCancel }) => {
             onChange={(e) => setWagerAmount(e.target.value)}
             placeholder="Enter amount"
           />
-          {availableBalance !== null && (
+          {selectedContract && (
             <p>Available Balance: {availableBalance.toFixed(3)} {contracts.find(contract => contract.address === selectedContract)?.symbol}</p>
           )}
           {errorMessage && <p className="error-message">{errorMessage}</p>}
