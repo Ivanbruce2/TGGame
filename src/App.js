@@ -810,7 +810,7 @@ break;
   const handleRoomsList = (message) => {
     console.log('handleRoomsList called');
     console.log('Received message:', message);
-    console.log(selectedRoom)
+    console.log(selectedRoom);
 
     // Prevent updating the room list if the user is already in a game
     if (selectedRoom) {
@@ -829,11 +829,15 @@ break;
     console.log('Storing rooms:', message.rooms);
     setAllRooms(message.rooms);
 
-    // Filter the rooms based on the selected contract
-    const filteredRooms = filterRooms(message.rooms);
+    // Filter the rooms based on the selected contract and current user ID
+    const filteredRooms = message.rooms.filter(
+        room => room.status === 'waiting' || room.player1_id === currentUser.id
+    );
+
     console.log('Filtered rooms:', filteredRooms);
     setRooms(filteredRooms);
 };
+
 
 
   
