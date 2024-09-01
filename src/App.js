@@ -572,6 +572,7 @@ case 'TRY_AGAIN':
       
           // Set the currently active room ID if needed
           setActiveRoomId(message.room_id);
+          setUserChoice('');
           setCurrentView('game');
           break;
       
