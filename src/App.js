@@ -1312,7 +1312,8 @@ const handleRoomsList = (message) => {
                       const formattedWagerAmount = room.wager_amount
                         ? (parseFloat(room.wager_amount) / Math.pow(10, decimals)).toFixed(3)
                         : 'N/A';
-                        const isPlayer1 = room.player1_id === userID;
+                        const isPlayer1 = room.player1_id.toString() === userID.toString();
+
                         console.log(isPlayer1)
                         console.log(userID)
                         console.log(room.player1_id)
