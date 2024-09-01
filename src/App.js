@@ -1313,6 +1313,9 @@ const handleRoomsList = (message) => {
                         ? (parseFloat(room.wager_amount) / Math.pow(10, decimals)).toFixed(3)
                         : 'N/A';
                         const isPlayer1 = room.player1_id === userID;
+                        console.log(isPlayer1)
+                        console.log(userID)
+                        console.log(room.player1_id)
                       return (
                         <div className="room-card" key={room.room_id}>
                           <div className="room-details">
