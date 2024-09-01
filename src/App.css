@@ -278,7 +278,14 @@ body:before {
   font-size: 1.5em;
   margin-bottom: 20px;
   color: #ffd700;
-
+  font-family: 'Press Start 2P', cursive;
+  position: relative;
+  text-shadow:
+    1px 1px 0 #ff0047,
+    2px 2px 0 #ff8a00,
+    3px 3px 0 #fcdc4d,
+    4px 4px 0 #28e0ae,
+    5px 5px 0 #0044ff;
 }
 
 @keyframes gradientShift {
