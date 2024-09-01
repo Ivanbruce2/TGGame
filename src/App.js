@@ -679,7 +679,7 @@ case 'TRY_AGAIN':
       
               // Handle reconnection scenario
               if (message.reconnect === "yes") {
-                console.log("Nnnn")
+                  console.log("Reconnected to room");
                   setActiveRoomId(message.room_id);
                   setCurrentView('game');
                   setToastMessage('Reconnected to your room.');
@@ -687,10 +687,18 @@ case 'TRY_AGAIN':
                   return;
               }
       
-              // Check if the user is Player 1 and someone else (Player 2) has joined
+              // If the user is Player 1 and someone else (Player 2) has joined
               if (userID.toString() === message.player1ID.toString() && message.player2ID) {
                   setToastMessage(`${message.player2Username} has joined your room.`);
                   setToastVisible(true);
+              }
+      
+              // If the user is Player 2 and has successfully joined the room
+              if (userID.toString() === message.player2ID.toString()) {
+                  setToastMessage(`You have joined the room as Player 2.`);
+                  setToastVisible(true);
+                  setActiveRoomId(message.room_id);  // Set the active room ID
+                  setCurrentView('game');  // Navigate to the game view
               }
       
               // Update user choice state based on their role in the game
@@ -707,6 +715,7 @@ case 'TRY_AGAIN':
               }
           }
           break;
+      
       
       default:
         console.log('Unknown message type received:', message.type);
