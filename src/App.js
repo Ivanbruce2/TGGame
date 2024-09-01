@@ -10,7 +10,7 @@ import AdBanner from './components/AdBanner/AdBanner';
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
 // Define the backend WebSocket URL
-const backendURL = 'wss://cc7d703c66f562688d4a3f842682970b.serveo.net/ws';
+const backendURL = 'wss://6b0b-5-223-43-39.ngrok-free.app/ws';
 
 
 function App() {
