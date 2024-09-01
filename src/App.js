@@ -1312,7 +1312,7 @@ const handleRoomsList = (message) => {
                       const formattedWagerAmount = room.wager_amount
                         ? (parseFloat(room.wager_amount) / Math.pow(10, decimals)).toFixed(3)
                         : 'N/A';
-  
+                        const isPlayer1 = room.player1_id === userID;
                       return (
                         <div className="room-card" key={room.room_id}>
                           <div className="room-details">
@@ -1323,7 +1323,7 @@ const handleRoomsList = (message) => {
                             </p>
                             <p>Wager: {contract ? `(${contract.symbol})` : 'N/A'} | {formattedWagerAmount}</p>
                           </div>
-                          {room.status === 'waiting' && (
+                          {(room.status === 'waiting' || isPlayer1) && (
                             <button className="join-button" onClick={() => joinRoom(room.room_id)}>
                               <b>JOIN</b>
                             </button>
