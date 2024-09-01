@@ -508,24 +508,29 @@ break;
           setToastVisible(true);
           break;
         
-case 'TRY_AGAIN':
-  console.log(message);
-  if (message.success) {
-    // Reset game status and user choice
-    setGameStatus({
-      ...gameStatus,
-      status: 'in_progress',
-      player1Choice: '',
-      player2Choice: '',
-    });
-    setUserChoice(''); // Clear the user's previous choice
-    setToastMessage('Game has been reset.');
-    setToastVisible(true);
-  } else {
-    setToastMessage('Failed to reset the game.');
-    setToastVisible(true);
-  }
-  break;
+          case 'TRY_AGAIN':
+            console.log(message);
+            if (message.success) {
+              // Reset the game status for the specific room
+              setGameStatuses((prevStatuses) => ({
+                ...prevStatuses,
+                [message.room_id]: {
+                  ...prevStatuses[message.room_id],
+                  status: 'in_progress',
+                  player1Choice: '',
+                  player2Choice: '',
+                  result: '',  // Clear the result as well
+                },
+              }));
+          
+              setToastMessage('Game has been reset.');
+              setToastVisible(true);
+            } else {
+              setToastMessage('Failed to reset the game.');
+              setToastVisible(true);
+            }
+            break;
+          
   case 'LEAVE_ROOM':
     console.log('Left room:', message.room_id);
   
