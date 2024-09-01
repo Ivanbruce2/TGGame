@@ -22,7 +22,7 @@ const WagerModal = ({ contracts, walletAddress, onSave, onCancel }) => {
         setApiError(''); // Clear any previous API errors
       } catch (error) {
         console.error('Error fetching token balances:', error);
-        setApiError('Unable to load token balances. Please try again later.');
+        setApiError('You do not have any tokens in this wallet. Please transfer some tokens over first before starting.');
       }
     };
 
