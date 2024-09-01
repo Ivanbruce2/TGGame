@@ -11,8 +11,13 @@ const TokenCard = ({ token, value, userID, sendMessage, users, refreshTokens }) 
   const [toastMessage, setToastMessage] = useState('');
   const [toastLink, setToastLink] = useState('');
 
+  // Sort users alphabetically by username
+  const sortedUsers = [...users].sort((a, b) => {
+    return a.username.localeCompare(b.username);
+  });
+
   const handleUserSelect = (e) => {
-    const selectedUser = users.find(user => user.user_id === e.target.value);
+    const selectedUser = sortedUsers.find(user => user.user_id === e.target.value);
     if (selectedUser) {
       setWalletAddress(selectedUser.wallet_address); // Auto-fill the wallet address
     }
@@ -82,7 +87,6 @@ const TokenCard = ({ token, value, userID, sendMessage, users, refreshTokens }) 
       });
     }
   };
-  
 
   return (
     <div className="token-card">
@@ -106,7 +110,7 @@ const TokenCard = ({ token, value, userID, sendMessage, users, refreshTokens }) 
             <h3>Transfer {token.symbol}</h3>
             <select onChange={handleUserSelect}>
               <option value="">Select a user (Optional)</option>
-              {users.map((user) => (
+              {sortedUsers.map((user) => (
                 <option key={user.user_id} value={user.user_id}>
                   {user.username}
                 </option>
