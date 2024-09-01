@@ -28,20 +28,32 @@ const WagerModal = ({ contracts, walletAddress, onSave, onCancel }) => {
 
     fetchTokenBalances();
   }, [walletAddress]);
-
+  
   useEffect(() => {
-    // Update available balance whenever the selected contract changes
-    if (selectedContract) {
-      const contract = contracts.find(contract => contract.address === selectedContract);
-      const tokenData = tokenBalances.find(token => token.token.address === selectedContract);
-
+    // Ensure all necessary data exists before proceeding
+    if (selectedContract && contracts && tokenBalances) {
+      const lowerCaseSelectedContract = selectedContract.toLowerCase();
+      const contract = contracts.find(contract => contract.address.toLowerCase() === lowerCaseSelectedContract);
+      const tokenData = tokenBalances.find(token => token.token.address.toLowerCase() === lowerCaseSelectedContract);
+  
       if (contract) {
         const balance = tokenData ? parseFloat(tokenData.value) / Math.pow(10, contract.decimals) : 0;
+        console.log(balance);
+  
         setAvailableBalance(balance);
         setErrorMessage(''); // Clear any previous error message
+      } else {
+        // Handle case where contract is not found
+        setAvailableBalance(0); // Set balance to 0 if no contract is found
+        setErrorMessage('Contract not found');
       }
+    } else {
+      // Handle case where selectedContract or data is invalid
+      setAvailableBalance(0); // Set balance to 0 as a fallback
+      setErrorMessage('Invalid contract or data');
     }
   }, [selectedContract, contracts, tokenBalances]);
+  
 
   const handleSave = () => {
     if (!selectedContract) {
