@@ -807,7 +807,7 @@ break;
     };
   };
   
-  const handleRoomsList = (message) => {
+const handleRoomsList = (message) => {
     console.log('handleRoomsList called');
     console.log('Received message:', message);
     console.log(selectedRoom);
@@ -831,7 +831,7 @@ break;
 
     // Filter the rooms based on the selected contract and current user ID
     const filteredRooms = message.rooms.filter(
-        room => room.status === 'waiting' || room.player1_id === currentUser.id
+        room => room.status === 'waiting' || room.player1_id === userID
     );
 
     console.log('Filtered rooms:', filteredRooms);
