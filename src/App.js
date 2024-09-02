@@ -125,10 +125,11 @@ useEffect(() => {
           }
           // Send initialization messages
           initializeUser(userID, username);
-          fetchContract();
+          
           fetchRooms();
-          fetchUsers();
+          // fetchUsers();
           fetchAds();
+          fetchContract();
           
           // checkForActiveRoomOnConnect();
         };
