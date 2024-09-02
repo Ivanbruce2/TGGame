@@ -747,6 +747,7 @@ break;
   };
 
   const fetchContract = () => {
+    console.log("fetching contract")
     sendMessage({ type: 'FETCH_CONTRACT' });
   };
 
