@@ -100,7 +100,7 @@ const WagerModal = ({ contracts, walletAddress, onSave, onCancel }) => {
             onChange={(e) => setSelectedContract(e.target.value)}
           >
             <option value="">--Select Contract--</option>
-            <option value="native">BONE (Native)</option>
+            <option value="native">BONE</option>
             {contracts.map((contract, index) => (
               <option key={index} value={contract.address}>
                 {contract.name} ({contract.symbol})
