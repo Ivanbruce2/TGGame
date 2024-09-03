@@ -1366,6 +1366,11 @@ break;
         )}
   
 {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
+<div className="ads-container">
+        <p>
+          Need Ads? Visit <a href="https://t.me/ShibWareAdvertisementBot" target="_blank" rel="noopener noreferrer">https://t.me/ShibWareAdvertisementBot</a>
+        </p>
+      </div>
         <AdBanner ads={ads} />
       </div>
     </Router>
