@@ -43,12 +43,24 @@ const AdBanner = ({ ads }) => {
   };
 
   return (
-    <div className="ad-banner-container">
-      <div className="ad-banner">
-        <p className="ad-caption"><b>Ads: </b> {currentAd.caption}</p>
-        <a href={currentAd.link} target="_blank" rel="noopener noreferrer">
-          {renderAdContent(currentAd)}
-        </a>
+    <div className="ad-banner-wrapper">
+      <div className="ad-banner-container">
+        {/* New container for the advertisement bot message */}
+        <div className="ads-message-container">
+          <p>
+            Need Ads? Visit{' '}
+            <a href="https://t.me/ShibWareAdvertisementBot" target="_blank" rel="noopener noreferrer">
+              https://t.me/ShibWareAdvertisementBot
+            </a>
+          </p>
+        </div>
+
+        <div className="ad-banner">
+          <p className="ad-caption"><b>Ads: </b> {currentAd.caption}</p>
+          <a href={currentAd.link} target="_blank" rel="noopener noreferrer">
+            {renderAdContent(currentAd)}
+          </a>
+        </div>
       </div>
     </div>
   );
