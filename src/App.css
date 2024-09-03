@@ -377,8 +377,8 @@ body:before {
   }
 
   .welcome-message {
-    font-size: 1.5em;
-    margin-bottom: 15px;
+    font-size: 1em;
+    margin-bottom: 5px;
   }
 
   .header-row {
