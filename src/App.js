@@ -581,6 +581,11 @@ break;
         case 'GAME_STATUS':
           // console.log('Updating game status:', message);
       
+          if (message.message && message.message.trim() !== "") {
+              setToastMessage(message.message);
+              setToastVisible(true);
+          }
+          
           if (message.status === "" || 
               (userID.toString() !== message.player1ID?.toString() && userID.toString() !== message.player2ID?.toString())) {
               
@@ -627,11 +632,11 @@ break;
                   const playerChoice = userID.toString() === message.player1ID.toString() ? currentGameStatus.player1Choice : currentGameStatus.player2Choice;
       
                   // You may display this choice in the UI if needed
-                
+                  
               }
           }
           break;
-            case 'FETCH_CONTRACT':
+         case 'FETCH_CONTRACT':
        
               setContractAddresses(message.contractAddresses); // Store the contract addresses in state
               break;
