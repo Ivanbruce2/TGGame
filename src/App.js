@@ -1156,6 +1156,17 @@ const handleRoomsList = (message) => {
 
     return (
         <div className="App">
+          {toastMessage && (
+            <Toast
+                message={toastMessage}
+                link={toastLink}
+                onClose={() => {
+                    setToastMessage('');
+                    setToastLink('');
+                    setToastVisible(false);
+                }}
+            />
+        )}
             <h1 className="welcome-message2">Room {activeRoomId}</h1>
 
             {/* Display the wager contract and amount */}
