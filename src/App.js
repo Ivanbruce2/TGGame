@@ -1257,8 +1257,8 @@ break;
                 <div>
                   <h1 className="welcome-message">HI! {username}</h1>
                   
-                    <b>Wallet: </b>
-                    <WalletDisplay walletAddress={walletAddress} />
+                    {/* <b>Wallet: </b>
+                    <WalletDisplay walletAddress={walletAddress} /> */}
                   
                   <div className="header-row">
   <div className="left-section">
