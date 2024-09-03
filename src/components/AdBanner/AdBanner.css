@@ -25,7 +25,7 @@
   font-weight: bold;
   border: 1px solid #ffffffc1; /* Border with a slightly transparent white color */
   border-radius: 0px; /* Rounded corners for the border */
-  background-color: #660a78; /* Background color to further distinguish it */
+  background-color: #333; /* Background color to further distinguish it */
   width: 100%;
   padding: 0 8px; /* Remove vertical padding, keep horizontal padding */
   line-height: 1; /* Adjust line-height to remove extra space inside */
