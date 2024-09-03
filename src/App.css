@@ -221,22 +221,23 @@ body:before {
 
 .button-group {
   display: flex;
-  justify-content: center; /* Centers the buttons horizontally */
-  align-items: center; /* Centers the buttons vertically, if needed */
-  gap: 10px; /* Optional: Adds space between the buttons */
+  flex-direction: column; /* Stack the buttons vertically */
+  justify-content: center; /* Center the buttons horizontally */
+  align-items: center; /* Center the buttons vertically */
+  gap: 10px; /* Adds space between the buttons */
   margin-top: 20px; /* Optional: Adds space above the button group */
 }
 
 .return-button {
-  margin-top: 15px;
+  width: 200px; /* Set a fixed width for uniform button size */
+  height: 40px; /* Set a fixed height for uniform button size */
   padding: 10px 20px;
   font-size: 0.9em;
   background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff);
   background-size: 200% 200%;
   color: rgb(6, 6, 6);
   border: 2px solid #333;
-  height: 40px;
-  line-height: 46px;
+  line-height: 40px;
   border-radius: 4px;
   cursor: pointer;
   text-transform: uppercase;
@@ -246,6 +247,7 @@ body:before {
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
 }
 
 .try-again-container {
