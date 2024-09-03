@@ -848,7 +848,13 @@ break;
     });
   
     console.log('Filtered rooms:', filteredRooms);
-    setRooms(filteredRooms);
+    if (filteredRooms.length === 0) {
+      setRooms([]); // This will update the UI to show no rooms available
+      console.log('No rooms available.');
+  } else {
+      setRooms(filteredRooms);
+  }
+  
 };
 
 
