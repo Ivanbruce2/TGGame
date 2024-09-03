@@ -809,7 +809,7 @@ break;
     };
   };
   
-const handleRoomsList = (message) => {
+  const handleRoomsList = (message) => {
     console.log('handleRoomsList called');
     console.log('Received message:', message);
     console.log(selectedRoom);
@@ -833,12 +833,15 @@ const handleRoomsList = (message) => {
 
     // Filter the rooms based on the selected contract and current user ID
     const filteredRooms = message.rooms.filter(
-      room => room.status === 'waiting' || room.player1_id.toString() === userID.toString()
-  );
+        room => 
+            room.status === 'waiting' ||  // Show rooms that are waiting
+            room.player1_id.toString() === userID.toString()  // Show rooms where user is Player 1 (including in_progress or completed)
+    );
   
     console.log('Filtered rooms:', filteredRooms);
     setRooms(filteredRooms);
 };
+
 
   const checkForActiveRoomOnConnect = () => {
     console.log("come here?")
