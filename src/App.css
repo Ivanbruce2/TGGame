@@ -229,10 +229,10 @@ body:before {
 }
 
 .return-button {
-  width: 200px; /* Set a fixed width for uniform button size */
+  width: 220px; /* Set a fixed width for uniform button size */
   height: 40px; /* Set a fixed height for uniform button size */
   padding: 10px 20px;
-  font-size: 0.9em;
+  font-size: 0.8em;
   background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff);
   background-size: 200% 200%;
   color: rgb(6, 6, 6);
