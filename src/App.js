@@ -661,7 +661,7 @@ break;
             setToastMessage(message.error);
             setToastVisible(true);
           } else {
-            const isBone = message.contractAddress === 'native' || message.contractAddress === 'BONE';
+            
             
             // Update the game status for the room
             setGameStatuses((prevStatuses) => ({
@@ -914,19 +914,24 @@ break;
   
     // Get the user's token balance (this function should be implemented based on how you fetch token balances)
     const userTokenBalance = getUserTokenBalance(contract.address); // This should be implemented
-  
+    const isBone = roomToJoin.contract_address === 'native' || roomToJoin.contract_address === 'BONE';
     // Check BONE balance first
     if (boneBalance < 1) {
       setToastMessage('You need at least 1 BONE to join the room.');
       setToastVisible(true);
       return;
     }
-  
+    if (!isBone) {
     // Check if the user has enough of the wager token
     if (userTokenBalance < requiredTokens) {
       setToastMessage(`You need at least ${requiredTokens.toFixed(3)} ${contract.symbol} to join this room.`);
       setToastVisible(true);
       return;
+    }} else {
+      if (boneBalance < requiredTokens) {
+        setToastMessage(`You need at least ${requiredTokens.toFixed(3)} ${contract.symbol} to join this room.`);
+        setToastVisible(true);
+        return;
     }
   
     // Proceed to send the message if all conditions are met
