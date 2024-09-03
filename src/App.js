@@ -921,17 +921,22 @@ break;
       setToastVisible(true);
       return;
     }
-    if (!isBone) {
-    // Check if the user has enough of the wager token
-    if (userTokenBalance < requiredTokens) {
-      setToastMessage(`You need at least ${requiredTokens.toFixed(3)} ${contract.symbol} to join this room.`);
-      setToastVisible(true);
-      return;
-    }} else {
+    if (isBone) {
       if (boneBalance < requiredTokens) {
+        setToastMessage(`You need at least ${requiredTokens.toFixed(3)} BONE to join this room.`);
+        setToastVisible(true);
+        return;
+      }
+    } else {
+      // Get the user's ERC-20 token balance
+      const userTokenBalance = getUserTokenBalance(contract.address); // This should be implemented
+  
+      // Check if the user has enough of the wager token
+      if (userTokenBalance < requiredTokens) {
         setToastMessage(`You need at least ${requiredTokens.toFixed(3)} ${contract.symbol} to join this room.`);
         setToastVisible(true);
         return;
+      }
     }
   
     // Proceed to send the message if all conditions are met
