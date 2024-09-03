@@ -229,7 +229,7 @@ body:before {
 }
 
 .return-button {
-  width: 220px; /* Set a fixed width for uniform button size */
+  width: 250px; /* Set a fixed width for uniform button size */
   height: 40px; /* Set a fixed height for uniform button size */
   padding: 10px 20px;
   font-size: 0.8em;

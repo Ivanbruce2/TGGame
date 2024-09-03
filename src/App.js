@@ -637,7 +637,7 @@ break;
           }
           break;
          case 'FETCH_CONTRACT':
-       
+       console.log(message)
               setContractAddresses(message.contractAddresses); // Store the contract addresses in state
               break;
        
