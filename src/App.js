@@ -131,7 +131,7 @@ useEffect(() => {
           fetchAds();
           fetchContract();
           
-          // checkForActiveRoomOnConnect();
+          
         };
 
         websocketRef.current.onmessage = (event) => {
@@ -849,64 +849,16 @@ break;
   
     console.log('Filtered rooms:', filteredRooms);
     if (filteredRooms.length === 0) {
-      setRooms([]); // This will update the UI to show no rooms available
+      setFilteredRooms([]); // This will update the UI to show no rooms available
       console.log('No rooms available.');
   } else {
-      setRooms(filteredRooms);
+    setFilteredRooms(filteredRooms);
   }
   
 };
 
 
 
-  const checkForActiveRoomOnConnect = () => {
-    console.log("come here?")
-    console.log(allRooms)  
-    console.log("maybe?")
-    const intervalId = setInterval(() => {
-      if (allRooms.length > 0) {
-        console.log("how about now?")
-        // Assuming allRooms is already populated or updated after the initial fetchRooms call
-        checkForActiveRoom(allRooms);
-        clearInterval(intervalId); // Stop checking after the first successful room list fetch
-      }
-    }, 500); // Adjust the interval as needed
-  };
-  
-  const checkForActiveRoom = (filteredRooms) => {
-    console.log('Current userID:', userID);
-    const currentUserID = userID.toString().trim();
-  
-    const activeRoom = filteredRooms.find(
-      (room) => room.player1_id?.toString().trim() === currentUserID && room.status === 'waiting'
-    );
-  
-    if (activeRoom) {
-      console.log('Active room found:', activeRoom);
-      setSelectedRoom(activeRoom.room_id);
-      setGameStatus({
-        roomId: activeRoom.room_id,
-        player1ID: activeRoom.player1_id?.toString().trim(),
-        player1Username: activeRoom.player1_username,
-        player1Choice: activeRoom.player1_choice,
-        player2ID: activeRoom.player2_id?.toString().trim(),
-        player2Username: activeRoom.player2_username,
-        player2Choice: activeRoom.player2_choice,
-        status: activeRoom.status,
-        contractAddress: activeRoom.contract_address,
-        wagerAmount: activeRoom.wager_amount,
-        result: activeRoom.result,
-      });
-  
-      if (currentUserID === activeRoom.player1_id?.toString().trim()) {
-        setUserChoice(activeRoom.player1_choice);
-      } else if (currentUserID === activeRoom.player2_id?.toString().trim()) {
-        setUserChoice(activeRoom.player2_choice);
-      }
-    } else {
-      console.log('No active room found for this user.');
-    }
-  };
 
   const initializeUser = (userID, username) => {
   
