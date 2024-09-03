@@ -658,69 +658,68 @@ break;
         break;
         case 'JOIN_ROOM':
           if (message.error) {
-              setToastMessage(message.error);
-              setToastVisible(true);
+            setToastMessage(message.error);
+            setToastVisible(true);
           } else {
-       
-      
-              // Update the game status for the room
-              setGameStatuses((prevStatuses) => ({
-                  ...prevStatuses,
-                  [message.room_id]: {
-                      roomId: message.room_id,
-                      player1ID: message.player1ID,
-                      player1Username: message.player1Username,
-                      player1Choice: message.player1Choice,
-                      player2ID: message.player2ID,
-                      player2Username: message.player2Username,
-                      player2Choice: message.player2Choice,
-                      status: message.status,
-                      contractAddress: message.contractAddress,
-                      wagerAmount: message.wagerAmount,
-                      result: message.result,
-                  },
-              }));
-      
-              // Handle reconnection scenario
-              if (message.reconnect === "yes") {
-                  console.log("Reconnected to room");
-                  setActiveRoomId(message.room_id);
-                  setCurrentView('game');
-                  setToastMessage('Reconnected to your room.');
-                  setToastVisible(true);
-                  return;
-              }
-      
-              // If the user is Player 1 and someone else (Player 2) has joined
-              if (userID.toString() === message.player1ID.toString() && message.player2ID) {
-                  setToastMessage(`${message.player2Username} has joined room ${message.room_id} that you created.`);
-                  setToastVisible(true);
-              }
-      
-              // If the user is Player 2 and has successfully joined the room
-              if (userID.toString() === message.player2ID.toString()) {
-                  setToastMessage(`You have joined the room as Player 2.`);
-                  setToastVisible(true);
-                  setActiveRoomId(message.room_id);  // Set the active room ID
-                  setCurrentView('game');  // Navigate to the game view
-              }
-      
-              // Update user choice state based on their role in the game
-              if (userID.toString() === message.player1ID.toString()) {
-                  setUserChoice(message.player1Choice);
-              } else if (userID.toString() === message.player2ID.toString()) {
-                  setUserChoice(message.player2Choice);
-              }
-      
-              // If the user is already in the room and currently viewing the game, navigate to it
-              if (activeRoomId === message.room_id && currentView === 'game') {
-                  setActiveRoomId(message.room_id);
-                  setCurrentView('game');
-              }
+            const isBone = message.contractAddress === 'native' || message.contractAddress === 'BONE';
+            
+            // Update the game status for the room
+            setGameStatuses((prevStatuses) => ({
+              ...prevStatuses,
+              [message.room_id]: {
+                roomId: message.room_id,
+                player1ID: message.player1ID,
+                player1Username: message.player1Username,
+                player1Choice: message.player1Choice,
+                player2ID: message.player2ID,
+                player2Username: message.player2Username,
+                player2Choice: message.player2Choice,
+                status: message.status,
+                contractAddress: isBone ? 'BONE' : message.contractAddress,
+                wagerAmount: message.wagerAmount,
+                result: message.result,
+              },
+            }));
+        
+            // Handle reconnection scenario
+            if (message.reconnect === "yes") {
+              console.log("Reconnected to room");
+              setActiveRoomId(message.room_id);
+              setCurrentView('game');
+              setToastMessage('Reconnected to your room.');
+              setToastVisible(true);
+              return;
+            }
+        
+            // If the user is Player 1 and someone else (Player 2) has joined
+            if (userID.toString() === message.player1ID.toString() && message.player2ID) {
+              setToastMessage(`${message.player2Username} has joined room ${message.room_id} that you created.`);
+              setToastVisible(true);
+            }
+        
+            // If the user is Player 2 and has successfully joined the room
+            if (userID.toString() === message.player2ID.toString()) {
+              setToastMessage(`You have joined the room as Player 2.`);
+              setToastVisible(true);
+              setActiveRoomId(message.room_id);  // Set the active room ID
+              setCurrentView('game');  // Navigate to the game view
+            }
+        
+            // Update user choice state based on their role in the game
+            if (userID.toString() === message.player1ID.toString()) {
+              setUserChoice(message.player1Choice);
+            } else if (userID.toString() === message.player2ID.toString()) {
+              setUserChoice(message.player2Choice);
+            }
+        
+            // If the user is already in the room and currently viewing the game, navigate to it
+            if (activeRoomId === message.room_id && currentView === 'game') {
+              setActiveRoomId(message.room_id);
+              setCurrentView('game');
+            }
           }
           break;
-      
-      
+        
       default:
         // console.log('Unknown message type received:', message.type);
     }

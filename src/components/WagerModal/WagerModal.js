@@ -6,6 +6,7 @@ const WagerModal = ({ contracts, walletAddress, onSave, onCancel }) => {
   const [wagerAmount, setWagerAmount] = useState('');
   const [availableBalance, setAvailableBalance] = useState(0); // Default balance to 0
   const [tokenBalances, setTokenBalances] = useState([]); // Store all token balances
+  const [boneBalance, setBoneBalance] = useState(0); // BONE balance
   const [errorMessage, setErrorMessage] = useState('');
   const [apiError, setApiError] = useState(''); // Track API errors
 
@@ -14,46 +15,53 @@ const WagerModal = ({ contracts, walletAddress, onSave, onCancel }) => {
     const fetchTokenBalances = async () => {
       try {
         const response = await fetch(`https://www.shibariumscan.io/api/v2/addresses/${walletAddress}/token-balances`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch token balances');
+        const boneResponse = await fetch(`https://www.shibariumscan.io/api/v2/addresses/${walletAddress}`);
+        if (!response.ok || !boneResponse.ok) {
+          throw new Error('Failed to fetch token balances or BONE balance');
         }
+
         const data = await response.json();
+        const boneData = await boneResponse.json();
+
         setTokenBalances(data);
+        setBoneBalance(parseFloat(boneData.coin_balance) / Math.pow(10, 18));
         setApiError(''); // Clear any previous API errors
       } catch (error) {
-        console.error('Error fetching token balances:', error);
+        console.error('Error fetching token balances or BONE balance:', error);
         setApiError('You do not have any tokens in this wallet. Please transfer some tokens over first before starting.');
       }
     };
 
     fetchTokenBalances();
   }, [walletAddress]);
-  
+
   useEffect(() => {
     // Ensure all necessary data exists before proceeding
     if (selectedContract && contracts && tokenBalances) {
-      const lowerCaseSelectedContract = selectedContract.toLowerCase();
-      const contract = contracts.find(contract => contract.address.toLowerCase() === lowerCaseSelectedContract);
-      const tokenData = tokenBalances.find(token => token.token.address.toLowerCase() === lowerCaseSelectedContract);
-  
-      if (contract) {
-        const balance = tokenData ? parseFloat(tokenData.value) / Math.pow(10, contract.decimals) : 0;
-        console.log(balance);
-  
-        setAvailableBalance(balance);
+      if (selectedContract === 'native') {
+        setAvailableBalance(boneBalance);
         setErrorMessage(''); // Clear any previous error message
       } else {
-        // Handle case where contract is not found
-        setAvailableBalance(0); // Set balance to 0 if no contract is found
-        setErrorMessage('Contract not found');
+        const lowerCaseSelectedContract = selectedContract.toLowerCase();
+        const contract = contracts.find(contract => contract.address.toLowerCase() === lowerCaseSelectedContract);
+        const tokenData = tokenBalances.find(token => token.token.address.toLowerCase() === lowerCaseSelectedContract);
+
+        if (contract) {
+          const balance = tokenData ? parseFloat(tokenData.value) / Math.pow(10, contract.decimals) : 0;
+          setAvailableBalance(balance);
+          setErrorMessage(''); // Clear any previous error message
+        } else {
+          // Handle case where contract is not found
+          setAvailableBalance(0); // Set balance to 0 if no contract is found
+          setErrorMessage('Contract not found');
+        }
       }
     } else {
       // Handle case where selectedContract or data is invalid
       setAvailableBalance(0); // Set balance to 0 as a fallback
       setErrorMessage('Invalid contract or data');
     }
-  }, [selectedContract, contracts, tokenBalances]);
-  
+  }, [selectedContract, contracts, tokenBalances, boneBalance]);
 
   const handleSave = () => {
     if (!selectedContract) {
@@ -68,14 +76,14 @@ const WagerModal = ({ contracts, walletAddress, onSave, onCancel }) => {
 
     const contract = contracts.find(contract => contract.address === selectedContract);
 
-    if (contract) {
-      const adjustedWagerAmount = parseFloat(wagerAmount) * Math.pow(10, contract.decimals);
+    if (contract || selectedContract === 'native') {
+      const adjustedWagerAmount = parseFloat(wagerAmount) * Math.pow(10, contract ? contract.decimals : 18);
 
       // Validate the wager amount against the available balance
       if (parseFloat(wagerAmount) > availableBalance) {
         setErrorMessage('Wager amount exceeds available balance.');
       } else {
-        onSave(contract.address, adjustedWagerAmount.toString());
+        onSave(selectedContract === 'native' ? 'BONE' : contract.address, adjustedWagerAmount.toString());
       }
     }
   };
@@ -92,6 +100,7 @@ const WagerModal = ({ contracts, walletAddress, onSave, onCancel }) => {
             onChange={(e) => setSelectedContract(e.target.value)}
           >
             <option value="">--Select Contract--</option>
+            <option value="native">BONE (Native)</option>
             {contracts.map((contract, index) => (
               <option key={index} value={contract.address}>
                 {contract.name} ({contract.symbol})
@@ -108,7 +117,7 @@ const WagerModal = ({ contracts, walletAddress, onSave, onCancel }) => {
             placeholder="Enter amount"
           />
           {selectedContract && (
-            <p>Available Balance: {availableBalance.toFixed(3)} {contracts.find(contract => contract.address === selectedContract)?.symbol}</p>
+            <p>Available Balance: {availableBalance.toFixed(3)} {selectedContract === 'native' ? 'BONE' : contracts.find(contract => contract.address === selectedContract)?.symbol}</p>
           )}
           {errorMessage && <p className="error-message">{errorMessage}</p>}
         </div>
