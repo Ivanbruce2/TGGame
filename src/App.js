@@ -287,12 +287,12 @@ useEffect(() => {
 }, [gameStatus]);
 
 const filterRooms = (rooms) => {
-  console.log('Rooms before filtering:', rooms);
-  console.log('Selected contract:', selectedContract);
+  // console.log('Rooms before filtering:', rooms);
+  // console.log('Selected contract:', selectedContract);
 
   if (selectedContract) {
     const filtered = rooms.filter((room) => room.contractAddress === selectedContract);
-    console.log('Filtered rooms:', filtered);
+    // console.log('Filtered rooms:', filtered);
     return filtered;
   }
 
@@ -427,16 +427,6 @@ const renderGameStatusMessage = (currentGameStatus) => {
 
 
 useEffect(() => {
-  console.log('gameStatuses updated:', gameStatuses);
-}, [gameStatuses]);
-
-
-useEffect(() => {
-  // console.log("Updated game status state:", gameStatus);
-}, [gameStatus]);
-
-
-useEffect(() => {
   const rotationInterval = setInterval(() => {
     setCurrentAdIndex((prevIndex) => (prevIndex + 1) % ads.length);
   }, 10000); // Change ad every 10 seconds
@@ -468,7 +458,6 @@ break;
         break;
 
       case 'ADS_LIST':
-        console.log(message)
         setAds(message.ads); // Update ads from WebSocket response
         break;
   
@@ -485,7 +474,6 @@ break;
       
 
       case 'USERS_LIST': // Handle the users list response
-      console.log('Setting users:', message.users);
       setUsers(message.users);
       
       break;
@@ -514,7 +502,7 @@ break;
           break;
         
           case 'TRY_AGAIN':
-            console.log(message);
+
             if (message.success) {
               // Reset the game status for the specific room
               setGameStatuses((prevStatuses) => ({
@@ -537,7 +525,7 @@ break;
             break;
           
   case 'LEAVE_ROOM':
-    console.log('Left room:', message.room_id);
+    // console.log('Left room:', message.room_id);
   
     // Update the game statuses by removing the room that was exited
     setGameStatuses((prevStatuses) => {
@@ -558,9 +546,9 @@ break;
     break;
   
         case 'CREATE_ROOM':
-          console.log('Room created with ID:', message.room_id);
-          console.log('Full message:', message);
-          console.log('Wager Amount:', message.wagerAmount); // Check if this logs the expected value
+          // console.log('Room created with ID:', message.room_id);
+          // console.log('Full message:', message);
+          // console.log('Wager Amount:', message.wagerAmount); // Check if this logs the expected value
           
           // Update the game status for the specific room
           setGameStatuses((prevStatuses) => ({
@@ -591,7 +579,7 @@ break;
         break;
       
         case 'GAME_STATUS':
-          console.log('Updating game status:', message);
+          // console.log('Updating game status:', message);
       
           if (message.status === "" || 
               (userID.toString() !== message.player1ID?.toString() && userID.toString() !== message.player2ID?.toString())) {
@@ -608,7 +596,7 @@ break;
                   setCurrentView('lobby');  // Send the user back to the lobby
               }
       
-              console.log('User has been removed from the game or game has ended.');
+              // console.log('User has been removed from the game or game has ended.');
           } else {
               // Update the game status as usual for the specific room
               setGameStatuses((prevStatuses) => ({
@@ -639,12 +627,12 @@ break;
                   const playerChoice = userID.toString() === message.player1ID.toString() ? currentGameStatus.player1Choice : currentGameStatus.player2Choice;
       
                   // You may display this choice in the UI if needed
-                  console.log('Player Choice:', playerChoice);
+                
               }
           }
           break;
             case 'FETCH_CONTRACT':
-              console.log('Received contract addresses:', message.contractAddresses);
+       
               setContractAddresses(message.contractAddresses); // Store the contract addresses in state
               break;
        
@@ -668,8 +656,7 @@ break;
               setToastMessage(message.error);
               setToastVisible(true);
           } else {
-              console.log("Joined room");
-              console.log(message);
+       
       
               // Update the game status for the room
               setGameStatuses((prevStatuses) => ({
@@ -730,19 +717,19 @@ break;
       
       
       default:
-        console.log('Unknown message type received:', message.type);
+        // console.log('Unknown message type received:', message.type);
     }
   };
 
   useEffect(() => {
     if (selectedRoom) {
-      console.log('selectedRoom updated:', selectedRoom);
+      // console.log('selectedRoom updated:', selectedRoom);
     }
   }, [selectedRoom]);
 
   useEffect(() => {
     if (selectedRoom === null) {
-        console.log('selectedRoom was reset to null');
+        // console.log('selectedRoom was reset to null');
     }
 }, [selectedRoom]);
 
@@ -814,13 +801,13 @@ break;
   };
   
   const handleRoomsList = (message) => {
-    console.log('handleRoomsList called');
-    console.log('Received message:', message);
-    console.log(selectedRoom);
+    // console.log('handleRoomsList called');
+    // // console.log('Received message:', message);
+    // console.log(selectedRoom);
 
     // Prevent updating the room list if the user is already in a game
     if (selectedRoom) {
-        console.log('User is in a game. Not updating the room list.');
+        // console.log('User is in a game. Not updating the room list.');
         return;
     }
 
@@ -832,11 +819,11 @@ break;
     }
 
     // Store all rooms in state (for filtering purposes)
-    console.log('Storing rooms:', message.rooms);
+    // console.log('Storing rooms:', message.rooms);
     setAllRooms(message.rooms);
 
     // Log the current userID
-    console.log('Current userID:', userID);
+    // console.log('Current userID:', userID);
 
     // Filter the rooms based on the selected contract and current user ID
     const filteredRooms = message.rooms.filter(room => {
@@ -844,17 +831,15 @@ break;
         const isPlayer1 = room.player1_id.toString() === userID.toString();
 
         // Log the player1_id and the result of the comparison
-        console.log('Checking room:', room.room_id);
-        console.log('player1_id:', room.player1_id, 'userID:', userID, 'isPlayer1:', isPlayer1);
-        console.log('room.status:', room.status, 'isWaiting:', isWaiting);
+      
 
         return isWaiting || isPlayer1;
     });
   
-    console.log('Filtered rooms:', filteredRooms);
+    // console.log('Filtered rooms:', filteredRooms);
     if (filteredRooms.length === 0) {
       setRooms([]); // This will update the UI to show no rooms available
-      console.log('No rooms available.');
+      // console.log('No rooms available.');
   } else {
       setRooms(filteredRooms);
   }
@@ -900,8 +885,8 @@ break;
   };
 
   const joinRoom = (roomId) => {
-    console.log("Attempting to join room with ID:", roomId);
-    console.log("Current rooms array:", rooms);
+    // console.log("Attempting to join room with ID:", roomId);
+    // console.log("Current rooms array:", rooms);
 
     const roomToJoin = rooms.find((room) => room.room_id === roomId);
     if (!roomToJoin) {
@@ -959,8 +944,8 @@ break;
 
 
   const handleChoice = (choice) => {
-    console.log(choice)
-    console.log("choice")
+    // console.log(choice)
+    // console.log("choice")
     setUserChoice(choice);
     sendMessage({
       type: 'MAKE_CHOICE',
