@@ -7,14 +7,14 @@ import Toast from './components/Toast/Toast';
 import Stats from './components/Stats/Stats';
 import './App.css';
 import AdBanner from './components/AdBanner/AdBanner';
-// import { retrieveLaunchParams } from '@telegram-apps/sdk';
+import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
 // Define the backend WebSocket URL
 const backendURL = process.env.REACT_APP_BACKEND_URL;
 
 
 function App() {
-  // const { initDataRaw, initData } = retrieveLaunchParams();
+  const { initDataRaw, initData } = retrieveLaunchParams();
   const [hasCheckedActiveRoom, setHasCheckedActiveRoom] = useState(false);
   const [isSessionTerminated, setIsSessionTerminated] = useState(false);
   const [allRooms, setAllRooms] = useState([]); // Store all rooms fetched from the backend
@@ -99,10 +99,10 @@ useEffect(() => {
 
 
   useEffect(() => {
-    const retrievedUsername = "poemcryptoman";
-    const retrievedUserID = "5199577425";
-    // const retrievedUsername = initData.user.username || "Unknown Username";
-    // const retrievedUserID = initData.user.id || "Unknown UserID";
+    // const retrievedUsername = "poemcryptoman";
+    // const retrievedUserID = "5199577425";
+    const retrievedUsername = initData.user.username || "Unknown Username";
+    const retrievedUserID = initData.user.id || "Unknown UserID";
     // console.log('Setting userID:', retrievedUserID);
     setUserID(retrievedUserID);
     setUsername(retrievedUsername);

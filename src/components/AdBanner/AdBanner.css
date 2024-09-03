@@ -27,6 +27,7 @@
   border-radius: 0px; /* Rounded corners for the border */
   background-color: #660a78; /* Background color to further distinguish it */
   width: 100%;
+  padding-left:4px
 }
 
 .ads-message-container a {
