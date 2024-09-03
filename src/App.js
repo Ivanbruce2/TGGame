@@ -849,10 +849,10 @@ break;
   
     console.log('Filtered rooms:', filteredRooms);
     if (filteredRooms.length === 0) {
-      setFilteredRooms([]); // This will update the UI to show no rooms available
+      setRooms([]); // This will update the UI to show no rooms available
       console.log('No rooms available.');
   } else {
-    setFilteredRooms(filteredRooms);
+      setRooms(filteredRooms);
   }
   
 };
@@ -1293,7 +1293,7 @@ break;
 
                   <div className="room-list">
 
-                  {filteredRooms.map((room) => {
+                  {rooms.map((room) => {
                       const contract = contractAddresses.find((c) => c.address === room.contract_address);
                       const decimals = contract ? contract.decimals : 1;
                       const formattedWagerAmount = room.wager_amount
