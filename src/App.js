@@ -547,7 +547,7 @@ break;
   
         case 'CREATE_ROOM':
           // console.log('Room created with ID:', message.room_id);
-          // console.log('Full message:', message);
+          console.log('Full message:', message);
           // console.log('Wager Amount:', message.wagerAmount); // Check if this logs the expected value
           
           // Update the game status for the specific room
