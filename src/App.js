@@ -267,49 +267,24 @@ useEffect(() => {
 
 useEffect(() => {
   if (gameStatus?.status === 'waiting' || gameStatus?.status === 'in_progress') {
-    // Reset and start the countdown timer for the specific room
-    const roomId = activeRoomId;
+    // Reset and start the countdown timer
+    setCountdown(20);
+    if (countdownInterval.current) clearInterval(countdownInterval.current);
 
-    setCountdowns((prevCountdowns) => ({
-      ...prevCountdowns,
-      [roomId]: 20,
-    }));
-
-    if (countdownIntervals.current[roomId]) {
-      clearInterval(countdownIntervals.current[roomId]);
-    }
-
-    countdownIntervals.current[roomId] = setInterval(() => {
-      setCountdowns((prevCountdowns) => {
-        const currentCountdown = prevCountdowns[roomId] || 0;
-        if (currentCountdown > 0) {
-          return {
-            ...prevCountdowns,
-            [roomId]: currentCountdown - 1,
-          };
+    countdownInterval.current = setInterval(() => {
+      setCountdown((prevCountdown) => {
+        if (prevCountdown > 0) {
+          return prevCountdown - 1;
         } else {
-          clearInterval(countdownIntervals.current[roomId]);
-          return {
-            ...prevCountdowns,
-            [roomId]: 0,
-          };
+          clearInterval(countdownInterval.current);
+          return 0;
         }
       });
     }, 1000);
   } else {
-    if (countdownIntervals.current[activeRoomId]) {
-      clearInterval(countdownIntervals.current[activeRoomId]);
-    }
+    clearInterval(countdownInterval.current);
   }
-
-  // Cleanup on component unmount
-  return () => {
-    Object.keys(countdownIntervals.current).forEach((roomId) => {
-      clearInterval(countdownIntervals.current[roomId]);
-    });
-  };
-}, [gameStatus, activeRoomId]);
-
+}, [gameStatus]);
 
 const filterRooms = (rooms) => {
   console.log('Rooms before filtering:', rooms);
