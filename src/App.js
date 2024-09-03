@@ -831,16 +831,26 @@ break;
     console.log('Storing rooms:', message.rooms);
     setAllRooms(message.rooms);
 
+    // Log the current userID
+    console.log('Current userID:', userID);
+
     // Filter the rooms based on the selected contract and current user ID
-    const filteredRooms = message.rooms.filter(
-        room => 
-            room.status === 'waiting' ||  // Show rooms that are waiting
-            room.player1_id.toString() === userID.toString()  // Show rooms where user is Player 1 (including in_progress or completed)
-    );
+    const filteredRooms = message.rooms.filter(room => {
+        const isWaiting = room.status === 'waiting';
+        const isPlayer1 = room.player1_id.toString() === userID.toString();
+
+        // Log the player1_id and the result of the comparison
+        console.log('Checking room:', room.room_id);
+        console.log('player1_id:', room.player1_id, 'userID:', userID, 'isPlayer1:', isPlayer1);
+        console.log('room.status:', room.status, 'isWaiting:', isWaiting);
+
+        return isWaiting || isPlayer1;
+    });
   
     console.log('Filtered rooms:', filteredRooms);
     setRooms(filteredRooms);
 };
+
 
 
   const checkForActiveRoomOnConnect = () => {
