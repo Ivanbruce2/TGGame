@@ -1043,7 +1043,7 @@ break;
 
     return (
       <div style={{ display: 'inline-flex', alignItems: 'center', marginLeft: '10px', cursor: 'pointer' }} onClick={copyToClipboard}>
-        <span style={{ fontFamily: 'monospace', fontSize: '14px', color: '#FFD700', marginRight: '8px' }}>
+        <span style={{ fontFamily: 'monospace', fontSize: '14px', color: '#ffffff', marginRight: '8px' }}>
           {truncatedAddress}
         </span>
       </div>
@@ -1255,11 +1255,11 @@ break;
               path="/"
               element={
                 <div>
-                  <h1 className="welcome-message">Welcome {username}</h1>
-                  <p>
+                  <h1 className="welcome-message">HI! {username}</h1>
+                  
                     <b>Wallet: </b>
                     <WalletDisplay walletAddress={walletAddress} />
-                  </p>
+                  
                   <div className="header-row">
   <div className="left-section">
     <button className="pixel-button create-button" onClick={handleOpenModal}>

@@ -110,6 +110,7 @@ body:before {
   width: 100%;
   background-color: rgba(248, 248, 245, 0.7);
   padding: 4px 4px;
+  margin-top:8px
 }
 
 .left-section {
@@ -281,20 +282,23 @@ body:before {
 
 .welcome-message {
   text-transform: uppercase;
-  text-align: left;
+  text-align: center;
   width: 100%;
-  font-size: 1.5em;
-  margin-bottom: 20px;
+  font-size: 1em; /* Adjusted font size to 1em */
+  margin-bottom: 2px;
   color: #ffd700;
   font-family: 'Press Start 2P', cursive;
   position: relative;
-  text-shadow:
-    1px 1px 0 #ff0047,
-    2px 2px 0 #ff8a00,
-    3px 3px 0 #fcdc4d,
-    4px 4px 0 #28e0ae,
-    5px 5px 0 #0044ff;
+  text-shadow: 
+    1px 1px 2px #ff0047,
+    2px 2px 2px #ff8a00,
+    3px 3px 2px #fcdc4d;
+  padding: 10px; /* Adds some padding for spacing */
+  letter-spacing: 0px; /* Adds space between letters */
+  border-radius: 4px; /* Optional: Rounded corners */
 }
+
+
 
 @keyframes gradientShift {
   0% { background-position: 0% 50%; }
