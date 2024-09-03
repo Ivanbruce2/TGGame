@@ -497,6 +497,10 @@ break;
       case 'LEADERBOARD':
         setLeaderboard(message.leaderboard);
         break;
+        case 'ERROR':
+          setToastMessage(message.message);
+          setToastVisible(true);
+          break;
         case 'TRANSFER_SUCCESS':
           setToastMessage(
             <span>
@@ -1304,12 +1308,13 @@ break;
                       return (
                         <div className="room-card" key={room.room_id}>
                           <div className="room-details">
+                          <p> {contract ? `${contract.symbol}` : 'N/A'} | {formattedWagerAmount}</p>
                             <p>
                               {room.status === 'waiting'
-                                ? `Player: ${room.player1_username}`
+                                ? `P1: ${room.player1_username}`
                                 : `${room.player1_username} vs ${room.player2_username}`}
                             </p>
-                            <p>Wager: {contract ? `(${contract.symbol})` : 'N/A'} | {formattedWagerAmount}</p>
+                            
                           </div>
                           {(room.status === 'waiting' || isPlayer1) && (
                             <button className="join-button" onClick={() => joinRoom(room.room_id)}>

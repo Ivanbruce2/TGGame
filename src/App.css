@@ -315,7 +315,7 @@ body:before {
 
 .room-details {
   flex: 1;
-  font-size: 1.2em;
+  font-size: 0.9em;
   margin-right: 80px;
 }
 
@@ -335,7 +335,7 @@ body:before {
   border: none;
   color: rgb(0, 0, 0);
   text-align: center;
-  font-size: 12px;
+  font-size: 10px;
   border-radius: 5px;
   cursor: pointer;
   display: flex;
@@ -343,16 +343,13 @@ body:before {
   align-items: center;
   flex-direction: column;
   width: 70px;
-  height: 50px;
+  height: 40px;
   animation: gradientShift 2s infinite linear;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
   font-family: 'Press Start 2P', cursive;
 }
 
-.join-button:hover {
-  transform: scale(1.1) rotate(2deg);
-  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
-}
+
 
 .join-button:active {
   transform: scale(0.9) rotate(-2deg);
@@ -395,9 +392,7 @@ body:before {
     padding: 8px;
   }
 
-  .room-details {
-    font-size: 0.8em;
-  }
+ 
 
   .join-button {
     width: 60px;
