@@ -675,7 +675,7 @@ break;
                 player2Username: message.player2Username,
                 player2Choice: message.player2Choice,
                 status: message.status,
-                contractAddress: isBone ? 'BONE' : message.contractAddress,
+                contractAddress: message.contractAddress,
                 wagerAmount: message.wagerAmount,
                 result: message.result,
               },
