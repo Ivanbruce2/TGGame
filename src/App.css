@@ -218,6 +218,14 @@ body:before {
   width: 100%;
 }
 
+.button-group {
+  display: flex;
+  justify-content: center; /* Centers the buttons horizontally */
+  align-items: center; /* Centers the buttons vertically, if needed */
+  gap: 10px; /* Optional: Adds space between the buttons */
+  margin-top: 20px; /* Optional: Adds space above the button group */
+}
+
 .return-button {
   margin-top: 15px;
   padding: 10px 20px;
