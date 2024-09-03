@@ -127,7 +127,7 @@ useEffect(() => {
           initializeUser(userID, username);
           
           fetchRooms();
-          // fetchUsers();
+          fetchUsers();
           fetchAds();
           fetchContract();
           
@@ -697,7 +697,7 @@ break;
       
               // If the user is Player 1 and someone else (Player 2) has joined
               if (userID.toString() === message.player1ID.toString() && message.player2ID) {
-                  setToastMessage(`${message.player2Username} has joined your room.`);
+                  setToastMessage(`${message.player2Username} has joined room ${message.room_id} that you created.`);
                   setToastVisible(true);
               }
       
