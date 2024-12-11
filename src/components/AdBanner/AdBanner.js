@@ -8,7 +8,7 @@ const AdBanner = ({ ads }) => {
     if (ads.length > 0) {
       const interval = setInterval(() => {
         setCurrentAdIndex((prevIndex) => (prevIndex + 1) % ads.length);
-      }, 5000); // Change the ad every 5 seconds
+      }, 10000); // Change the ad every 5 seconds
 
       return () => clearInterval(interval); // Clean up the interval
     }
@@ -56,7 +56,7 @@ const AdBanner = ({ ads }) => {
         </div>
 
         <div className="ad-banner">
-          <p className="ad-caption"><b>Ads: </b> {currentAd.caption}</p>
+          <p className="ad-caption">{currentAd.caption}</p>
           <a href={currentAd.link} target="_blank" rel="noopener noreferrer">
             {renderAdContent(currentAd)}
           </a>

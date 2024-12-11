@@ -4,11 +4,7 @@ import './Toast.css';
 
 const Toast = ({ message, link, onClose }) => {
   useEffect(() => {
-<<<<<<< HEAD
     const timer = setTimeout(onClose, 3000); // Automatically close the toast after 5 seconds
-=======
-    const timer = setTimeout(onClose, 5000); // Automatically close the toast after 5 seconds
->>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
     return () => clearTimeout(timer); // Clean up the timer on component unmount
   }, [onClose]);
 
