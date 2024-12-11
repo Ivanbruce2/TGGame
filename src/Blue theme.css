@@ -1,0 +1,240 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Roboto:wght@700&display=swap');
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: #ffd700;
+  font-family: 'VT323', monospace;
+  overflow: hidden;
+  position: relative;
+}
+
+body:before {
+  content: '';
+  position: absolute;
+  width: 800px;
+  height: 800px;
+  background-color: rgba(255, 255, 255, 0.1);
+  top: -200px;
+  left: -200px;
+  transform: rotate(45deg);
+  animation: floatBg 20s infinite linear;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes floatBg {
+  0% {
+    top: -200px;
+    left: -200px;
+  }
+  50% {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+  100% {
+    top: calc(100% + 200px);
+    left: calc(100% + 200px);
+  }
+}
+
+.App {
+  text-align: center;
+  font-family: 'VT323', monospace; 
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  color: #fff;
+  padding: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.container {
+  border-radius: 10px;
+  padding: 20px;
+  width: 100%;
+  max-width: 600px;
+  margin-top: 0px;
+}
+
+.pixel-button {
+  background-color: #ff0047; /* Primary color */
+  color: white;
+  font-size: 0.8em;
+  border: 2px solid #333;
+  height: 40px; /* Fixed height for consistency */
+  line-height: 36px; /* Center text vertically */
+  padding: 0 16px; /* Adjusted padding to maintain height */
+  border-radius: 4px;
+  margin-left: 8px; /* Space between buttons */
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+  font-family: 'Press Start 2P', cursive; /* Matching the pixel art style */
+  box-shadow: 0 4px #333; /* Pixelated shadow effect */
+  position: relative;
+}
+
+.pixel-button:active {
+  top: 4px; /* Simulate button press */
+  box-shadow: 0 0 #333;
+}
+
+.create-button {
+  background-color: #f3d020; /* Green background for create button */
+}
+
+.refresh-button {
+  background-color: #32e017; /* Blue background for refresh button */
+}
+
+.welcome-message {
+  text-align: left;
+  width: 100%;
+  font-size: 3.5em;
+  margin-bottom: 20px;
+  color: #ffd700;
+}
+
+.header-row {
+  display: flex;
+  justify-content: flex-start; /* Align buttons to the right */
+  align-items: center;
+  width: 97%;
+  background-color: rgba(248, 248, 245, 0.7); /* Add transparency */
+  border-radius: 10px;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+
+
+
+.room-list {
+  width: 100%;
+  max-height: 400px;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+
+.room-card {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+  text-align: left;
+  flex-direction: column;
+}
+
+.room-details {
+  flex: 1;
+  font-size: 1.2em;
+  margin-right: 80px;
+}
+
+.room-details p {
+  margin: 0;
+  padding: 0;
+  line-height: 1.2;
+}
+
+.join-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  padding: 8px 15px;
+  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); 
+  background-size: 200% 200%; 
+  border: none;
+  color: white;
+  text-align: center;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 70px;
+  height: 50px;
+  animation: gradientShift 2s infinite;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  font-family: 'Roboto', sans-serif;
+}
+
+.join-button:hover {
+  transform: scale(1.1) rotate(2deg);
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.join-button:active {
+  transform: scale(0.9) rotate(-2deg);
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 10px;
+    max-width: 90%; /* Allow the container to fill the width on mobile */
+  }
+
+  .welcome-message {
+    font-size: 2em;
+    margin-bottom: 15px;
+  }
+
+  .header-row {
+    flex-direction: row;
+    justify-content: flex-start; /* Align buttons to the left on mobile */
+    max-width: 100%;
+  }
+
+  .create-button {
+    font-size: 0.8em;
+    padding: 8px 24px; /* Make the create button longer */
+    margin: 5px 0;
+    width: 60%; /* Make the Create Room button wider */
+  }
+
+  .refresh-button {
+    font-size: 1em;
+    padding: 8px 12px;
+    margin: 5px 0;
+    width: 20%; /* Adjust width of the Refresh button */
+  }
+
+  .room-card {
+    padding: 8px;
+  }
+
+  .room-details {
+    font-size: 1.1em;
+    margin-right: 60px;
+  }
+
+  .join-button {
+    width: 60px;
+    height: 40px;
+    font-size: 12px;
+    bottom: 8px;
+    right: 8px;
+  }
+}

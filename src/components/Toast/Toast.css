@@ -1,0 +1,35 @@
+.toast {
+    position: fixed;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #022330;
+    color: #fff;
+    padding: 0px 20px; /* Even shorter height and balanced width */
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    width: 60%; /* Fixed width to make it wider */
+    max-width: 600px; /* Maximum width for larger screens */
+    text-align: center;
+    font-family: 'Roboto', sans-serif; /* Use a modern font */
+    font-size: 16px; /* Adjust the font size */
+    font-weight: 500; /* Slightly bolder font weight */
+    letter-spacing: 0.5px; /* Add slight spacing for better readability */
+  }
+  
+  .toast-link {
+    margin-left: 10px;
+    color: #cef108;
+    text-decoration: underline;
+    font-family: 'Roboto', sans-serif; /* Keep the same font for consistency */
+    font-weight: 500; /* Match the font weight */
+  }
+  
+  .toast-link:hover {
+    color: #796b06;
+  }
+  
+  /* Import the font */
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+  

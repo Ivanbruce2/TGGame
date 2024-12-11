@@ -1,0 +1,153 @@
+.token-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(248, 248, 245, 0.7); /* Add transparency */
+  border: 1px solid #e0e0e0;
+  border-radius: 0px;
+  padding: 4px 8px; /* Reduced padding to remove extra space */
+  margin-bottom: 0px; /* Removed extra margin */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  max-width: 270px;
+  width: 100%;
+}
+
+.token-column {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.token-symbol {
+  font-weight: bold;
+  color: #333333;
+  font-size: 18px;
+  margin: 0;
+  line-height: 1;
+}
+
+.token-amount {
+  font-family: monospace;
+  color: #0d10ce;
+  margin: 0; /* Removed extra margin to reduce spacing */
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.token-action {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.action-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 0px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.action-button:hover {
+  background-color: #0056b3;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Darker background for contrast */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999; /* Ensure modal is always on top */
+}
+
+.modal-content {
+  background: #1a1a2e; /* Dark background for better contrast */
+  padding: 30px; /* Increase padding for a more spacious feel */
+  border-radius: 12px; /* Smoother and larger border radius */
+  width: 85%; /* Responsive design */
+  max-width: 400px; /* Set a maximum width */
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); /* Add shadow for depth */
+  animation: fadeIn 0.3s ease-in-out; /* Smooth fade-in animation */
+}
+
+.modal-content h3 {
+  color: #ffd700; /* Gold color for the heading */
+  margin-bottom: 20px;
+  font-size: 1.5rem; /* Larger font size */
+  font-family: 'Press Start 2P', cursive; /* Retro gaming font for style */
+}
+
+.modal-content input,
+.modal-content select {
+  display: block;
+  width: 100%; /* Ensure inputs don’t exceed modal width */
+  box-sizing: border-box; /* Include padding and border in the element's width */
+  margin-bottom: 15px;
+  padding: 12px; /* Increased padding */
+  border: 2px solid #333; /* Darker border for better contrast */
+  border-radius: 8px; /* Larger border radius */
+  background-color: #0f3460; /* Dark background */
+  color: #ffffff; /* White text */
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  transition: border-color 0.3s ease; /* Smooth transition on focus */
+}
+
+.modal-content input:focus,
+.modal-content select:focus {
+  border-color: #ffd700; /* Highlight border on focus */
+}
+
+.send-button,
+.cancel-button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 10px 5px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition */
+}
+
+.send-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.send-button:hover {
+  background-color: #218838;
+  transform: scale(1.05); /* Slight grow effect */
+}
+
+.cancel-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: #c82333;
+  transform: scale(1.05); /* Slight grow effect */
+}
+
+/* Smooth fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

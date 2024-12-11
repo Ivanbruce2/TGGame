@@ -1,0 +1,83 @@
+
+
+.welcome-message {
+  text-transform: uppercase;
+  text-align: center;
+  width: 100%;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  color: #ffd700; /* Base color */
+  font-family: 'Press Start 2P', cursive;
+  position: relative;
+  text-shadow: 
+    1px 1px 0 #ff0047,   /* red shadow */
+    2px 2px 0 #ff8a00,   /* orange shadow */
+    3px 3px 0 #fcdc4d,   /* yellow shadow */
+    4px 4px 0 #28e0ae,   /* green shadow */
+    5px 5px 0 #0044ff;   /* blue shadow */
+}
+
+
+/* Address styling */
+.wallet-address {
+  cursor: pointer;
+  text-decoration: underline;
+  margin-left: 5px;
+  font-size: 16px; /* Adjust the size for a clean look */
+  transition: color 0.3s ease; /* Smooth color transition */
+}
+
+/* Token list container */
+.token-list-container {
+  max-height: 380px;
+  overflow-y: auto;
+  border: 0px solid #e0e0e0;
+  padding: 8px;
+  margin-top: 12px; /* Slight margin to create separation from the BONE balance */
+}
+
+/* Token list styling */
+.token-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* Updated Address and BONE Amount Styling */
+.wallet-container .wallet-address, .wallet-container .bone-amount {
+  font-family: 'Roboto', sans-serif; /* Apply a clean sans-serif font */
+  font-size: 16px; /* Adjust the font size for better readability */
+  font-weight: 500; /* Slightly bold for better emphasis */
+  color: #ffffff; /* Use a subtle white color */
+  letter-spacing: 0.5px; /* Add a little spacing between letters */
+  transition: color 0.3s ease; /* Smooth color transition */
+}
+
+.bone-amount {
+  margin-left: 5px;
+  color: #f1f1ef; /* Gold color for BONE amount */
+}
+
+.wallet-address:hover {
+  color: #1aa6e7; /* Subtle hover effect */
+}
+
+/* Additional container improvements for spacing and alignment */
+.wallet-container {
+  font-family: 'Poppins', sans-serif; /* Default font for the container */
+  color: #ffffff;
+}
+
+.wallet-container h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px; /* Reduce the size for a subtler look */
+  font-weight: 600; /* Moderate weight for a clean appearance */
+  margin-bottom: 6px; /* Adjust the spacing between title and content */
+}
+
+/* Wallet container refinement */
+.wallet-container p {
+  margin: 0;
+  font-family: 'Roboto', sans-serif; /* Ensure consistency in font */
+  font-size: 14px; /* Adjust to a standard readable size */
+}
