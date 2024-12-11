@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "game",
   "version": "0.1.0",
   "private": true,
@@ -30,6 +31,28 @@
   "test": "react-scripts test",
   "eject": "react-scripts eject"
 },
+=======
+  "name": "websocketfront",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.1",
+    "react-scripts": "5.0.1",
+    "socket.io-client": "^4.7.5",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -47,11 +70,14 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+<<<<<<< HEAD
   },
   "devDependencies": {
     "javascript-obfuscator": "^4.1.1",
     "react-app-rewired": "^2.2.1",
     "terser-webpack-plugin": "^5.3.10",
     "webpack-obfuscator": "^3.5.1"
+=======
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   }
 }

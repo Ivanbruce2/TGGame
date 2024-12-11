@@ -40,7 +40,11 @@
   /* Game history table styling */
 /* Game history table styling */
 .game-logs {
+<<<<<<< HEAD
   max-height: 250px;
+=======
+  max-height: 350px;
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   overflow-y: auto;
   padding: 10px;
 }

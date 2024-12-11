@@ -8,7 +8,11 @@
   padding: 4px 8px; /* Reduced padding to remove extra space */
   margin-bottom: 0px; /* Removed extra margin */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+<<<<<<< HEAD
   max-width: 280px;
+=======
+  max-width: 270px;
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   width: 100%;
 }
 
@@ -24,6 +28,7 @@
   font-size: 18px;
   margin: 0;
   line-height: 1;
+<<<<<<< HEAD
   text-decoration: underline; /* Adds underline */
   cursor: pointer; /* Changes cursor to pointer on hover */
 }
@@ -34,6 +39,10 @@
 }
 
 
+=======
+}
+
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
 .token-amount {
   font-family: monospace;
   color: #0d10ce;
@@ -97,11 +106,18 @@
 .modal-content input,
 .modal-content select {
   display: block;
+<<<<<<< HEAD
   width: 100%; /* Ensure inputs and selects don't exceed modal width */
   box-sizing: border-box; /* Include padding and border in the element's width */
   margin-bottom: 15px;
   padding: 12px; /* Uniform padding for consistent height */
   height: 48px; /* Set a fixed height */
+=======
+  width: 100%; /* Ensure inputs don’t exceed modal width */
+  box-sizing: border-box; /* Include padding and border in the element's width */
+  margin-bottom: 15px;
+  padding: 12px; /* Increased padding */
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   border: 2px solid #333; /* Darker border for better contrast */
   border-radius: 8px; /* Larger border radius */
   background-color: #0f3460; /* Dark background */
@@ -116,7 +132,10 @@
   border-color: #ffd700; /* Highlight border on focus */
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
 .send-button,
 .cancel-button {
   padding: 12px 20px;

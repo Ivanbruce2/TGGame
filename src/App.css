@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400&display=swap');
 
 body, html {
@@ -7,19 +8,41 @@ body, html {
   width: 100%;
   background: linear-gradient(135deg, #4101ff, #880176, #190275); 
   background-size: 400% 400%;
+=======
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body, html {
+  margin: 0;
+  padding: 5px 0 0 0; /* Add padding only to the top */
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(135deg, #4101ff, #880176, #190275); 
+  background-size: 400% 400%; /* Extend the gradient */
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   color: #ffd700;
   font-family: 'VT323', monospace;
   overflow: hidden;
   position: relative;
+<<<<<<< HEAD
   animation: rainbowShift 15s ease infinite;
 }
 
+=======
+  animation: rainbowShift 15s ease infinite; /* Add animation for gradient shift */
+}
+
+
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
 @keyframes rainbowShift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
 body:before {
   content: '';
   position: absolute;
@@ -29,7 +52,11 @@ body:before {
   top: -200px;
   left: -200px;
   transform: rotate(45deg);
+<<<<<<< HEAD
   animation: floatBg 5s infinite linear;
+=======
+  animation: floatBg 5s infinite linear; /* Speed up floating background animation */
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   z-index: 0;
   pointer-events: none;
 }
@@ -52,7 +79,11 @@ body:before {
 
 .App {
   text-align: center;
+<<<<<<< HEAD
   font-family: 'VT323', monospace;
+=======
+  font-family: 'VT323', monospace; 
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -76,11 +107,19 @@ body:before {
   background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff);
   background-size: 200% 200%;
   color: rgb(6, 6, 6);
+<<<<<<< HEAD
   font-size: 0.9em;
   border: 2px solid #333;
   height: 34px;
   line-height: 34px;
   margin: 0 4px;
+=======
+  font-size: 0.9em; /* Slightly smaller font size */
+  border: 2px solid #333;
+  height: 34px; /* Reduced button height */
+  line-height: 34px; /* Align text vertically */
+  margin: 0 4px; /* Reduced margin around the buttons */
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   border-radius: 4px;
   cursor: pointer;
   display: flex;
@@ -88,12 +127,17 @@ body:before {
   align-items: center;
   text-transform: uppercase;
   font-family: 'Press Start 2P', cursive;
+<<<<<<< HEAD
   box-shadow: 0 2px #333;
+=======
+  box-shadow: 0 2px #333; /* Reduced shadow depth */
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   animation: gradientShift 2s infinite linear;
   white-space: nowrap;
 }
 
 .pixel-button.create-button {
+<<<<<<< HEAD
   padding: 2px 10px;
   font-size: 0.6em;
 }
@@ -149,6 +193,72 @@ body:before {
   font-family: 'Roboto', sans-serif;
   background-color: #ffffff;
   color: #000000;
+=======
+  padding: 4px 12px; /* Reduced padding for less button width */
+  font-size: 0.8em; /* Slightly smaller font size */
+}
+
+.pixel-button.refresh-button {
+  padding: 4px 8px; /* Adjusted padding for smaller width */
+  font-size: 1.2em; /* Keep font larger for the refresh button */
+  width: 40px; /* Reduced overall button width */
+}
+
+.pixel-button:active {
+  top: 2px; /* Reduced the button press effect */
+  box-shadow: 0 0 #333;
+}
+
+
+.game-result {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%; /* Ensures the container takes full width */
+  margin-top: 20px;
+}
+
+.game-result p, .game-result h2 {
+  width: 100%; /* Ensure text content takes full width and aligns consistently */
+}
+
+.return-button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  font-size: 0.9em;
+  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff);
+  background-size: 200% 200%;
+  color: rgb(6, 6, 6);
+  border: 2px solid #333;
+  height: 40px;
+  line-height: 46px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-family: 'Press Start 2P', cursive;
+  box-shadow: 0 4px #333;
+  animation: gradientShift 2s infinite linear;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.try-again-button {
+  padding: 10px 20px;
+  margin-top: 10px;
+  font-size: 16px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.try-again-button:hover {
+  background-color: #2980b9;
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
 }
 
 .welcome-message2 {
@@ -170,7 +280,11 @@ body:before {
 .wager-info {
   font-size: 1em; /* Adjust size for good readability */
   color: #fff;
+<<<<<<< HEAD
   margin-bottom: 2px;
+=======
+  margin-bottom: 4px;
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   margin-top: 4px;
  
 }
@@ -205,6 +319,7 @@ body:before {
 }
 
 
+<<<<<<< HEAD
 .game-result {
   display: flex;
   flex-direction: column;
@@ -298,16 +413,46 @@ body:before {
   padding: 10px; /* Adds some padding for spacing */
   letter-spacing: 0px; /* Adds space between letters */
   border-radius: 4px; /* Optional: Rounded corners */
+=======
+.welcome-message {
+  text-transform: uppercase;
+  text-align: left;
+  width: 100%;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  color: #ffd700; /* Base color */
+  font-family: 'Press Start 2P', cursive;
+  position: relative;
+  text-shadow: 
+    1px 1px 0 #ff0047,   /* red shadow */
+    2px 2px 0 #ff8a00,   /* orange shadow */
+    3px 3px 0 #fcdc4d,   /* yellow shadow */
+    4px 4px 0 #28e0ae,   /* green shadow */
+    5px 5px 0 #0044ff;   /* blue shadow */
+}
+.header-row {
+  display: flex;
+  justify-content: flex-start; /* Align buttons to the left */
+  align-items: center;
+  width: 97.4%;
+  background-color: rgba(248, 248, 245, 0.7); /* Add transparency */
+  border-radius: 0px;
+  padding: 4px 4px; /* Adjust padding for less space */
+  margin-bottom: 0px; /* Reduced margin below */
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
 }
 
 
 
+<<<<<<< HEAD
 @keyframes gradientShift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
+=======
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
 .room-list {
   width: 100%;
   max-height: 400px;
@@ -329,7 +474,11 @@ body:before {
 
 .room-details {
   flex: 1;
+<<<<<<< HEAD
   font-size: 0.9em;
+=======
+  font-size: 1.2em;
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   margin-right: 80px;
 }
 
@@ -349,7 +498,11 @@ body:before {
   border: none;
   color: rgb(0, 0, 0);
   text-align: center;
+<<<<<<< HEAD
   font-size: 10px;
+=======
+  font-size: 12px;
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   border-radius: 5px;
   cursor: pointer;
   display: flex;
@@ -357,39 +510,73 @@ body:before {
   align-items: center;
   flex-direction: column;
   width: 70px;
+<<<<<<< HEAD
   height: 40px;
+=======
+  height: 50px;
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   animation: gradientShift 2s infinite linear;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
   font-family: 'Press Start 2P', cursive;
 }
 
+<<<<<<< HEAD
 
+=======
+.join-button:hover {
+  transform: scale(1.1) rotate(2deg);
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
+}
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
 
 .join-button:active {
   transform: scale(0.9) rotate(-2deg);
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
+<<<<<<< HEAD
 
+=======
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
 
 @media (max-width: 480px) {
   .container {
     padding: 10px;
+<<<<<<< HEAD
     max-width: 90%;
   }
 
   .welcome-message {
     font-size: 1em;
     margin-bottom: 5px;
+=======
+    max-width: 90%; /* Allow the container to fill the width on mobile */
+  }
+
+  .welcome-message {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   }
 
   .header-row {
     flex-direction: row;
+<<<<<<< HEAD
     justify-content: flex-start;
+=======
+    justify-content: flex-start; /* Align buttons to the left on mobile */
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
     max-width: 100%;
   }
 
   .create-button {
+<<<<<<< HEAD
     font-size: 0.6em;
     padding: 4px 12px;
     margin: 5px 0;
@@ -400,18 +587,39 @@ body:before {
     font-size: 1.4em;
     padding: 8px 12px;
     margin: 5px 0;
+=======
+    font-size: 0.8em;
+    padding: 8px 24px; /* Make the create button longer */
+    margin: 5px 0;
+    width: 60%; /* Make the Create Room button wider */
+  }
+
+  .refresh-button {
+    font-size: 1.4em; /* Increase font size for the refresh button */
+    padding: 8px 12px;
+    margin: 5px 0;
+    width: 10%; /* Adjust width of the Refresh button */
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   }
 
   .room-card {
     padding: 8px;
   }
 
+<<<<<<< HEAD
  
+=======
+  .room-details {
+    font-size: 1.1em;
+    margin-right: 60px;
+  }
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
 
   .join-button {
     width: 60px;
     height: 40px;
     font-size: 12px;
+<<<<<<< HEAD
   }
 
   .pixel-button.create-button {
@@ -423,25 +631,41 @@ body:before {
     font-size: 0.7em;
     padding: 0 8px;
     width: 120px;
+=======
+    bottom: 8px;
+    right: 8px;
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   }
 }
 
 .choice-button {
+<<<<<<< HEAD
   background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); 
+=======
+  background: linear-gradient(45deg, #ff0047, #ff8a00, #fcdc4d, #28e0ae, #0044ff); /* Rainbow gradient */
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   background-size: 200% 200%;
   color: rgb(6, 6, 6);
   font-size: 0.8em;
   border: 2px solid #333;
+<<<<<<< HEAD
   height: 40px;
   width: 150px;
   line-height: 46px;
   margin: 18px 0;
+=======
+  height: 40px; /* Consistent height */
+  width: 150px; /* Consistent width */
+  line-height: 46px; /* Center text vertically */
+  margin: 18px 0; /* Vertical margin for spacing */
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   border-radius: 4px;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   text-transform: uppercase;
+<<<<<<< HEAD
   font-family: 'Press Start 2P', cursive;
   box-shadow: 0 4px #333;
   animation: gradientShift 2s infinite linear;
@@ -456,10 +680,27 @@ body:before {
   background: #ff0047;
   color: #fff;
   box-shadow: 0 4px #001600;
+=======
+  font-family: 'Press Start 2P', cursive; /* Matching the pixel art style */
+  box-shadow: 0 4px #333; /* Pixelated shadow effect */
+  animation: gradientShift 2s infinite linear; /* Animate the gradient */
+  transition: background 0.2s ease, transform 0.2s ease; /* Smooth transition for hover and selected effects */
+}
+
+.choice-button:hover:not(.selected) {
+  transform: scale(1.05); /* Slightly enlarge the button on hover if it's not selected */
+}
+
+.choice-button.selected {
+  background: #ff0047; /* Highlight selected choice with green */
+  color: #fff;
+  box-shadow: 0 4px #001600; /* Adjust shadow color for selected choice */
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
 }
 
 .choice-button:disabled {
   cursor: not-allowed;
+<<<<<<< HEAD
   opacity: 0.6;
 }
 
@@ -481,3 +722,8 @@ body:before {
     4px 4px 0 #28e0ae,   /* green shadow */
     5px 5px 0 #0044ff;   /* blue shadow */
 }
+=======
+  opacity: 0.6; /* Dim the button when disabled */
+}
+
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952

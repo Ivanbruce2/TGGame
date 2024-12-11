@@ -18,23 +18,34 @@
 }
 
 
+<<<<<<< HEAD
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
+=======
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
 /* Address styling */
 .wallet-address {
   cursor: pointer;
   text-decoration: underline;
   margin-left: 5px;
+<<<<<<< HEAD
   font-family: 'Roboto', sans-serif; /* Use Roboto font */
   font-size: 14px; /* Adjust the size for a clean look */
   font-weight: 500; /* Slightly bold for emphasis */
   color: #ffffff; /* Change color to a more noticeable blue */
+=======
+  font-size: 16px; /* Adjust the size for a clean look */
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   transition: color 0.3s ease; /* Smooth color transition */
 }
 
 /* Token list container */
 .token-list-container {
+<<<<<<< HEAD
   max-height: 330px;
+=======
+  max-height: 380px;
+>>>>>>> 4cdb2999b95774f33e5e9aceecc6de4beded9952
   overflow-y: auto;
   border: 0px solid #e0e0e0;
   padding: 8px;
