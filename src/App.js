@@ -10,7 +10,7 @@ import AdBanner from './components/AdBanner/AdBanner';
 import { retrieveLaunchParams } from '@telegram-apps/sdk';
 
 // Define the backend WebSocket URL
-const backendURL = process.env.REACT_APP_BACKEND_URL;
+const backendURL = "wss://fluffy-impalas-attack.loca.lt/ws";
 
 
 function App() {
